@@ -10,6 +10,8 @@ class ResourceLoader {
     private _shaders: Map<string, Shader>
     private _vaos: Map<string, VAO>
 
+    private _vaoResourcesObserver: (keys: string[]) => void
+
     private constructor() {
         this._shaders = new Map<string, Shader>();
         this._vaos = new Map<string, VAO>();
@@ -43,7 +45,11 @@ class ResourceLoader {
             }
 
             this._vaos.set(vao.name, new VAO(vao.objectData as VBO[]));
-        })
+        }); 
+        if(this._vaoResourcesObserver) {
+            const keys = [...this._vaos.keys()]
+            this._vaoResourcesObserver(keys)
+        }
         return this;
     }
 
@@ -55,13 +61,21 @@ class ResourceLoader {
         return this._vaos.get(name);
     }
 
-    public static forEachVAO(callback: (VAO: VAO) => void): ResourceLoader {
+    public static forEachVAO(callback: (vao: VAO) => void): ResourceLoader {
         return ResourceLoader.getInstance().forEachVAO(callback);
     }
 
-    public forEachVAO(callback: (VAO: VAO) => void): ResourceLoader {
+    public forEachVAO(callback: (vao: VAO) => void): ResourceLoader {
         this._vaos.forEach(callback);
         return this;
+    }
+
+    public static setVAOObserver(observer: (keys: string[]) => void): void {
+        ResourceLoader.getInstance().setVAOObserver(observer)
+    }
+
+    public setVAOObserver(observer: (keys: string[]) => void): void {
+        this._vaoResourcesObserver = observer;
     }
 
     /* =====================
@@ -98,6 +112,8 @@ class ResourceLoader {
         this._shaders.forEach(callback);
         return this
     }
+
+
 }
 
 export default ResourceLoader

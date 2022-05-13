@@ -15,13 +15,16 @@ class VAO implements IResource {
     
     public constructor(vboList: VBO[]) {
         this._vboList = [];
-        for(const vbo of vboList) {
+        vboList.forEach((vbo) => {
             if(vbo !== null && vbo !== undefined) {
                 this._vboList.push(vbo);
                 if(vbo.getType() === gl.ELEMENT_ARRAY_BUFFER) {
                     this._ibo = vbo;
                 }
             }
+        })
+        if(vboList.length > 0 && !this._ibo) {
+            this._ibo = vboList[0];
         }
     }
 
@@ -100,6 +103,10 @@ class VAO implements IResource {
 
     public getIbo(): VBO {
         return this._ibo;
+    }
+
+    public getLength(): number {
+        return this._ibo.getLength()/3;
     }
 
 }

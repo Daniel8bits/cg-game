@@ -11,7 +11,7 @@ class Float32Buffer extends ArrayBuffer {
      * Put an array of Float32 values within the buffer
      */
     public put(data: Float32Array): void {
-        let dataView = new DataView(this);
+        const dataView = new DataView(this);
         // 'i' refers to the data index, not the byte
         for(let i = 0; i  < data.length; i++) {
             if(i*this.valueOffset >= this.byteLength) break;

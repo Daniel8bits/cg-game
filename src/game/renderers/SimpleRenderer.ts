@@ -1,6 +1,6 @@
 import Renderer from "../../engine/renderer/Renderer";
 import ResourceLoader from "../../engine/core/ResourceLoader";
-import { gl } from "../../engine/gl/GLUtils";
+import GLUtils, { gl } from "../../engine/gl/GLUtils";
 import Mat4 from "../../engine/math/Mat4";
 import Entity from "../../engine/core/Entity";
 import Vec3 from "../../engine/math/Vec3";
@@ -40,7 +40,7 @@ class SimpleRenderer extends Renderer {
             this.getEntitiesByShader(shader). forEach((entity: Entity) => {
                 shader.setMatrix4x4('u_transform', entity.getTransform().toMatrix());
                 entity.getVAO().bind()
-                gl.drawElements(gl.TRIANGLES, entity.getVAO().getIbo().getLength(), gl.UNSIGNED_SHORT, 0);
+                GLUtils.draw(entity.getVAO().getLength())
                 entity.getVAO().unbind();
             })
         })

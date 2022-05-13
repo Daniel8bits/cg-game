@@ -26,6 +26,18 @@ export const equals = (
     return true
 }
 
+export const assign = (
+    size: number,
+    getValue: MatrixValueGetCallback, 
+    setValue: MatrixValueSetCallback
+) => {
+    for(let i = 0; i < size; i++){
+        for(let j = 0; j < size; j++){
+            setValue(i, j, getValue(i, j));
+        }
+    }
+}
+
 export const transpose = (
     size: number,
     getValue: MatrixValueGetCallback, 
@@ -52,6 +64,43 @@ export  const mult = (
 
             setValue(i, j, value);
 
+        }
+    }
+}
+
+export  const inverse = (
+    size: number, 
+    getAux: MatrixValueGetCallback,
+    getInv: MatrixValueGetCallback,
+    setAux: MatrixValueSetCallback, 
+    setInv: MatrixValueSetCallback, 
+) => {
+    let pivot = 0
+    let v = 0
+    for(let c = 0; c < size; c++){
+
+        pivot = getAux(c, c);
+
+        for(let k = 0; k < size; k++){
+
+            setAux(c, k, getAux(c, k) / pivot);
+            setInv(c, k, getInv(c, k) / pivot);
+
+        }
+
+        for(let l = 0; l < size; l++){
+
+            if(l !== c){
+
+                v = getAux(l, c);
+
+                for(let k = 0; k < size; k++){
+
+                    setAux(l, k, getAux(l, k) - v*getAux(c, k));
+                    setInv(l, k, getInv(l, k) - v*getInv(c, k));
+
+                }
+            }
         }
     }
 }

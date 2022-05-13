@@ -1,5 +1,6 @@
 import { gl } from "../gl/GLUtils";
 import GameCore from "./GameCore";
+import InputManager from "./InputManager";
 
 class GameLoop {
 
@@ -18,6 +19,7 @@ class GameLoop {
         this._then = time;
         
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+        InputManager.update()
         this._gameCore.update(time, delta);
         this._gameCore.render();
         requestAnimationFrame(this.loop);
@@ -27,7 +29,9 @@ class GameLoop {
         this._gameCore.start();
         gl.enable(gl.DEPTH_TEST)
         gl.enable(gl.BLEND)
-        //gl.enable(gl.CULL_FACE)
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+         gl.enable(gl.CULL_FACE)
+        // gl.frontFace(gl.CW)
         gl.depthFunc(gl.LESS)
         this.loop(0);
     }

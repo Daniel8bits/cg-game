@@ -180,7 +180,7 @@ class Scene {
     }
 
     public filterVisible(predicate: (entity: Entity) => boolean): Entity[] {
-        let filterResult = []
+        const filterResult = []
         this._visible.forEach((entity) => {
             if(predicate(entity)) {
                 filterResult.push(entity)
@@ -201,10 +201,10 @@ class Scene {
     private _validate(entity: Entity|string, map: Map<string, Entity>, exists: boolean = true): string|never {
         const name = this._getName(entity);
         if(exists && map.has(name)) {
-            throw new Error('Entity ' + name + 'already exists!');
+            throw new Error(`Entity ${name} already exists!`);
         }
         if(!exists && !map.has(name)) {
-            throw new Error('Entity ' + name + 'does not exists!');
+            throw new Error(`Entity ${name} does not exists!`);
         }
         return name;
     }

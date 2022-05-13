@@ -29,7 +29,7 @@ class FileUtils {
         onError: (err: string) => void
         ) : void {
 
-        let xmlHttpRequest = new XMLHttpRequest();
+        const xmlHttpRequest = new XMLHttpRequest();
         xmlHttpRequest.open('GET', pathname, false);
 
         xmlHttpRequest.onload = () => onSuccess(xmlHttpRequest.responseText);
@@ -48,7 +48,7 @@ class FileUtils {
             reader = body.getReader()
         })
 
-        return await reader.read()
+        return reader.read()
             .then((stream) => new TextDecoder().decode(stream.value))
     }
 }

@@ -61,9 +61,9 @@ class RenderStrategy {
      * @param fn do something with each scene
      */
     public forEach(fn: (renderer: Renderer, key?: string) => void): void {
-        for(let key in this._renderers) {
-            fn(this._renderers.get(key), key);
-        }
+        this._renderers.forEach((renderer, key) => {
+            fn(renderer, key);
+        })
     }
 
     /**
@@ -86,10 +86,10 @@ class RenderStrategy {
     private _validate(renderer: Renderer|string, exists: boolean = true): string|never {
         const name = this._getName(renderer);
         if(exists && this._renderers.has(name)) {
-            throw new Error('Renderer ' + name + 'already exists!');
+            throw new Error(`Renderer ${name} already exists!`);
         }
         if(!exists && !this._renderers.has(name)) {
-            throw new Error('Renderer ' + name + 'does not exists!');
+            throw new Error(`Renderer ${name} does not exists!`);
         }
         return name;
     }

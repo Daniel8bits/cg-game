@@ -34,7 +34,7 @@ class Mat2 extends Mat {
     }
 
     public transpose(): Mat2 {
-        let matrix: Mat2 = new Mat2();
+        const matrix = new Mat2();
 
         transpose(
             3, 
@@ -46,7 +46,7 @@ class Mat2 extends Mat {
     }
 
     public mult(m: Mat2): Mat2 {
-        let matrix: Mat2 = new Mat2();
+        const matrix = new Mat2();
 
         mult(
             3, 

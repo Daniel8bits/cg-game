@@ -14,27 +14,41 @@ class Transform {
     }
     
     public getTranslation() : Vec3 {
-        return this._translation
+        return new Vec3(this._translation.x, this._translation.y, this._translation.z)
     }
 
     public setTranslation(translation: Vec3) {
-        this._translation = translation
+        this._translation.assign(translation)
     }
 
     public getRotation() : Vec3 {
-        return this._rotation
+        return new Vec3(this._rotation.x, this._rotation.y, this._rotation.z)
     }
 
     public setRotation(rotation: Vec3) {
-        this._rotation = rotation
+        this._fixRotation(rotation.x, (v) => {this._rotation.x = v})
+        this._fixRotation(rotation.y, (v) => {this._rotation.y = v})
+        this._fixRotation(rotation.z, (v) => {this._rotation.z = v})
+    }
+
+    private _fixRotation(v: number, set: (v: number) => void): void {
+        if(v >= 360) {
+            v %= 360
+            v -= 360
+        }
+        if(v <= -360) {
+            v %= 360
+            v += 360
+        }
+        set(v)
     }
 
     public getScale() : Vec3 {
-        return this._scale
+        return new Vec3(this._scale.x, this._scale.y, this._scale.z)
     }
 
     public setScale(scale: Vec3) {
-        this._scale = scale
+        this._scale.assign(scale)
     }
 
     public toMatrix() : Mat4 {

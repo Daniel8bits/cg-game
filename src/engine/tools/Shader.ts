@@ -25,22 +25,22 @@ class Shader implements IResource{
     public create() : void {
         this._program = gl.createProgram();
 
-        let vertexShader : WebGLShader = this.load(this._vertexShaderPathname, gl.VERTEX_SHADER);
-        let fragmentShader : WebGLShader = this.load(this._fragmentShaderPathname, gl.FRAGMENT_SHADER);
+        const vertexShader : WebGLShader = this.load(this._vertexShaderPathname, gl.VERTEX_SHADER);
+        const fragmentShader : WebGLShader = this.load(this._fragmentShaderPathname, gl.FRAGMENT_SHADER);
 
         gl.attachShader(this._program, vertexShader);
         gl.attachShader(this._program, fragmentShader);
 
         gl.linkProgram(this._program);
 
-        let error : string = gl.getProgramInfoLog(this._program).trim();
+        const error : string = gl.getProgramInfoLog(this._program).trim();
         if(error !== '') {
-            throw new Error('Error trying to link shader: ' + this._name + '.\n' + error);
+            throw new Error(`Error trying to link shader: ${this._name}.\n ${error}`);
         }
     }
 
     private load(pathname: string, type: number) : WebGLShader {
-        let shader : WebGLShader = gl.createShader(type);
+        const shader : WebGLShader = gl.createShader(type);
 
         FileUtils.load(
             pathname, 
@@ -48,14 +48,14 @@ class Shader implements IResource{
                 gl.shaderSource(shader, file);
             },
             function onError(err) {
-                throw new Error('Error trying to load shader: ' + pathname + '.\n' + err);
+                throw new Error(`Error trying to load shader: ${pathname}.\n ${err}`);
             },
         );
 
         gl.compileShader(shader);
-        let error : string = gl.getShaderInfoLog(shader).trim();
+        const error : string = gl.getShaderInfoLog(shader).trim();
         if( error !== '') {
-            throw new Error('Error trying to compile shader: ' + pathname + '.\n' + error);
+            throw new Error(`Error trying to compile shader: ${pathname}.\n ${error}`);
         }
 
         return shader;
@@ -66,11 +66,11 @@ class Shader implements IResource{
     }
 
     public unbind() : void {
-        
+        throw new Error('Not implemented yet')
     }
 
     public destroy() : void {
-        
+        throw new Error('Not implemented yet')
     }
 
     public getUniformLocation(name : string) : WebGLUniformLocation {
@@ -87,7 +87,7 @@ class Shader implements IResource{
         setValue: (location: WebGLUniformLocation) => void) : void {
         const location = gl.getUniformLocation(this._program, name);
         if(location === -1) {
-            throw new Error(`Uniform \'${name}\' does not exist in shader: ${this._name}`);
+            throw new Error(`Uniform '${name}' does not exist in shader: ${this._name}`);
         }
         setValue(location);
     }

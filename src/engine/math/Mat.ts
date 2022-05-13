@@ -10,13 +10,13 @@ abstract class Mat {
 
     public set(index: Tuple<[number, number]>, value: number): void {
         this.$validate(index);
-        let range: number = Math.sqrt(this._matrix.length);
+        const range = Math.sqrt(this._matrix.length);
         this._matrix[index[0]*range+index[1]] = value;
     }
 
     public get(index: Tuple<[number, number]>): number {
         this.$validate(index);
-        let range: number = Math.sqrt(this._matrix.length);
+        const range = Math.sqrt(this._matrix.length);
         return this._matrix[index[0]*range+index[1]];
     }
 

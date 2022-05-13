@@ -19,7 +19,7 @@ class GameTest extends GameCore {
 
     public start() {
 
-        this._camera = new CanvasCamera();
+        this._camera = new CanvasCamera('main');
 
         // ========= SHADER ==========
 
@@ -73,6 +73,10 @@ class GameTest extends GameCore {
             {
                 name: 'spider',
                 objectData: '/resources/objects/spider/spider.obj'
+            },
+            {
+                name: 'level',
+                objectData: '/resources/objects/level/level.obj'
             }
         ])
         .forEachVAO((vao) => {
@@ -87,13 +91,13 @@ class GameTest extends GameCore {
             .get('scene1')
             .add(new SimpleEntity(
                 'entity1', 
-                ResourceLoader.getVAO('spider'), 
+                ResourceLoader.getVAO('level'), 
                 ResourceLoader.getShader('shader1'),
                 simpleRenderer
             ))
             .get('entity1')
             .getTransform()
-            .setTranslation(new Vec3(0, 0, 3))
+            .setScale(new Vec3(10, 10, 10))
 
 
         
