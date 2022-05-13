@@ -1,0 +1,67 @@
+{
+  "name": "razor",
+  "version": "1.0.0",
+  "description": "WebGL Game Engine",
+  "scripts": {
+    "build": "webpack --mode=production",
+    "start": "webpack serve --mode=development"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/env",
+        {
+          "targets": {
+            "browsers": [
+              "last 2 Chrome versions",
+              "last 2 Firefox versions"
+            ]
+          }
+        }
+      ],
+      "@babel/preset-typescript"
+    ],
+    "plugins": [
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ]
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LonelehKitten/Razor.git"
+  },
+  "author": "Daniel Noguês de Oliveira (Github Accounts: LonelehKitten, Daniel8bits)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/LonelehKitten/Razor/issues"
+  },
+  "homepage": "https://github.com/LonelehKitten/Razor#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.16.7",
+    "@babel/core": "^7.17.9",
+    "@babel/plugin-proposal-decorators": "^7.17.9",
+    "@babel/preset-env": "^7.16.7",
+    "@babel/preset-typescript": "^7.16.7",
+    "@types/obj-file-parser": "^0.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.9.0",
+    "@typescript-eslint/parser": "^5.9.0",
+    "babel-loader": "^8.2.3",
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.4",
+    "typescript": "^4.5.4",
+    "webpack": "^5.65.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.8.1",
+    "webpack-glsl-loader": "^1.0.1"
+  },
+  "dependencies": {
+    "html-webpack-plugin": "^5.5.0",
+    "lit": "^2.2.2",
+    "obj-file-parser": "^0.5.3"
+  }
+}
