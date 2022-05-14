@@ -25,7 +25,7 @@ class FileUtils {
 
     public static load(
         pathname: string, 
-        onSuccess: (file: string) => void, 
+        onSuccess: (file: any) => void, 
         onError: (err: string) => void
         ) : void {
 

@@ -39,6 +39,8 @@ class SimpleRenderer extends Renderer {
 
             this.getEntitiesByShader(shader). forEach((entity: Entity) => {
                 shader.setMatrix4x4('u_transform', entity.getTransform().toMatrix());
+                ResourceLoader.getTexture('level-texture').bind();
+                shader.setTexture('u_texture');
                 entity.getVAO().bind()
                 GLUtils.draw(entity.getVAO().getLength())
                 entity.getVAO().unbind();

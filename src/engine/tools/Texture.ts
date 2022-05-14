@@ -1,30 +1,33 @@
-import { gl } from "@engine/gl/GLUtils"
+import { gl } from "../gl/GLUtils"
 import IResource from "./IResource"
+
+export interface TextureType {
+  name: string
+  pathname: string
+}
+
+
+type TextureDataType = Uint8Array | HTMLImageElement
 
 class Texture implements IResource{
 
   private _program: WebGLTexture
   private _width: number
   private _height: number
-  private _pathname: string
 
-  private _data: Uint8Array
+  private _data: TextureDataType
 
-  public constructor(pathname?: string) {
-    this._pathname = pathname
-    this._width = 0
-    this._height = 0
+  public constructor(width: number = 0, height: number = 0, data: TextureDataType = null) {
+    this._width = width
+    this._height = height
+    this._data = data
   }
 
   public create() {
+
     this._program = gl.createTexture();
 
-    this._data = null
-    if(this._pathname) {
-      this._data = this.loadTexture()
-    }
-
-    if(this._width < 1 || this._height < 1) {
+    if((this._width < 1 || this._height < 1) && this._data) {
       throw new Error("Invalid image size!")
     }
 
@@ -32,20 +35,7 @@ class Texture implements IResource{
 
   public bind() {
     gl.bindTexture(gl.TEXTURE_2D, this._program);
-    gl.texImage2D(
-      gl.TEXTURE_2D, 
-      0, 
-      gl.RGBA, 
-      this._width, 
-      this._height, 
-      0, 
-      gl.RGBA, 
-      gl.UNSIGNED_BYTE, 
-      this._data
-    );
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    
   }
 
   public unbind() {
@@ -54,11 +44,6 @@ class Texture implements IResource{
 
   public destroy() {
     gl.deleteTexture(this._program)
-  }
-  
-  private loadTexture(): Uint8Array {
-    console.log('not supported yet');
-    return null
   }
 
   public getWidth(): number {
@@ -77,12 +62,29 @@ class Texture implements IResource{
     this._height = height
   }
 
-  public getData(): Uint8Array {
+  public getData(): TextureDataType {
     return this._data
   }
 
-  public setData(data: Uint8Array): void {
+  public setData(data: TextureDataType): void {
+    delete this._data
     this._data = data
+
+    this.bind()
+    gl.texImage2D(
+      gl.TEXTURE_2D, 
+      0, 
+      gl.RGBA, 
+      this._width, 
+      this._height, 
+      0, 
+      gl.RGBA, 
+      gl.UNSIGNED_BYTE, 
+      this._data as ArrayBufferView
+    );
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
   }
 
   public getProgram(): WebGLTexture {

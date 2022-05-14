@@ -61,7 +61,6 @@
   },
   "dependencies": {
     "html-webpack-plugin": "^5.5.0",
-    "lit": "^2.2.2",
     "obj-file-parser": "^0.5.3"
   }
 }

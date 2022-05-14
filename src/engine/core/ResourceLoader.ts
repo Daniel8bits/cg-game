@@ -2,6 +2,8 @@ import Shader, {ShaderType} from '../tools/Shader'
 import VAO, {VAOType} from '../buffer/VAO'
 import VBO from '../buffer/VBO'
 import OBJLoader from '../loader/OBJLoader'
+import Texture, { TextureType } from '../tools/Texture'
+import TextureLoader from '../loader/TextureLoader'
 
 class ResourceLoader {
 
@@ -9,12 +11,12 @@ class ResourceLoader {
 
     private _shaders: Map<string, Shader>
     private _vaos: Map<string, VAO>
-
-    private _vaoResourcesObserver: (keys: string[]) => void
+    private _textures: Map<string, Texture>
 
     private constructor() {
         this._shaders = new Map<string, Shader>();
         this._vaos = new Map<string, VAO>();
+        this._textures = new Map<string, Texture>();
     }
 
     private static getInstance() {
@@ -46,10 +48,6 @@ class ResourceLoader {
 
             this._vaos.set(vao.name, new VAO(vao.objectData as VBO[]));
         }); 
-        if(this._vaoResourcesObserver) {
-            const keys = [...this._vaos.keys()]
-            this._vaoResourcesObserver(keys)
-        }
         return this;
     }
 
@@ -68,14 +66,6 @@ class ResourceLoader {
     public forEachVAO(callback: (vao: VAO) => void): ResourceLoader {
         this._vaos.forEach(callback);
         return this;
-    }
-
-    public static setVAOObserver(observer: (keys: string[]) => void): void {
-        ResourceLoader.getInstance().setVAOObserver(observer)
-    }
-
-    public setVAOObserver(observer: (keys: string[]) => void): void {
-        this._vaoResourcesObserver = observer;
     }
 
     /* =====================
@@ -110,6 +100,41 @@ class ResourceLoader {
 
     public forEachShader(callback: (shader: Shader) => void): ResourceLoader {
         this._shaders.forEach(callback);
+        return this
+    }
+
+    /* =====================
+            TEXTURES
+    ======================*/
+
+    public static loadTextures(textures: TextureType[]): ResourceLoader{
+        return ResourceLoader.getInstance().loadTextures(textures);
+    }
+
+    public loadTextures(textures: TextureType[]): ResourceLoader {
+        textures.forEach((texture) => {
+            if(this._textures.has(texture.name)) {
+                throw new Error(`Shader '${texture.name}' already exists!`)
+            }
+            this._textures.set(texture.name, new TextureLoader().load(texture.pathname))
+        })
+        return this
+    }
+
+    public static getTexture(name: string): Texture {
+        return ResourceLoader.getInstance().getTexture(name);
+    }
+
+    public getTexture(name: string): Texture {
+        return this._textures.get(name);
+    }
+
+    public static forEachTexture(callback: (shader: Texture) => void): ResourceLoader {
+        return ResourceLoader.getInstance().forEachTexture(callback);
+    }
+
+    public forEachTexture(callback: (shader: Texture) => void): ResourceLoader {
+        this._textures.forEach(callback);
         return this
     }
 

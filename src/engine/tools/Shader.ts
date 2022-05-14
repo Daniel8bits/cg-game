@@ -16,10 +16,13 @@ class Shader implements IResource{
     private _fragmentShaderPathname: string;
     private _program: WebGLProgram;
 
+    private _textureCounter: number
+
     public constructor(params: ShaderType) {
         this._name = params.name;
         this._vertexShaderPathname = params.vertexShaderPathname;
         this._fragmentShaderPathname = params.fragmentShaderPathname;
+        this._textureCounter = 0;
     }
 
     public create() : void {
@@ -63,6 +66,7 @@ class Shader implements IResource{
 
     public bind() : void {
         gl.useProgram(this._program);
+        this._textureCounter = 0
     }
 
     public unbind() : void {
@@ -133,6 +137,15 @@ class Shader implements IResource{
     public setMatrix4x4(name: string, matrix: Mat4): void {
         this._checkIfUniformExists(name, 
             (location) => gl.uniformMatrix4fv(location, false, matrix.toArray()));
+    }
+
+    public setTexture(name : string) : void {
+        this._checkIfUniformExists(name, 
+            (location) => {
+                gl.activeTexture(gl.TEXTURE0+this._textureCounter);
+                gl.uniform1i(location, this._textureCounter)
+                this._textureCounter++
+            });
     }
 
     public getName(): string { 
