@@ -37,10 +37,14 @@ class SimpleRenderer extends Renderer {
                 this._camera.getTransform().getRotation(),
             ));
 
+            gl.activeTexture(gl.TEXTURE0);
+            ResourceLoader.getTexture('level-texture').bind();
+            shader.setInt('u_texture', 0)
+            //shader.setTexture('u_texture');
+
             this.getEntitiesByShader(shader). forEach((entity: Entity) => {
                 shader.setMatrix4x4('u_transform', entity.getTransform().toMatrix());
-                ResourceLoader.getTexture('level-texture').bind();
-                shader.setTexture('u_texture');
+                
                 entity.getVAO().bind()
                 GLUtils.draw(entity.getVAO().getLength())
                 entity.getVAO().unbind();

@@ -4,14 +4,23 @@ class TextureLoader {
     
 
   public load(pathname: string): Texture {
-
+    
     const texture = new Texture()
     const img = new Image();
 
     img.onload = () => {
       texture.setWidth(img.naturalWidth)
       texture.setHeight(img.naturalHeight)  
-      texture.setData(img)
+
+      //document.body.append(img)
+      const tempCanvas = document.createElement('canvas')
+      tempCanvas.width = img.naturalWidth
+      tempCanvas.height = img.naturalHeight
+      const ctx = tempCanvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, img.naturalWidth, img.naturalHeight)
+      const data = new Uint8Array(ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight).data)
+
+      texture.setData(data)
     }
 
     img.onerror = (err) => {
