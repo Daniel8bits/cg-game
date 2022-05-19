@@ -1,6 +1,6 @@
 
 import { gl } from '../gl/GLUtils';
-import IResource from '../tools/IResource';
+import IResource from '../appearance/IResource';
 import VBO from './VBO';
 
 export interface VAOType {

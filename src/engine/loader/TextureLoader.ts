@@ -1,4 +1,4 @@
-import Texture from '../tools/Texture';
+import Texture from '../appearance/Texture';
 
 class TextureLoader {
     

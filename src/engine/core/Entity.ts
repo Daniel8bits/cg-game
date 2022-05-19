@@ -1,6 +1,6 @@
 import VAO from "../buffer/VAO";
 import Renderer from "../renderer/Renderer";
-import Shader from "../tools/Shader";
+import Shader from "../appearance/Shader";
 import Transform from "../math/Transform"
 import Vec3 from "../math/Vec3";
 

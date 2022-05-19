@@ -1,6 +1,6 @@
 import Entity from "../core/Entity";
 import Scene from "../core/Scene";
-import Shader from "../tools/Shader";
+import Shader from "../appearance/Shader";
 
 abstract class Renderer {
 
