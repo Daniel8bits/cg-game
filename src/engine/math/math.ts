@@ -1,8 +1,8 @@
 
 
-export const toRadian = (angle: number): number => (angle * Math.PI) / 180
+export const toRadians = (angle: number): number => (angle * Math.PI) / 180
 
-export const toDegree = (radian: number): number => (radian * 180) / Math.PI
+export const toDegrees = (radian: number): number => (radian * 180) / Math.PI
 
 /*============================
             MATRIX

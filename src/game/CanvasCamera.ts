@@ -1,11 +1,13 @@
+import {Vector3, Euler} from "@math.gl/core"
+
 import Entity from "../engine/core/Entity";
 import Razor from "../engine/core/Razor";
 //import SceneManager from "@engine/core/SceneManager";
-import Mat4 from "../engine/math/Mat4";
+import Orientation from "@razor/math/Orientation";
 import Transform from "../engine/math/Transform";
 import Camera from "../engine/core/Camera";
 import InputManager, {Keys} from "../engine/core/InputManager";
-import { toRadian } from "../engine/math/math";
+import { toRadians } from "../engine/math/math";
 import Vec3 from "../engine/math/Vec3";
 //import CameraManager from "./CameraManager";
 import SimpleEntity from "./entities/SimpleEntity";
@@ -33,7 +35,7 @@ class CanvasCamera extends Camera {
     public constructor(
         name: string
     ) {
-        super(new Vec3(), new Vec3())
+        super(new Vector3(), new Orientation())
         this._name = name
         this._speed = 10
         this._sensitivity = 7.5
@@ -49,74 +51,87 @@ class CanvasCamera extends Camera {
         if(this._mode === CanvasCamera.MODE.FIRST_PERSON) {
             this._firstPersonMovement(delta)
         }
-
+/*
         if(this._mode === CanvasCamera.MODE.THIRD_PERSON) {
             this._thirdPersonMovement(delta)
         }
-
+*/
     }
 
     private _firstPersonMovement(delta: number): void {
 
-        const x = Math.sin(toRadian(this.getTransform().getRotation().y)) * this._speed * delta;
-        const z = Math.cos(toRadian(this.getTransform().getRotation().y)) * this._speed * delta;
+        const x = Math.sin(toRadians(this.getTransform().getRotation().y)) * this._speed * delta;
+        const z = Math.cos(toRadians(this.getTransform().getRotation().y)) * this._speed * delta;
 
         if(InputManager.isKeyPressed(Keys.KEY_W)){ // FRONT
-            const translation = this.getTransform().getTranslation()
-            translation.x += -x;
-            translation.z += -z;
-            this.getTransform().setTranslation(translation)
-        }
-
-        if(InputManager.isKeyPressed(Keys.KEY_S)){ // BACK
             const translation = this.getTransform().getTranslation()
             translation.x += x;
             translation.z += z;
             this.getTransform().setTranslation(translation)
         }
 
-        if(InputManager.isKeyPressed(Keys.KEY_A)){ // LEFT
+        if(InputManager.isKeyPressed(Keys.KEY_S)){ // BACK
             const translation = this.getTransform().getTranslation()
-            translation.x += -z;
-            translation.z += x;
+            translation.x += -x;
+            translation.z += -z;
             this.getTransform().setTranslation(translation)
         }
 
-        if(InputManager.isKeyPressed(Keys.KEY_D)){ // RIGHT
+        if(InputManager.isKeyPressed(Keys.KEY_A)){ // LEFT
             const translation = this.getTransform().getTranslation()
             translation.x += z;
             translation.z += -x;
             this.getTransform().setTranslation(translation)
         }
 
+        if(InputManager.isKeyPressed(Keys.KEY_D)){ // RIGHT
+            const translation = this.getTransform().getTranslation()
+            translation.x += -z;
+            translation.z += x;
+            this.getTransform().setTranslation(translation)
+        }
+
         if(InputManager.isKeyPressed(Keys.KEY_SPACE)){ // UP
             const translation = this.getTransform().getTranslation()
-            translation.y += this._speed * delta;
+            translation.y += -this._speed * delta;
             this.getTransform().setTranslation(translation)
         }
 
         if(InputManager.isKeyPressed(Keys.KEY_ALT_L)){ // DOWN
             const translation = this.getTransform().getTranslation()
-            translation.y += -this._speed * delta;
+            translation.y += this._speed * delta;
             this.getTransform().setTranslation(translation)
         }
 
         if(InputManager.isMouseLeft()) {
             const dx = InputManager.getMouseDX() 
             const dy = InputManager.getMouseDY() 
-    
+
+            const rotation = this.getTransform().getRotation()
+            this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
+            this.getTransform().setYaw(rotation.yaw + dx * this._sensitivity * delta)
+
+            console.log(rotation);
+        /*
+            this.getTransform().setRotation(new Euler(
+                rotation.yaw + dy * this._sensitivity * delta,
+                rotation.pitch + dx * this._sensitivity * delta,
+                rotation.roll
+            ))
+            
             this.getTransform().setRotation(
-                this.getTransform().getRotation().sum(new Vec3(
+                this.getTransform().getRotation().sum(new Vector3(
                     dy * this._sensitivity * delta, 
                     dx * this._sensitivity * delta,
                     0
                 ))
             )
+    */
         }
         
 
     }
-
+/*
     private _thirdPersonMovement(delta: number): void {
 
         if(InputManager.isMouseLeft()) {
@@ -138,21 +153,21 @@ class CanvasCamera extends Camera {
         const entityTranslation = this._lockedIn.getTransform().getTranslation()
 
         
-        this.getTransform().setTranslation(new Vec3(
+        this.getTransform().setTranslation(new Vector3(
             (entityTranslation.x + offsetX) * -1,
             (entityTranslation.y - verticalDistance) * -1,
             (entityTranslation.z + offsetZ) * -1
         ))
 
         if(InputManager.isMouseLeft()) { // MOUSE
-            this.getTransform().setRotation(new Vec3(
+            this.getTransform().setRotation(new Quaternion(
                 -this._pitch,
                 180+theta
             ))
         }
 
     }
-
+/*
     public lock(entity: Entity): void {
         this._lockedIn = entity
         this._mode = CanvasCamera.MODE.FIRST_PERSON
@@ -168,14 +183,15 @@ class CanvasCamera extends Camera {
         }
         
     }
-
+*/
+/*
     public getView(): Mat4 {
         return Mat4.view(
             this.getTransform().getTranslation(),
             this.getTransform().getRotation(),
         )
     }
-
+*/
     public getLockedIn(): Entity {
         return this._lockedIn
     }

@@ -1,3 +1,4 @@
+import {Vector3, Quaternion, Matrix4} from "@math.gl/core"
 import GameCore from '@razor/core/GameCore'
 import ResourceManager from '../engine/core/ResourceManager'
 import Scene from '../engine/core/Scene';
@@ -87,8 +88,8 @@ class GameTest extends GameCore {
                 simpleRenderer
             ))
         const entity1 = this.getSceneManager().get('scene1').get('entity1');
-            entity1.getTransform().setTranslation(new Vec3(0, -0.75))
-            entity1.getTransform().setScale(new Vec3(10, 10, 10))
+            entity1.getTransform().setTranslation(new Vector3(0, -0.75, 0))
+            entity1.getTransform().setScale(new Vector3(10, 10, 10))
 
         this.getSceneManager()
             .get('scene1')
@@ -100,8 +101,8 @@ class GameTest extends GameCore {
             ));
 
         const entity2 = this.getSceneManager().get('scene1').get('entity2');
-        entity2.getTransform().setTranslation(new Vec3(-67))
-        entity2.getTransform().setScale(new Vec3(10, 10, 10))
+        entity2.getTransform().setTranslation(new Vector3(-67, 0, 0))
+        entity2.getTransform().setScale(new Vector3(10, 10, 10))
 
         this.getSceneManager()
             .get('scene1')
@@ -113,8 +114,8 @@ class GameTest extends GameCore {
             ));
 
         const entity3 = this.getSceneManager().get('scene1').get('entity3');
-        entity3.getTransform().setTranslation(new Vec3(-102, -0.75))
-        entity3.getTransform().setScale(new Vec3(10, 10, 10))
+        entity3.getTransform().setTranslation(new Vector3(-102, -0.75, 0))
+        entity3.getTransform().setScale(new Vector3(10, 10, 10))
 
 
     }

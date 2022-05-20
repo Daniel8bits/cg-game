@@ -61,7 +61,9 @@
     "webpack-glsl-loader": "^1.0.1"
   },
   "dependencies": {
+    "@math.gl/core": "^3.5.7",
     "html-webpack-plugin": "^5.5.0",
+    "math.gl": "^2.3.1",
     "obj-file-parser": "^0.5.3"
   }
 }

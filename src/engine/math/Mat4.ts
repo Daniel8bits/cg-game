@@ -3,7 +3,7 @@ import {Tuple} from './MathTypes'
 import Vec3 from './Vec3';
 import Vec4 from './Vec4';
 
-import {toRadian, mult, equals, transpose, inverse, assign} from './math'
+import {toRadians, mult, equals, transpose, inverse, assign} from './math'
 
 export type Matrix4x4OperandType = Mat4 | Vec4
 
@@ -92,7 +92,7 @@ class Mat4 extends Mat {
     ): Mat4 {
         const matrix: Mat4 = new Mat4();
 
-        const tan = Math.tan(toRadian(fov/2))
+        const tan = Math.tan(toRadians(fov/2))
         const range = far - near
 
         const yScale = 1 / tan
@@ -190,8 +190,8 @@ class Mat4 extends Mat {
     public static rotate(angle: number, axis: Vec3): Mat4 {
         const matrix: Mat4 = new Mat4();
 
-        const cos = Math.cos(toRadian(angle));
-        const sin = Math.sin(toRadian(angle));
+        const cos = Math.cos(toRadians(angle));
+        const sin = Math.sin(toRadians(angle));
         const C = 1 - cos
 
         matrix.set([0, 0], cos + axis.x * axis.x * C);

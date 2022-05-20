@@ -1,3 +1,5 @@
+import {Matrix4} from "@math.gl/core"
+
 import IResource from './IResource';
 import { gl } from "../gl/GLUtils";
 import FileUtils from '../utils/FileUtils';
@@ -134,9 +136,9 @@ class Shader implements IResource{
             (location) => gl.uniform1fv(location, new Float32Array(arrayValue)));
     }
 
-    public setMatrix4x4(name: string, matrix: Mat4): void {
+    public setMatrix4x4(name: string, matrix: Matrix4): void {
         this._checkIfUniformExists(name, 
-            (location) => gl.uniformMatrix4fv(location, false, matrix.toArray()));
+            (location) => gl.uniformMatrix4fv(location, false, matrix));
     }
 
     public setTexture(name : string) : void {

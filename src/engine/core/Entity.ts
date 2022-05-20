@@ -1,7 +1,6 @@
 import VAO from "../buffer/VAO";
 import Renderer from "../renderer/Renderer";
 import Transform from "../math/Transform"
-import Vec3 from "../math/Vec3";
 import Material from "../appearance/material/Material";
 
 
@@ -20,7 +19,7 @@ abstract class Entity {
         this._vao = vao;
         this._material = material;
         this._renderer = renderer;
-        this._transform = new Transform(new Vec3(), new Vec3(), new Vec3(1, 1, 1))
+        this._transform = new Transform()
     }
 
     public abstract update(time: number, delta: number): void;
