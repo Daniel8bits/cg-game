@@ -111,7 +111,7 @@ class CanvasCamera extends Camera {
             this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
             this.getTransform().setYaw(rotation.yaw + dx * this._sensitivity * delta)
 
-            console.log(rotation);
+            //console.log(rotation);
         /*
             this.getTransform().setRotation(new Euler(
                 rotation.yaw + dy * this._sensitivity * delta,

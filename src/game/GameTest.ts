@@ -7,6 +7,7 @@ import SimpleEntity from './entities/SimpleEntity'
 import Vec3 from '../engine/math/Vec3';
 import CanvasCamera from './CanvasCamera'
 import DefaultMaterial from '../engine/appearance/material/DefaultMaterial';
+import Orientation from "@razor/math/Orientation";
 
 
 class GameTest extends GameCore {
