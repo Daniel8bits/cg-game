@@ -59,6 +59,14 @@ class GameTest extends GameCore {
             {
                 name: 'level',
                 objectData: '/resources/objects/level/level.obj'
+            },
+            {
+                name: 'hall',
+                objectData: '/resources/objects/level/hall.obj'
+            },
+            {
+                name: 'elevator',
+                objectData: '/resources/objects/level/elevator.obj'
             }
         ])
         .forEachVAO((vao) => {
@@ -78,9 +86,35 @@ class GameTest extends GameCore {
                 ResourceManager.getMaterial('level'),
                 simpleRenderer
             ))
-            .get('entity1')
-            .getTransform()
-            .setScale(new Vec3(10, 10, 10))
+        const entity1 = this.getSceneManager().get('scene1').get('entity1');
+            entity1.getTransform().setTranslation(new Vec3(0, -0.75))
+            entity1.getTransform().setScale(new Vec3(10, 10, 10))
+
+        this.getSceneManager()
+            .get('scene1')
+            .add(new SimpleEntity(
+                'entity2', 
+                ResourceManager.getVAO('hall'), 
+                ResourceManager.getMaterial('level'),
+                simpleRenderer
+            ));
+
+        const entity2 = this.getSceneManager().get('scene1').get('entity2');
+        entity2.getTransform().setTranslation(new Vec3(-67))
+        entity2.getTransform().setScale(new Vec3(10, 10, 10))
+
+        this.getSceneManager()
+            .get('scene1')
+            .add(new SimpleEntity(
+                'entity3', 
+                ResourceManager.getVAO('elevator'), 
+                ResourceManager.getMaterial('elevator'),
+                simpleRenderer
+            ));
+
+        const entity3 = this.getSceneManager().get('scene1').get('entity3');
+        entity3.getTransform().setTranslation(new Vec3(-102, -0.75))
+        entity3.getTransform().setScale(new Vec3(10, 10, 10))
 
 
     }
