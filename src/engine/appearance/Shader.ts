@@ -70,11 +70,11 @@ class Shader implements IResource{
     }
 
     public unbind() : void {
-        throw new Error('Not implemented yet')
+        gl.useProgram(null);
     }
 
     public destroy() : void {
-        throw new Error('Not implemented yet')
+        gl.deleteShader(this._program)
     }
 
     public getUniformLocation(name : string) : WebGLUniformLocation {

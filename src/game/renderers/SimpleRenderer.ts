@@ -1,5 +1,5 @@
 import Renderer from "../../engine/renderer/Renderer";
-import ResourceLoader from "../../engine/core/ResourceLoader";
+import ResourceManager from "../../engine/core/ResourceManager";
 import GLUtils, { gl } from "../../engine/gl/GLUtils";
 import Mat4 from "../../engine/math/Mat4";
 import Entity from "../../engine/core/Entity";
@@ -29,7 +29,8 @@ class SimpleRenderer extends Renderer {
 
     public render() {
 
-        ResourceLoader.forEachShader((shader) => {
+        /*
+        ResourceManager.forEachShader((shader) => {
             shader.bind();
             shader.setMatrix4x4('u_projection', this._projection);
             shader.setMatrix4x4('u_view', Mat4.view(
@@ -38,7 +39,7 @@ class SimpleRenderer extends Renderer {
             ));
 
             gl.activeTexture(gl.TEXTURE0);
-            ResourceLoader.getTexture('level-texture').bind();
+            ResourceManager.getTexture('level-texture').bind();
             shader.setInt('u_texture', 0)
             //shader.setTexture('u_texture');
 
@@ -49,6 +50,27 @@ class SimpleRenderer extends Renderer {
                 GLUtils.draw(entity.getVAO().getLength())
                 entity.getVAO().unbind();
             })
+        })
+        */
+
+        ResourceManager.forEachMaterial((material) => {
+            material.bind()
+            material.getShader().setMatrix4x4('u_projection', this._projection);
+            material.getShader().setMatrix4x4('u_view', Mat4.view(
+                this._camera.getTransform().getTranslation(),
+                this._camera.getTransform().getRotation(),
+            ));
+
+            this.getEntitiesByMaterial(material).forEach((entity: Entity) => {
+                material.getShader().setMatrix4x4('u_transform', entity.getTransform().toMatrix());
+                
+                entity.getVAO().bind()
+                GLUtils.draw(entity.getVAO().getLength())
+                entity.getVAO().unbind();
+            })
+
+            material.unbind()
+
         })
 
     }

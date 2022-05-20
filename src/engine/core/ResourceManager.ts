@@ -6,9 +6,9 @@ import Texture, { TextureType } from '../appearance/Texture'
 import Material from '../appearance/material/Material'
 import TextureLoader from '../loader/TextureLoader'
 
-class ResourceLoader {
+class ResourceManager {
 
-    private static _instance: ResourceLoader
+    private static _instance: ResourceManager
 
     private _shaders: Map<string, Shader>
     private _vaos: Map<string, VAO>
@@ -23,21 +23,21 @@ class ResourceLoader {
     }
 
     private static getInstance() {
-        if(!ResourceLoader._instance) {
-            ResourceLoader._instance = new ResourceLoader();
+        if(!ResourceManager._instance) {
+            ResourceManager._instance = new ResourceManager();
         }
-        return ResourceLoader._instance
+        return ResourceManager._instance
     }
 
     /* =====================
               VAO'S
     ======================*/
 
-    public static loadVAO(vaos: VAOType[]): ResourceLoader {
-        return ResourceLoader.getInstance().loadVAO(vaos);
+    public static loadVAO(vaos: VAOType[]): ResourceManager {
+        return ResourceManager.getInstance().loadVAO(vaos);
     }
 
-    public loadVAO(vaos: VAOType[]): ResourceLoader {
+    public loadVAO(vaos: VAOType[]): ResourceManager {
         vaos.forEach((vao) => {
             if(this._vaos.has(vao.name)) {
                 throw new Error(`Shader '${vao.name}' already exists!`)
@@ -55,18 +55,18 @@ class ResourceLoader {
     }
 
     public static getVAO(name: string): VAO {
-        return ResourceLoader.getInstance().getVAO(name);
+        return ResourceManager.getInstance().getVAO(name);
     }
 
     public getVAO(name: string): VAO {
         return this._vaos.get(name);
     }
 
-    public static forEachVAO(callback: (vao: VAO) => void): ResourceLoader {
-        return ResourceLoader.getInstance().forEachVAO(callback);
+    public static forEachVAO(callback: (vao: VAO) => void): ResourceManager {
+        return ResourceManager.getInstance().forEachVAO(callback);
     }
 
-    public forEachVAO(callback: (vao: VAO) => void): ResourceLoader {
+    public forEachVAO(callback: (vao: VAO) => void): ResourceManager {
         this._vaos.forEach(callback);
         return this;
     }
@@ -75,11 +75,11 @@ class ResourceLoader {
             SHADERS
     ======================*/
 
-    public static loadShader(shaders: ShaderType[]): ResourceLoader{
-        return ResourceLoader.getInstance().loadShader(shaders);
+    public static loadShader(shaders: ShaderType[]): ResourceManager{
+        return ResourceManager.getInstance().loadShader(shaders);
     }
 
-    public loadShader(shaders: ShaderType[]): ResourceLoader {
+    public loadShader(shaders: ShaderType[]): ResourceManager {
         shaders.forEach((shader) => {
             if(this._shaders.has(shader.name)) {
                 throw new Error(`Shader '${shader.name}' already exists!`)
@@ -90,18 +90,18 @@ class ResourceLoader {
     }
 
     public static getShader(name: string): Shader {
-        return ResourceLoader.getInstance().getShader(name);
+        return ResourceManager.getInstance().getShader(name);
     }
 
     public getShader(name: string): Shader {
         return this._shaders.get(name);
     }
 
-    public static forEachShader(callback: (shader: Shader) => void): ResourceLoader {
-        return ResourceLoader.getInstance().forEachShader(callback);
+    public static forEachShader(callback: (shader: Shader) => void): ResourceManager {
+        return ResourceManager.getInstance().forEachShader(callback);
     }
 
-    public forEachShader(callback: (shader: Shader) => void): ResourceLoader {
+    public forEachShader(callback: (shader: Shader) => void): ResourceManager {
         this._shaders.forEach(callback);
         return this
     }
@@ -110,11 +110,11 @@ class ResourceLoader {
             TEXTURES
     ======================*/
 
-    public static loadTextures(textures: TextureType[]): ResourceLoader{
-        return ResourceLoader.getInstance().loadTextures(textures);
+    public static loadTextures(textures: TextureType[]): ResourceManager{
+        return ResourceManager.getInstance().loadTextures(textures);
     }
 
-    public loadTextures(textures: TextureType[]): ResourceLoader {
+    public loadTextures(textures: TextureType[]): ResourceManager {
         textures.forEach((texture) => {
             if(this._textures.has(texture.name)) {
                 throw new Error(`Texture '${texture.name}' already exists!`)
@@ -125,18 +125,18 @@ class ResourceLoader {
     }
 
     public static getTexture(name: string): Texture {
-        return ResourceLoader.getInstance().getTexture(name);
+        return ResourceManager.getInstance().getTexture(name);
     }
 
     public getTexture(name: string): Texture {
         return this._textures.get(name);
     }
 
-    public static forEachTexture(callback: (texture: Texture) => void): ResourceLoader {
-        return ResourceLoader.getInstance().forEachTexture(callback);
+    public static forEachTexture(callback: (texture: Texture) => void): ResourceManager {
+        return ResourceManager.getInstance().forEachTexture(callback);
     }
 
-    public forEachTexture(callback: (texture: Texture) => void): ResourceLoader {
+    public forEachTexture(callback: (texture: Texture) => void): ResourceManager {
         this._textures.forEach(callback);
         return this
     }
@@ -145,11 +145,11 @@ class ResourceLoader {
             MATERIALS
     ======================*/
 
-    public static addMaterials(materials: Material[]): ResourceLoader{
-        return ResourceLoader.getInstance().addMaterials(materials);
+    public static addMaterials(materials: Material[]): ResourceManager{
+        return ResourceManager.getInstance().addMaterials(materials);
     }
 
-    public addMaterials(materials: Material[]): ResourceLoader {
+    public addMaterials(materials: Material[]): ResourceManager {
         materials.forEach((material) => {
             if(this._materials.has(material.getName())) {
                 throw new Error(`Material '${material.getName()}' already exists!`)
@@ -160,18 +160,18 @@ class ResourceLoader {
     }
 
     public static getMaterial(name: string): Material {
-        return ResourceLoader.getInstance().getMaterial(name);
+        return ResourceManager.getInstance().getMaterial(name);
     }
 
     public getMaterial(name: string): Material {
         return this._materials.get(name);
     }
 
-    public static forEachMaterial(callback: (material: Material) => void): ResourceLoader {
-        return ResourceLoader.getInstance().forEachMaterial(callback);
+    public static forEachMaterial(callback: (material: Material) => void): ResourceManager {
+        return ResourceManager.getInstance().forEachMaterial(callback);
     }
 
-    public forEachMaterial(callback: (material: Material) => void): ResourceLoader {
+    public forEachMaterial(callback: (material: Material) => void): ResourceManager {
         this._materials.forEach(callback);
         return this
     }
@@ -179,4 +179,4 @@ class ResourceLoader {
 
 }
 
-export default ResourceLoader
+export default ResourceManager

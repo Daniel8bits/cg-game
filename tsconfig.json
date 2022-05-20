@@ -24,7 +24,11 @@
     "typeRoots": [
         "./node_modules/@types",
         "./src/@types"
-    ]
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@razor/*": ["./src/engine/*"]
+    },
   },
   "include": [
     "src/"

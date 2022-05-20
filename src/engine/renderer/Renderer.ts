@@ -1,6 +1,7 @@
 import Entity from "../core/Entity";
 import Scene from "../core/Scene";
 import Shader from "../appearance/Shader";
+import Material from "@razor/appearance/material/Material";
 
 abstract class Renderer {
 
@@ -12,11 +13,19 @@ abstract class Renderer {
         this._name = name;
     }
 
+    protected getEntitiesByMaterial(material: Material): Entity[] {
+        return this._scene.filterVisible(
+            (entity: Entity) => 
+                entity.getRenderer().getName() === this._name &&
+                entity.getMaterial().getName() === material.getName()
+        )
+    }
+
     protected getEntitiesByShader(shader: Shader): Entity[] {
         return this._scene.filterVisible(
             (entity: Entity) => 
                 entity.getRenderer().getName() === this._name &&
-                entity.getShader().getName() === shader.getName()
+                entity.getMaterial().getShader().getName() === shader.getName()
         )
     }
 

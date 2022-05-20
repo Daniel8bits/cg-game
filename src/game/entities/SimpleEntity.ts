@@ -1,11 +1,11 @@
+import Material from "../../engine/appearance/material/Material";
 import VAO from "../../engine/buffer/VAO";
 import Entity from "../../engine/core/Entity";
 import Renderer from "../../engine/renderer/Renderer";
-import Shader from "../../engine/appearance/Shader";
 
 class SimpleEntity extends Entity {
-    public constructor(name: string, vao: VAO, shader: Shader, renderer: Renderer) {
-        super(name, vao, shader, renderer);
+    public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
+        super(name, vao, material, renderer);
     }
 
     public update(time: number, delta: number): void {

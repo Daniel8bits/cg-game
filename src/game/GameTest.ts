@@ -1,12 +1,11 @@
-import VBO from '../engine/buffer/VBO';
-import GameCore from '../engine/core/GameCore'
-import ResourceLoader from '../engine/core/ResourceLoader'
+import GameCore from '@razor/core/GameCore'
+import ResourceManager from '../engine/core/ResourceManager'
 import Scene from '../engine/core/Scene';
 import SimpleRenderer from './renderers/SimpleRenderer'
 import SimpleEntity from './entities/SimpleEntity'
 import Vec3 from '../engine/math/Vec3';
-import TextureLoader from '../engine/loader/TextureLoader';
 import CanvasCamera from './CanvasCamera'
+import DefaultMaterial from '../engine/appearance/material/DefaultMaterial';
 
 
 class GameTest extends GameCore {
@@ -23,16 +22,40 @@ class GameTest extends GameCore {
 
         // ========= SHADER ==========
 
-        ResourceLoader.loadShader([{
+        ResourceManager.loadShader([{
             name: 'shader1',
             vertexShaderPathname: '/resources/shader/vert.glsl', 
             fragmentShaderPathname: '/resources/shader/frag.glsl'
         }])
-        .forEachShader((shader) => {
-            shader.create();
+
+        ResourceManager.loadTextures([
+            {
+                name: 'level',
+                pathname: '/resources/objects/level/level-texture.png'
+            }, 
+            {
+                name: 'elevator',
+                pathname: '/resources/objects/level/elevator-texture.png'
+            }
+        ])
+        
+        ResourceManager.addMaterials([
+            new DefaultMaterial(
+                'level', 
+                ResourceManager.getShader('shader1'),
+                ResourceManager.getTexture('level'),
+            ),
+            new DefaultMaterial(
+                'elevator', 
+                ResourceManager.getShader('shader1'),
+                ResourceManager.getTexture('elevator'),
+            ),
+        ])
+        .forEachMaterial((material) => {
+            material.create()
         })
 
-        ResourceLoader.loadVAO([
+        ResourceManager.loadVAO([
             {
                 name: 'level',
                 objectData: '/resources/objects/level/level.obj'
@@ -42,15 +65,6 @@ class GameTest extends GameCore {
             vao.create();
         })
 
-        ResourceLoader.loadTextures([
-            {
-                name: 'level-texture',
-                pathname: '/resources/objects/level/level-texture.png'
-            }
-        ])
-        .forEachTexture((texture) => {
-            texture.create();
-        })
 
         const simpleRenderer = new SimpleRenderer(this._camera);
         this.getRenderStrategy().add(simpleRenderer)
@@ -60,8 +74,8 @@ class GameTest extends GameCore {
             .get('scene1')
             .add(new SimpleEntity(
                 'entity1', 
-                ResourceLoader.getVAO('level'), 
-                ResourceLoader.getShader('shader1'),
+                ResourceManager.getVAO('level'), 
+                ResourceManager.getMaterial('level'),
                 simpleRenderer
             ))
             .get('entity1')
