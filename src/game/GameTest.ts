@@ -46,6 +46,10 @@ class GameTest extends GameCore {
                 pathname: '/resources/objects/level/elevator-texture.png'
             },
             {
+                name: 'elevator-door',
+                pathname: '/resources/objects/doors/elevator-door-texture.png'
+            },
+            {
                 name: 'lamp',
                 pathname: '/resources/objects/lamp/lamp-texture.png'
             }
@@ -61,6 +65,11 @@ class GameTest extends GameCore {
                 'elevator', 
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('elevator'),
+            ),
+            new DefaultMaterial(
+                'elevator-door', 
+                ResourceManager.getShader('shader1'),
+                ResourceManager.getTexture('elevator-door'),
             ),
             new DefaultMaterial(
                 'lamp', 
@@ -89,6 +98,10 @@ class GameTest extends GameCore {
             {
                 name: 'elevator',
                 objectData: '/resources/objects/level/elevator.obj'
+            },
+            {
+                name: 'elevator-door',
+                objectData: '/resources/objects/doors/elevator-door.obj'
             },
             {
                 name: 'lamp',
@@ -141,6 +154,19 @@ class GameTest extends GameCore {
         const entity3 = this.getSceneManager().get('scene1').get('entity3');
         entity3.getTransform().setTranslation(new Vector3(-102, -0.75, 0))
         entity3.getTransform().setScale(new Vector3(10, 10, 10))
+
+        this.getSceneManager()
+            .get('scene1')
+            .add(new SimpleEntity(
+                'elevator-door', 
+                ResourceManager.getVAO('elevator-door'), 
+                ResourceManager.getMaterial('elevator-door'),
+                simpleRenderer
+            ));
+
+        const elevatorDoor = this.getSceneManager().get('scene1').get('elevator-door');
+        elevatorDoor.getTransform().setTranslation(new Vector3(-102, -0.75, 0))
+        elevatorDoor.getTransform().setScale(new Vector3(10, 10, 10))
 
         this.getSceneManager().get("scene1").add(new SimpleEntity(
             'lamp',
