@@ -17,6 +17,7 @@ uniform mat4 u_worldInverseTranspose;
 
 varying vec3 v_normal;
 varying vec3 FragPos;
+//varying vec3 v_view;
 void main() {
     //color_data = vec4(normalize(a_position.xyz), 1);
     v_color = mix(vec4(normalize(a_position.xyz), 1), vec4(a_normal, 1), .5);
@@ -30,7 +31,7 @@ void main() {
     v_normal =   mat3(u_worldInverseTranspose) * a_normal;
     // Light? mat3(u_worldInverseTranspose) *
     FragPos = (u_transform * vec4(a_position, 1)).xyz;
- 
+    //v_view = vec3(u_view);
     // compute the vector of the surface to the light
     // and pass it to the fragment shader
     //v_surfaceToLight = u_lightWorldPosition - FragPos;

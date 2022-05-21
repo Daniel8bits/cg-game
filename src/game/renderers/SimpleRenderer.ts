@@ -67,11 +67,12 @@ class SimpleRenderer extends Renderer {
             const shader = material.getShader();
             shader.setMatrix4x4('u_projection', this._projection);
             shader.setMatrix4x4('u_view', this._camera.getView())
-            shader.setVector3('u_light.position',this._camera.getTransform().getTranslation().negate());
+            shader.setVector3('u_camera_view', this._camera.getTransform().getTranslation());
+            shader.setVector3('u_light.position',new Vector3(20,0,30).negate())//this._camera.getTransform().getTranslation().negate());
             shader.setVector3('u_light.direction',new Vector3(10,0,10))//this._camera.getTransform().getRotation());
             shader.setFloat("u_light.cutOff",cos(toRadians(12)));
-            shader.setFloat("u_shininess",1);//new Vector3(20,0,30).negate())//,
-            shader.setVector3('u_lightColor', [0.2,0.2,0.2]);
+            shader.setFloat("u_shininess",32);//new Vector3(20,0,30).negate())//,
+            shader.setVector3('u_lightColor', [1,1,1]);
             shader.setVector3('u_diffuseColor', [0.5,0.5,0.5])
             shader.setVector3('u_specularColor',[0.3,0.3,0.3]);
             /*
