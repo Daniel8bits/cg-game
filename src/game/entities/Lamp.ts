@@ -5,11 +5,11 @@ import Renderer from "../../engine/renderer/Renderer";
 
 class Lamp extends Entity {
 
-    public color : number[] = [1.0,1.0,1.0];
+    public _color : number[] = [1.0,1.0,1.0];
 
     public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
         super(name, vao, material, renderer);
-        this.color = [Math.random(),Math.random(),Math.random()];
+        this._color = [Math.random(),Math.random(),Math.random()];
     }
     
     public update(time: number, delta: number): void {
