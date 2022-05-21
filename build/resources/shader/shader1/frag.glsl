@@ -11,6 +11,7 @@ varying vec3 FragPos;
 uniform vec3 u_lightColor;
 uniform vec3 u_specularColor;
 uniform vec3 u_diffuseColor;
+uniform vec3 u_camera_view;
 struct Light{
   vec3 position;
   vec3 direction;
@@ -46,13 +47,13 @@ void main() {
   	
     // diffuse 
     vec3 norm = normalize(v_normal);
-    vec3 lightDir = u_light.position - FragPos;
+    vec3 lightDir = normalize(u_light.position - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = u_diffuseColor * (diff * texturevec3);
     
 
       // specular
-    vec3 viewDir = u_light.position - FragPos;
+    vec3 viewDir = normalize(u_camera_view - FragPos);//u_light.position - FragPos;
     vec3 reflectDir = reflect(-lightDir, norm);  
     float spec = 0.0;
     if(diff > 0.0){
@@ -62,9 +63,9 @@ void main() {
         
     float distance  = length(u_light.position - FragPos);
     float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * (distance * distance));    
-    ambient  *= attenuation; 
-    diffuse  *= attenuation;
-    specular *= attenuation; 
+   ambient  *= attenuation; 
+   diffuse  *= attenuation;
+   specular *= attenuation; 
 
     float theta     = dot(lightDir, normalize(-u_light.direction));
     float epsilon   = u_light.cutOff - 0.82;
@@ -77,3 +78,17 @@ void main() {
     //gl_FragColor = vec4(v_normal,1);
      gl_FragColor = vec4(result, 1.0);
 }
+vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
+{
+    vec3 lightDir = normalize(-light.direction);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), u_shininess  );
+    // combine results
+    vec3 ambient  = u_lightColor  * texturevec3;
+    vec3 diffuse  = u_diffuseColor  * diff * texturevec3;
+    vec3 specular = u_specularColor * spec * texturevec3;
+    return (ambient + diffuse + specular);
+}  
