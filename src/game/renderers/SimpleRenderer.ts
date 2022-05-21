@@ -69,9 +69,9 @@ class SimpleRenderer extends Renderer {
             shader.setMatrix4x4('u_projection', this._projection);
             shader.setMatrix4x4('u_view', this._camera.getView());
             
-            shader.setVector3("lightCamera.color.ambient", [1,1,1]);
-            shader.setVector3("lightCamera.color.diffuse", [0.5,0.5,0.5])
-            shader.setVector3("lightCamera.color.specular",[0.3,0.3,0.3]);
+            shader.setVector3("lightCamera.color.ambient", new Vector3(1,1,1));
+            shader.setVector3("lightCamera.color.diffuse", new Vector3(0.5,0.5,0.5))
+            shader.setVector3("lightCamera.color.specular",new Vector3(0.3,0.3,0.3));
             //shader.setFloat("u_light.cutOff",cos(toRadians(0))); AINDA NÃO SEI O QUE FAZER AQUI
 
             shader.setVector3("lightCamera.position",this._camera.getTransform().getTranslation().negate())

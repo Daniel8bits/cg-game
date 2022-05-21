@@ -1,3 +1,4 @@
+import {Matrix4, Vector3} from "@math.gl/core"
 import Material from "../../engine/appearance/material/Material";
 import VAO from "../../engine/buffer/VAO";
 import Entity from "../../engine/core/Entity";
@@ -5,11 +6,11 @@ import Renderer from "../../engine/renderer/Renderer";
 
 class Lamp extends Entity {
 
-    public _color : number[] = [1.0,1.0,1.0];
+    public color : Vector3 = new Vector3(1.0,1.0,1.0)
 
     public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
         super(name, vao, material, renderer);
-        this._color = [Math.random(),Math.random(),Math.random()];
+        this.color = new Vector3(Math.random(),Math.random(),Math.random());
     }
     
     public update(time: number, delta: number): void {
