@@ -136,6 +136,11 @@ class Shader implements IResource{
             (location) => gl.uniform1fv(location, new Float32Array(arrayValue)));
     }
 
+    public setVector3(name: string, vector: any) : void{
+        this._checkIfUniformExists(name, 
+            (location) => gl.uniform3fv(location, vector));
+    }
+
     public setMatrix4x4(name: string, matrix: Matrix4): void {
         this._checkIfUniformExists(name, 
             (location) => gl.uniformMatrix4fv(location, false, matrix));

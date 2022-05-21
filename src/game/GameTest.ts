@@ -20,14 +20,20 @@ class GameTest extends GameCore {
 
     public start() {
 
-        this._camera = new CanvasCamera('main');
+        this._camera = new CanvasCamera('main', new Vector3(5,0,35), new Orientation(0,90));
 
         // ========= SHADER ==========
 
         ResourceManager.loadShader([{
             name: 'shader1',
-            vertexShaderPathname: '/resources/shader/vert.glsl', 
-            fragmentShaderPathname: '/resources/shader/frag.glsl'
+            vertexShaderPathname: '/resources/shader/shader1/vert.glsl', 
+            fragmentShaderPathname: '/resources/shader/shader1/frag.glsl'
+        }])
+
+        ResourceManager.loadShader([{
+            name: 'shader2',
+            vertexShaderPathname: '/resources/shader/shader2/vert.glsl', 
+            fragmentShaderPathname: '/resources/shader/shader2/frag.glsl'
         }])
 
         ResourceManager.loadTextures([
@@ -38,6 +44,10 @@ class GameTest extends GameCore {
             {
                 name: 'elevator',
                 pathname: '/resources/objects/level/elevator-texture.png'
+            },
+            {
+                name: 'lamp',
+                pathname: '/resources/objects/lamp/lamp-texture.png'
             }
         ])
         
@@ -51,6 +61,16 @@ class GameTest extends GameCore {
                 'elevator', 
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('elevator'),
+            ),
+            new DefaultMaterial(
+                'lamp', 
+                ResourceManager.getShader('shader2'),
+                ResourceManager.getTexture('lamp'),
+            ),
+            new DefaultMaterial(
+                'lamp2', 
+                ResourceManager.getShader('shader1'),
+                ResourceManager.getTexture('lamp'),
             ),
         ])
         .forEachMaterial((material) => {
@@ -69,6 +89,10 @@ class GameTest extends GameCore {
             {
                 name: 'elevator',
                 objectData: '/resources/objects/level/elevator.obj'
+            },
+            {
+                name: 'lamp',
+                objectData: '/resources/objects/lamp/lamp.obj'
             }
         ])
         .forEachVAO((vao) => {
@@ -118,7 +142,15 @@ class GameTest extends GameCore {
         entity3.getTransform().setTranslation(new Vector3(-102, -0.75, 0))
         entity3.getTransform().setScale(new Vector3(10, 10, 10))
 
+        this.getSceneManager().get("scene1").add(new SimpleEntity(
+            'lamp',
+            ResourceManager.getVAO("lamp"),
+            ResourceManager.getMaterial("lamp2"),
+            simpleRenderer    
+        ));
 
+        const entity4 = this.getSceneManager().get('scene1').get('lamp');
+        entity4.getTransform().setTranslation(new Vector3(20, 0, 30))
     }
 
     public update(time: number, delta: number) {

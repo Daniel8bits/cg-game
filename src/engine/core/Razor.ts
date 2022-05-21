@@ -53,6 +53,7 @@ class Razor {
     private configs() {
         window.addEventListener('click', (e) => {
             Razor.FOCUSED = Razor.isInsideCanvas(e.clientX, e.clientY)
+           // Razor.CANVAS.requestPointerLock(); (Responsável por remover o mouse)
         })
 
         window.addEventListener('mousemove', (e) => {

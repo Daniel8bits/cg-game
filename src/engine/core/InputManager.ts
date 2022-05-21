@@ -187,6 +187,8 @@ class InputManager {
             event.stopPropagation()
             event.preventDefault()
 
+            //InputManager._currentMousePosition[0] -= event.movementX//offsetX
+            //InputManager._currentMousePosition[1] -= event.movementY//offsetY
             InputManager._currentMousePosition[0] = event.offsetX
             InputManager._currentMousePosition[1] = event.offsetY
     

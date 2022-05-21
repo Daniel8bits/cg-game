@@ -33,9 +33,11 @@ class CanvasCamera extends Camera {
 
 
     public constructor(
-        name: string
+        name: string,
+        translation: Vector3 = new Vector3,
+        rotation : Orientation = new Orientation
     ) {
-        super(new Vector3(), new Orientation())
+        super(translation, rotation)
         this._name = name
         this._speed = 10
         this._sensitivity = 7.5
@@ -97,7 +99,7 @@ class CanvasCamera extends Camera {
             this.getTransform().setTranslation(translation)
         }
 
-        if(InputManager.isKeyPressed(Keys.KEY_ALT_L)){ // DOWN
+        if(InputManager.isKeyPressed(Keys.KEY_C)){ // DOWN
             const translation = this.getTransform().getTranslation()
             translation.y += this._speed * delta;
             this.getTransform().setTranslation(translation)
