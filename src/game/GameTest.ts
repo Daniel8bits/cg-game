@@ -8,6 +8,7 @@ import Vec3 from '../engine/math/Vec3';
 import CanvasCamera from './CanvasCamera'
 import DefaultMaterial from '../engine/appearance/material/DefaultMaterial';
 import Orientation from "@razor/math/Orientation";
+import Lamp from "./entities/Lamp";
 
 
 class GameTest extends GameCore {
@@ -23,13 +24,15 @@ class GameTest extends GameCore {
         this._camera = new CanvasCamera('main', new Vector3(5,0,35), new Orientation(0,90));
 
         // ========= SHADER ==========
-
+        
+        /* Shader com Iluminação */
         ResourceManager.loadShader([{
             name: 'shader1',
             vertexShaderPathname: '/resources/shader/shader1/vert.glsl', 
             fragmentShaderPathname: '/resources/shader/shader1/frag.glsl'
         }])
 
+        /* Shader sem Iluminação */
         ResourceManager.loadShader([{
             name: 'shader2',
             vertexShaderPathname: '/resources/shader/shader2/vert.glsl', 
@@ -73,14 +76,9 @@ class GameTest extends GameCore {
             ),
             new DefaultMaterial(
                 'lamp', 
-                ResourceManager.getShader('shader2'),
-                ResourceManager.getTexture('lamp'),
-            ),
-            new DefaultMaterial(
-                'lamp2', 
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('lamp'),
-            ),
+            )
         ])
         .forEachMaterial((material) => {
             material.create()
@@ -168,15 +166,25 @@ class GameTest extends GameCore {
         elevatorDoor.getTransform().setTranslation(new Vector3(-102, -0.75, 0))
         elevatorDoor.getTransform().setScale(new Vector3(10, 10, 10))
 
-        this.getSceneManager().get("scene1").add(new SimpleEntity(
+        this.getSceneManager().get("scene1").add(new Lamp(
             'lamp',
             ResourceManager.getVAO("lamp"),
-            ResourceManager.getMaterial("lamp2"),
+            ResourceManager.getMaterial("lamp"),
             simpleRenderer    
         ));
 
         const entity4 = this.getSceneManager().get('scene1').get('lamp');
         entity4.getTransform().setTranslation(new Vector3(20, 0, 30))
+
+        this.getSceneManager().get("scene1").add(new Lamp(
+            'lamp2',
+            ResourceManager.getVAO("lamp"),
+            ResourceManager.getMaterial("lamp"),
+            simpleRenderer    
+        ));
+
+        const entity5 = this.getSceneManager().get('scene1').get('lamp2');
+        entity5.getTransform().setTranslation(new Vector3(-20, 0, -30))
     }
 
     public update(time: number, delta: number) {

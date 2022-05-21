@@ -22,6 +22,8 @@ abstract class Entity {
         this._transform = new Transform()
     }
 
+    //public abstract start() : void;
+
     public abstract update(time: number, delta: number): void;
 
 

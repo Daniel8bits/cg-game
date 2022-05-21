@@ -8,6 +8,7 @@ import Entity from "../../engine/core/Entity";
 import Vec3 from "../../engine/math/Vec3";
 import CanvasCamera from '../CanvasCamera'
 import { toRadians } from "@razor/math/math";
+import Lamp from "../entities/Lamp";
 
 class SimpleRenderer extends Renderer {
 
@@ -66,24 +67,30 @@ class SimpleRenderer extends Renderer {
             material.bind()
             const shader = material.getShader();
             shader.setMatrix4x4('u_projection', this._projection);
-            shader.setMatrix4x4('u_view', this._camera.getView())
-            shader.setVector3('u_camera_view', this._camera.getTransform().getTranslation());
-            shader.setVector3('u_light.position',new Vector3(20,0,30).negate())//this._camera.getTransform().getTranslation().negate());
-            shader.setVector3('u_light.direction',new Vector3(10,0,10))//this._camera.getTransform().getRotation());
-            shader.setFloat("u_light.cutOff",cos(toRadians(12)));
-            shader.setFloat("u_shininess",32);//new Vector3(20,0,30).negate())//,
-            shader.setVector3('u_lightColor', [1,1,1]);
-            shader.setVector3('u_diffuseColor', [0.5,0.5,0.5])
-            shader.setVector3('u_specularColor',[0.3,0.3,0.3]);
-            /*
-            shader.setMatrix4x4('');
-            material.getShader().setMatrix4x4('u_view', Mat4.view(
-                this._camera.getTransform().getTranslation(),
-                this._camera.getTransform().getRotation(),
-            ));
-            */
+            shader.setMatrix4x4('u_view', this._camera.getView());
+            
+            shader.setVector3("lightCamera.color.ambient", [1,1,1]);
+            shader.setVector3("lightCamera.color.diffuse", [0.5,0.5,0.5])
+            shader.setVector3("lightCamera.color.specular",[0.3,0.3,0.3]);
+            //shader.setFloat("u_light.cutOff",cos(toRadians(0))); AINDA NÃO SEI O QUE FAZER AQUI
 
-            this.getEntitiesByMaterial(material).forEach((entity: Entity) => {
+            shader.setVector3("lightCamera.position",this._camera.getTransform().getTranslation().negate())
+            shader.setFloat("lightCamera.u_shininess",32)
+
+            this.getEntitiesByMaterial(material).forEach((entity: Entity,index : number) => {
+                if(entity instanceof Lamp){
+                    shader.setInt("applyLight",0);
+                    const lamp = entity as Lamp;
+                    const path = `pointLights[${index}]`;
+                    shader.setVector3(path+".color.ambient", lamp.color);
+                    shader.setVector3(path+".color.diffuse", lamp.color)
+                    shader.setVector3(path+".color.specular",lamp.color);
+                    shader.setFloat("lightCamera.u_shininess",32);
+                    shader.setVector3(path+".position",entity.getTransform().getTranslation().negate());
+                }else{
+                    shader.setInt("applyLight",1);
+                }
+                
                 material.getShader().setMatrix4x4('u_transform', entity.getTransform().toMatrix());
                 
                 material.getShader().setMatrix4x4('u_worldInverseTranspose',entity.getTransform().toMatrix().invert().transpose());
