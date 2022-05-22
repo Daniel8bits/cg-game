@@ -9,6 +9,7 @@ import CanvasCamera from './CanvasCamera'
 import DefaultMaterial from '../engine/appearance/material/DefaultMaterial';
 import Orientation from "@razor/math/Orientation";
 import Lamp from "./entities/Lamp";
+import GuiRenderer from "./renderers/GuiRenderer";
 
 
 class GameTest extends GameCore {
@@ -78,6 +79,11 @@ class GameTest extends GameCore {
                 'lamp', 
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('lamp'),
+            ),
+            new DefaultMaterial(
+                'gui', 
+                ResourceManager.getShader('shader2'),
+                ResourceManager.getTexture('lamp'),
             )
         ])
         .forEachMaterial((material) => {
@@ -112,7 +118,9 @@ class GameTest extends GameCore {
 
 
         const simpleRenderer = new SimpleRenderer(this._camera);
+        const guiRenderer = new GuiRenderer(this._camera);
         this.getRenderStrategy().add(simpleRenderer)
+        this.getRenderStrategy().add(guiRenderer)
 
         this.getSceneManager()
             .add(new Scene('scene1'), true)
@@ -185,6 +193,15 @@ class GameTest extends GameCore {
 
         const entity5 = this.getSceneManager().get('scene1').get('lamp2');
         entity5.getTransform().setTranslation(new Vector3(-20, 0, -30))
+/*
+        this.getSceneManager().get("scene1").add(new SimpleEntity(
+            'test',
+            ResourceManager.getVAO("hall"),
+            ResourceManager.getMaterial("gui"),
+            guiRenderer    
+        ));
+        const test = this.getSceneManager().get('scene1').get('test');
+        test.getTransform().setTranslation(new Vector3(0,1,0))*/
     }
 
     public update(time: number, delta: number) {
