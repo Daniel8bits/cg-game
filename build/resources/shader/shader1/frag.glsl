@@ -1,6 +1,7 @@
 precision mediump float;
 
 varying vec2 v_uvCoord;
+//varying vec4 v_color;
 
 uniform sampler2D u_texture;
 
@@ -9,7 +10,7 @@ varying vec3 v_normal;
 varying vec3 v_FragPos;
 varying vec3 v_camera_view;
 
-#define MAX_LIGHTS 3
+#define MAX_LIGHTS 2
 
 
 struct LightProperties{
@@ -69,7 +70,7 @@ void main() {
     vec3 norm = normalize(v_normal);
     vec3 viewDir = normalize(v_camera_view - v_FragPos);
     vec3 result = vec3(0.0);
-    if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);
+    //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);
     for(int i = 0; i < MAX_LIGHTS; i++)
       result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
     gl_FragColor = vec4(result, 1.0);
