@@ -5,11 +5,20 @@ const path = require('path');
 module.exports = function build(env, arg) {
   const config = {
     entry: {
-      index: ['./src/main.ts'],
+      event: ['./src/event.ts'],
+      index: {
+        dependOn: 'event',
+        import: './src/main.ts'
+      },
+      interface: {
+        dependOn: 'event',
+        import: './src/interface/index.tsx'
+      }
     },
     output: {
       path: path.join(__dirname, 'build'),
-      chunkFilename: 'chunks/[id].js',
+      filename:'[name].js',
+      chunkFilename: 'chunks/[contenthash].js',
       publicPath: '',
     },
     devServer: {
@@ -17,12 +26,18 @@ module.exports = function build(env, arg) {
       compress: true,
       port: 8888
     },
+    /*
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+        },
+    },*/
     mode: arg.mode,
     devtool: 'source-map',
     module: {
       rules: [
         {
-          test: /\.(ts|js)$/i,
+          test: /\.(ts|js)x?$/i,
           exclude: /node_modules/i,
           loader: 'babel-loader',
         },
@@ -33,6 +48,19 @@ module.exports = function build(env, arg) {
         {
           test: /\.(obj|fbx)$/i,
           type: 'asset/resource',
+        },
+        {
+          test: /\.(css)$/i,
+          use: [
+            "style-loader",
+            {
+              loader: "css-loader",
+              options: {
+                importLoaders: 1,
+                modules: true,
+              },
+            },
+          ],
         },
         {
           test: /\.(glsl)$/i,
@@ -51,7 +79,7 @@ module.exports = function build(env, arg) {
         path.resolve(__dirname, '/src'),
         path.resolve(__dirname, 'node_modules/'),
       ],
-      extensions: ['.ts', '.js'],
+      extensions: ['.ts', '.js','.tsx'],
       plugins: [
         new TsconfigPathsPlugin()
       ]

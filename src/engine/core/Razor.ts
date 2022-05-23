@@ -56,8 +56,11 @@ class Razor {
            // Razor.CANVAS.requestPointerLock(); (Responsável por remover o mouse)
         })
 
-        window.addEventListener('mousemove', (e) => {
+        Razor.CANVAS.addEventListener('mousemove', (e) => {
             Razor.IS_MOUSE_INSIDE = Razor.isInsideCanvas(e.clientX, e.clientY)
+        })
+        Razor.CANVAS.addEventListener('mouseleave', (e) => {
+            Razor.IS_MOUSE_INSIDE = false;
         })
     }
 

@@ -100,9 +100,9 @@ class InputManager {
         InputManager._currentMousePosition = [0, 0]
         InputManager._previousMousePosition = [0, 0]
         InputManager._mouseMovement = [0, 0]
-        window.addEventListener('mousedown', InputManager.onMouseDown)
-        window.addEventListener('mouseup', InputManager.onMouseUp)
-        window.addEventListener('mousemove', InputManager.onMouseMove)
+        Razor.CANVAS.addEventListener('mousedown', InputManager.onMouseDown)
+        Razor.CANVAS.addEventListener('mouseup', InputManager.onMouseUp)
+        Razor.CANVAS.addEventListener('mousemove', InputManager.onMouseMove)
 
         this._shouldDebug = false
     }

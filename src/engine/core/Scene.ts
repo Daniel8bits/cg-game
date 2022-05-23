@@ -221,6 +221,10 @@ class Scene {
         return this._name;
     }
 
+    public get entities() : Map<string, Entity> {
+        return this._entities;
+    }
+
 }
 
 export default Scene;

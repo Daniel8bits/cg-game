@@ -12,6 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "incremental": true,
+    "jsx": "react",
     "esModuleInterop": true,
     "module": "commonjs",
     "moduleResolution": "node",

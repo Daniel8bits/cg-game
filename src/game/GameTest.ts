@@ -11,6 +11,7 @@ import Orientation from "@razor/math/Orientation";
 import Lamp from "./entities/Lamp";
 import GuiRenderer from "./renderers/GuiRenderer";
 
+import Event from "src/event"; // @temp
 
 class GameTest extends GameCore {
 
@@ -202,6 +203,7 @@ class GameTest extends GameCore {
         ));
         const test = this.getSceneManager().get('scene1').get('test');
         test.getTransform().setTranslation(new Vector3(0,1,0))*/
+        Event.trigger("loadScene",this.getSceneManager().getActive());
     }
 
     public update(time: number, delta: number) {

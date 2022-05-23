@@ -90,7 +90,7 @@ class SimpleRenderer extends Renderer {
             //shader.setFloat("u_light.cutOff",cos(toRadians(0))); AINDA NÃO SEI O QUE FAZER AQUI
 
             shader.setVector3("lightCamera.position",this._camera.getTransform().getTranslation().negate())
-            const distance = this.distanceConfig[50];
+            const distance = this.distanceConfig[100];
             shader.setFloat("lightCamera.distance.constant", distance[0]);
             shader.setFloat("lightCamera.distance.linear", distance[1])
             shader.setFloat("lightCamera.distance.quadratic",distance[2]);
