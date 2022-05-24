@@ -94,7 +94,7 @@ class SimpleRenderer extends Renderer {
             shader.setFloat("lightCamera.distance.constant", distance[0]);
             shader.setFloat("lightCamera.distance.linear", distance[1])
             shader.setFloat("lightCamera.distance.quadratic",distance[2]);
-            shader.setFloat("lightCamera.u_shininess",32)
+            shader.setFloat("lightCamera.shininess",32)
             
             this.getEntitiesByMaterial(material).forEach((entity: Entity,index : number) => {
                 if(entity instanceof Lamp){
@@ -104,11 +104,11 @@ class SimpleRenderer extends Renderer {
                     shader.setVector3(path+".color.ambient", lamp.color);
                     shader.setVector3(path+".color.diffuse", lamp.color)
                     shader.setVector3(path+".color.specular",lamp.color);
-                    const distance = this.distanceConfig[100];
+                    const distance = this.distanceConfig[lamp.distance];
                     shader.setFloat(path+".distance.constant", distance[0]);
                     shader.setFloat(path+".distance.linear", distance[1])
                     shader.setFloat(path+".distance.quadratic",distance[2]);
-                    shader.setFloat("lightCamera.u_shininess",32);
+                    shader.setFloat(path+".shininess",lamp.shininess);
                     shader.setVector3(path+".position",entity.getTransform().getTranslation().negate());
                 }else{
                     shader.setInt("applyLight",1);

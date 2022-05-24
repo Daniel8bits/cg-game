@@ -1,5 +1,5 @@
-import Shader, {ShaderType} from '../appearance/Shader'
-import VAO, {VAOType} from '../buffer/VAO'
+import Shader, { ShaderType } from '../appearance/Shader'
+import VAO, { VAOType } from '../buffer/VAO'
 import VBO from '../buffer/VBO'
 import OBJLoader from '../loader/OBJLoader'
 import Texture, { TextureType } from '../appearance/Texture'
@@ -23,7 +23,7 @@ class ResourceManager {
     }
 
     private static getInstance() {
-        if(!ResourceManager._instance) {
+        if (!ResourceManager._instance) {
             ResourceManager._instance = new ResourceManager();
         }
         return ResourceManager._instance
@@ -39,18 +39,21 @@ class ResourceManager {
 
     public loadVAO(vaos: VAOType[]): ResourceManager {
         vaos.forEach((vao) => {
-            if(this._vaos.has(vao.name)) {
+            if (this._vaos.has(vao.name)) {
                 throw new Error(`Shader '${vao.name}' already exists!`)
             }
 
-            if(typeof vao.objectData === 'string') {
+            if (typeof vao.objectData === 'string') {
                 // todo: mesh loader 
                 this._vaos.set(vao.name, new OBJLoader().load(vao.objectData as string));
                 return;
             }
-
+            if (typeof vao.objectData === 'function') {
+                this._vaos.set(vao.name, vao.objectData());
+                return;
+            }
             this._vaos.set(vao.name, new VAO(vao.objectData as VBO[]));
-        }); 
+        });
         return this;
     }
 
@@ -75,13 +78,13 @@ class ResourceManager {
             SHADERS
     ======================*/
 
-    public static loadShader(shaders: ShaderType[]): ResourceManager{
+    public static loadShader(shaders: ShaderType[]): ResourceManager {
         return ResourceManager.getInstance().loadShader(shaders);
     }
 
     public loadShader(shaders: ShaderType[]): ResourceManager {
         shaders.forEach((shader) => {
-            if(this._shaders.has(shader.name)) {
+            if (this._shaders.has(shader.name)) {
                 throw new Error(`Shader '${shader.name}' already exists!`)
             }
             this._shaders.set(shader.name, new Shader(shader))
@@ -110,16 +113,24 @@ class ResourceManager {
             TEXTURES
     ======================*/
 
-    public static loadTextures(textures: TextureType[]): ResourceManager{
+    public static loadTextures(textures: TextureType[]): ResourceManager {
         return ResourceManager.getInstance().loadTextures(textures);
     }
 
     public loadTextures(textures: TextureType[]): ResourceManager {
         textures.forEach((texture) => {
-            if(this._textures.has(texture.name)) {
+            if (this._textures.has(texture.name)) {
                 throw new Error(`Texture '${texture.name}' already exists!`)
             }
-            this._textures.set(texture.name, new TextureLoader().load(texture.pathname))
+            if (texture.texture == null) {
+                this._textures.set(texture.name, new TextureLoader().load(texture.pathname))
+                return;
+            }
+            if (typeof texture.texture == "function") {
+                this._textures.set(texture.name, texture.texture());
+                return
+            }
+            this._textures.set(texture.name, texture.texture);
         })
         return this
     }
@@ -145,13 +156,13 @@ class ResourceManager {
             MATERIALS
     ======================*/
 
-    public static addMaterials(materials: Material[]): ResourceManager{
+    public static addMaterials(materials: Material[]): ResourceManager {
         return ResourceManager.getInstance().addMaterials(materials);
     }
 
     public addMaterials(materials: Material[]): ResourceManager {
         materials.forEach((material) => {
-            if(this._materials.has(material.getName())) {
+            if (this._materials.has(material.getName())) {
                 throw new Error(`Material '${material.getName()}' already exists!`)
             }
             this._materials.set(material.getName(), material)

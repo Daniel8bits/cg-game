@@ -40,7 +40,7 @@ class GuiRenderer extends Renderer {
                 material.getShader().setMatrix4x4('u_transform', entity.getTransform().toMatrix());
                                 
                 entity.getVAO().bind()
-                GLUtils.draw(entity.getVAO().getLength())
+                GLUtils.draw(entity.getVAO().getIbo().getLength()/2)
                 entity.getVAO().unbind();
             })
 

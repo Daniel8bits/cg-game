@@ -7,6 +7,8 @@ import Renderer from "../../engine/renderer/Renderer";
 class Lamp extends Entity {
 
     public color : Vector3 = new Vector3(1.0,1.0,1.0)
+    public distance: number = 100;
+    public shininess:number = 32;
 
     public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
         super(name, vao, material, renderer);

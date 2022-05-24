@@ -5,7 +5,7 @@ import VBO from './VBO';
 
 export interface VAOType {
     name: string;
-    objectData: string | VBO[];
+    objectData: string | VBO[] | (() => VAO);
 }
 
 class VAO implements IResource {
@@ -37,7 +37,7 @@ class VAO implements IResource {
     private _createVBO(target: number, vbo: VBO) : void {
         vbo.setId(gl.createBuffer());
         gl.bindBuffer(vbo.getType(), vbo.getId());
-        gl.bufferData(vbo.getType(), vbo.getBuffer(), gl.STATIC_DRAW);
+        gl.bufferData(vbo.getType(), vbo.getBuffer(), vbo.getUsage());
 
         if(vbo.getType() === gl.ARRAY_BUFFER) {
             this._setAttributePointer(target, vbo);
