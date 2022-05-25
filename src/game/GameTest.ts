@@ -180,59 +180,8 @@ class GameTest extends GameCore {
         const simpleRenderer = new SimpleRenderer(this._camera);
         this.getRenderStrategy().add(simpleRenderer)
 
-        this.getSceneManager()
-            .add(new Scene('scene1'), true)
-/*
-            .get('scene1')
-            .add(new SimpleEntity(
-                'entity1',
-                ResourceManager.getVAO('level'),
-                ResourceManager.getMaterial('level'),
-                simpleRenderer
-            ))
-        const entity1 = this.getSceneManager().get('scene1').get('entity1');
-        entity1.getTransform().setTranslation(new Vector3(0, -0.75, 0))
-        entity1.getTransform().setScale(new Vector3(10, 10, 10))
+        this.getSceneManager().add(new Scene('scene1'), true)
 
-        this.getSceneManager()
-            .get('scene1')
-            .add(new SimpleEntity(
-                'entity2',
-                ResourceManager.getVAO('hall'),
-                ResourceManager.getMaterial('level'),
-                simpleRenderer
-            ));
-
-        const entity2 = this.getSceneManager().get('scene1').get('entity2');
-        entity2.getTransform().setTranslation(new Vector3(-67, 0, 0))
-        entity2.getTransform().setScale(new Vector3(10, 10, 10))
-
-        this.getSceneManager()
-            .get('scene1')
-            .add(new SimpleEntity(
-                'entity3',
-                ResourceManager.getVAO('elevator'),
-                ResourceManager.getMaterial('elevator'),
-                simpleRenderer
-            ));
-
-        const entity3 = this.getSceneManager().get('scene1').get('entity3');
-        entity3.getTransform().setTranslation(new Vector3(-102, -0.75, 0))
-        entity3.getTransform().setScale(new Vector3(10, 10, 10))
-
-        this.getSceneManager()
-            .get('scene1')
-            .add(new SimpleEntity(
-                'elevator-door',
-                ResourceManager.getVAO('elevator-door'),
-                ResourceManager.getMaterial('elevator-door'),
-                simpleRenderer
-            ));
-
-        const elevatorDoor = this.getSceneManager().get('scene1').get('elevator-door');
-        elevatorDoor.getTransform().setTranslation(new Vector3(-102, -0.75, 0))
-        elevatorDoor.getTransform().setScale(new Vector3(10, 10, 10))
-*/
         this.getSceneManager().get("scene1").add(new Lamp(
             'lamp',
             ResourceManager.getVAO("lamp"),
