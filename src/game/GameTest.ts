@@ -373,7 +373,7 @@ class GameTest extends GameCore {
               ))
               entity.getTransform().setRotation(new Orientation(
                 data.rotation.x,
-                data.rotation.y,
+                data.rotation.y*2,
                 data.rotation.z,
               ))
               entity.getTransform().setScale(new Vector3(
