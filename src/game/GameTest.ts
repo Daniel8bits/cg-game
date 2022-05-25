@@ -146,7 +146,7 @@ class GameTest extends GameCore {
             {
                 name: 'text',
                 objectData: () => {
-                    const text = Text.render("c");
+                    const text = Text.render("cd");
                     const vbos = [];
                     vbos.push(new VBO(text.arrays.position, 2, true, gl.DYNAMIC_DRAW));
                     vbos.push(new VBO(text.arrays.texcoord, 2, true, gl.DYNAMIC_DRAW));
@@ -228,7 +228,7 @@ class GameTest extends GameCore {
             'text',
             ResourceManager.getVAO("text"),
             ResourceManager.getMaterial("text"),
-            guiRenderer
+            simpleRenderer
         ));
         const text = this.getSceneManager().get('scene1').get('text');
         text.getTransform().setTranslation(new Vector3(15, 2, 25))

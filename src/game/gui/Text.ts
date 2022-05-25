@@ -64,9 +64,9 @@ class Text {
             if (glyphInfo) {
                 var x2 = x + glyphInfo.width;
                 var u1 = glyphInfo.x / maxX;
-                var v1 = (glyphInfo.y + fontInfo.letterHeight - 1) / maxY;
+                var v1 = 1 - (glyphInfo.y + fontInfo.letterHeight - 1) / maxY;
                 var u2 = (glyphInfo.x + glyphInfo.width - 1) / maxX;
-                var v2 = glyphInfo.y / maxY;
+                var v2 = 1 - glyphInfo.y / maxY;
 
                 // 6 vertices per letter
                 positions[offset + 0] = x;
