@@ -26,18 +26,18 @@ class Shader implements IResource{
         this._fragmentShaderPathname = params.fragmentShaderPathname;
         this._textureCounter = 0;
     }
-
+    
     public create() : void {
         this._program = gl.createProgram();
-
+        
         const vertexShader : WebGLShader = this.load(this._vertexShaderPathname, gl.VERTEX_SHADER);
         const fragmentShader : WebGLShader = this.load(this._fragmentShaderPathname, gl.FRAGMENT_SHADER);
-
+        
         gl.attachShader(this._program, vertexShader);
         gl.attachShader(this._program, fragmentShader);
-
+        
         gl.linkProgram(this._program);
-
+        
         const error : string = gl.getProgramInfoLog(this._program).trim();
         if(error !== '') {
             throw new Error(`Error trying to link shader: ${this._name}.\n ${error}`);

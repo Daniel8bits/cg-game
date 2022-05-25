@@ -99,10 +99,6 @@ class Text {
                 texcoords[offset + 10] = u2;
                 texcoords[offset + 11] = v2;
 
-                for(let xy = 0;xy<12;xy+=2){
-
-                    console.log(positions[xy],positions[xy+1])
-                }
                 x += glyphInfo.width + fontInfo.spacing;
                 offset += 12;
             } else {

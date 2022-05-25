@@ -42,17 +42,17 @@ LightProperties CalcDirLight(Light light, vec3 normal, vec3 viewDir,vec3 texture
 {
     LightProperties properties;
     
-    vec3 lightDir = normalize(-light.position);
+    vec3 lightDir = normalize(-light.position - v_FragPos);
     float diff = max(dot(normal, lightDir), 0.0);
     
     vec3 reflectDir = reflect(-lightDir, normal);
     vec3 halfwayDir = normalize(lightDir + viewDir);
 
-    float spec = pow(max(dot(viewDir, halfwayDir), 0.0), light.shininess);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), light.shininess);
 
     properties.ambient  = light.color.ambient  * texturevec3;
-    properties.diffuse = pow(texturevec3, vec3(2.2));
-    //properties.diffuse  = light.color.diffuse  * diff * texturevec3;
+    //properties.diffuse = pow(texturevec3, vec3(2.2));
+    properties.diffuse  = light.color.diffuse  * diff * texturevec3;
     properties.specular = light.color.specular * spec * texturevec3;
     
     return properties;

@@ -101,6 +101,7 @@ class SimpleRenderer extends Renderer {
                     shader.setInt("applyLight",0);
                     const lamp = entity as Lamp;
                     const path = `pointLights[${index}]`;
+
                     shader.setVector3(path+".color.ambient", lamp.color);
                     shader.setVector3(path+".color.diffuse", lamp.color)
                     shader.setVector3(path+".color.specular",lamp.color);

@@ -10,9 +10,10 @@ class Lamp extends Entity {
     public distance: number = 100;
     public shininess:number = 32;
 
-    public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
+    public constructor(name: string, vao: VAO, material: Material, renderer: Renderer,color: Vector3 ) {
         super(name, vao, material, renderer);
-        this.color = new Vector3(Math.random(),Math.random(),Math.random());
+        this.color = color;
+        //this.color = new Vector3(Math.random(),Math.random(),Math.random());
     }
     
     public update(time: number, delta: number): void {

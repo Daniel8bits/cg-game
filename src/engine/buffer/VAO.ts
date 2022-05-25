@@ -12,8 +12,9 @@ class VAO implements IResource {
 
     private _vboList: VBO[];
     private _ibo: VBO;
+    private _vertexCoordsOffset: number
     
-    public constructor(vboList: VBO[]) {
+    public constructor(vboList: VBO[], vertexCoordsOffset: number = 3) {
         this._vboList = [];
         vboList.forEach((vbo) => {
             if(vbo !== null && vbo !== undefined) {
@@ -26,6 +27,7 @@ class VAO implements IResource {
         if(vboList.length > 0 && !this._ibo) {
             this._ibo = vboList[0];
         }
+        this._vertexCoordsOffset = vertexCoordsOffset
     }
 
     public create() : void {
@@ -106,7 +108,7 @@ class VAO implements IResource {
     }
 
     public getLength(): number {
-        return this._ibo.getLength()/3;
+        return this._ibo.getLength()/this._vertexCoordsOffset;
     }
 
 }
