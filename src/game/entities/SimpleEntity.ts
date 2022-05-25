@@ -1,3 +1,5 @@
+import { Matrix4 } from "@math.gl/core";
+import GLUtils from "@razor/gl/GLUtils";
 import Material from "../../engine/appearance/material/Material";
 import VAO from "../../engine/buffer/VAO";
 import Entity from "../../engine/core/Entity";
@@ -7,7 +9,7 @@ class SimpleEntity extends Entity {
     public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
         super(name, vao, material, renderer);
     }
-
+    
     public update(time: number, delta: number): void {
 
         /*

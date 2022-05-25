@@ -2,17 +2,41 @@ import Vec3 from "./Vec3"
 import Orientation from "./Orientation"
 import {Vector3, Pose, Euler, Matrix4} from "@math.gl/core"
 import { toRadians } from "./math";
+import Scene from "@razor/core/Scene";
+import Entity from "@razor/core/Entity";
 
 class Transform {
 
+    private _entity : Entity;
     private _translation: Vector3;
     private _rotation: Orientation;
     private _scale: Vector3;
+    private _children : Scene;
+    private _parent : Entity;
 
     public constructor(translation?: Vector3, rotation?: Orientation, scale?: Vector3) {
         this._translation = translation ?? new Vector3()
         this._rotation = rotation ?? new Orientation()
         this._scale = scale ?? new Vector3(1, 1, 1)
+        
+    }
+    
+    public setEntity(entity : Entity){
+        this._entity = entity;
+        this._children = new Scene(entity.getName()+"_children");
+    }
+
+    public get children() : Scene{
+        return this._children;
+    }
+
+    public set parent(entity : Entity) {
+        entity.transform.children.add(this._entity);
+        this._parent = entity;
+    }
+
+    public get parent(){
+        return this._parent;
     }
     
     public getTranslation() : Vector3 {
@@ -115,6 +139,15 @@ class Transform {
 
         return translation.multiplyRight(rotation.multiplyRight(scale))
         //return scale.multiplyRight(this._pose.getTransformationMatrix())
+    }
+
+    public worldMatrix() : Matrix4{
+        const localMatrix = this.toMatrix();
+        let worldMatrix = localMatrix.clone();
+        if(this.parent){
+            worldMatrix = this.parent.getTransform().toMatrix().multiplyRight(localMatrix);
+        }
+        return worldMatrix;
     }
     
 

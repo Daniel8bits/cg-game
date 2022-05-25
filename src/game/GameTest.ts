@@ -146,7 +146,7 @@ class GameTest extends GameCore {
             {
                 name: 'text',
                 objectData: () => {
-                    const text = Text.render("cd");
+                    const text = Text.render("vida");
                     const vbos = [];
                     vbos.push(new VBO(text.arrays.position, 2, true, gl.DYNAMIC_DRAW));
                     vbos.push(new VBO(text.arrays.texcoord, 2, true, gl.DYNAMIC_DRAW));
@@ -222,26 +222,38 @@ class GameTest extends GameCore {
         ));
         const guiright = this.getSceneManager().get('scene1').get('guiright');
         guiright.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width + 100,bottom,0))
+        /*
+        const text = new SimpleEntity(
+            'text',
+            ResourceManager.getVAO("text"),
+            ResourceManager.getMaterial("text"),
+            guiRenderer
+        )
+        text.parent = guileft;
+        text.getTransform().setTranslation(new Vector3(-10,bottom,-1))
         //test.getTransform().setScale(new Vector3(0.1, 0.3,0.1))
-        
+        /*/
         this.getSceneManager().get("scene1").add(new SimpleEntity(
             'text',
             ResourceManager.getVAO("text"),
             ResourceManager.getMaterial("text"),
-            simpleRenderer
+            guiRenderer
         ));
         const text = this.getSceneManager().get('scene1').get('text');
-        text.getTransform().setTranslation(new Vector3(15, 2, 25))
-        text.getTransform().setRotation(new Orientation(0, 90))
+        text.transform.parent = guileft;
+        //text.getTransform().setTranslation(new Vector3(-10,bottom,-1))
+        text.getTransform().setTranslation(new Vector3(-10,-10,-1))
+        //text.getTransform().setRotation(new Orientation(0, 90))
         const translation = text.getTransform().getTranslation();
-        /* start Gambiarra temporária */
+        /* start Gambiarra temporária 
         var fromEye = normalize(translation);
-        var amountToMoveTowardEye = 150;  // because the F is 150 units long
+        var amountToMoveTowardEye = 10;  // because the F is 150 units long
 
         var desiredTextScale = -1 / gl.canvas.height * 2;  // 1x1 pixels
         var viewZ = translation[2] - fromEye[2] * amountToMoveTowardEye;
         var scale = viewZ * desiredTextScale;
-        text.getTransform().setScale(new Vector3(scale,scale,1));
+        console.log(viewZ,desiredTextScale)
+        text.getTransform().setScale(new Vector3(2,2,2));
         /* end Gambiarra temporária */
 
         Event.trigger("loadScene", this.getSceneManager().getActive());
