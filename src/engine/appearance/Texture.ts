@@ -3,7 +3,8 @@ import IResource from "./IResource"
 
 export interface TextureType {
   name: string
-  pathname: string
+  pathname?: string
+  texture?: Texture | (() => Texture)
 }
 
 class Texture implements IResource{
@@ -39,7 +40,6 @@ class Texture implements IResource{
       this._bindData()
     }
     
-
     if((this._width < 1 || this._height < 1) && this._data) {
       throw new Error("Invalid image size!")
     }
@@ -98,7 +98,7 @@ class Texture implements IResource{
     
   }
 
-  private _bindData(): void {
+  protected _bindData(): void {
     this.bind()
     gl.texImage2D(
       gl.TEXTURE_2D, 

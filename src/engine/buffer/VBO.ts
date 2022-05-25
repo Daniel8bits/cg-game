@@ -14,12 +14,18 @@ class VBO {
     _offset : number;
     _created : boolean;
     _isAttribute : boolean;
+    _usage: number;
     
-    public constructor(buffer: TypedArray, offset: number, isAttribute: boolean) {
+    public constructor(buffer: TypedArray, offset: number, isAttribute: boolean,usage : number = gl.STATIC_DRAW) {
         this._buffer = buffer;
         this._offset = offset;
         this._created = false;
         this._isAttribute = isAttribute;
+        this._usage = usage;
+    }
+
+    public getUsage() : number{
+        return this._usage;
     }
 
     public getId(): WebGLBuffer {

@@ -1,4 +1,4 @@
-import {Vector3, Quaternion, Matrix4} from "@math.gl/core"
+import { Vector3, Quaternion, Matrix4 } from "@math.gl/core"
 import GameCore from '@razor/core/GameCore'
 import ResourceManager from '../engine/core/ResourceManager'
 import Scene from '../engine/core/Scene';
@@ -13,6 +13,12 @@ import GuiRenderer from "./renderers/GuiRenderer";
 
 import Event from "src/event"; // @temp
 import FileUtils from "@razor/utils/FileUtils";
+import Text from "./gui/Text";
+import VAO from "@razor/buffer/VAO";
+import VBO from "@razor/buffer/VBO";
+import TextTexture from "./gui/TextTexture";
+import { gl } from "@razor/gl/GLUtils";
+import Razor from "@razor/core/Razor";
 
 class GameTest extends GameCore {
 
@@ -24,29 +30,36 @@ class GameTest extends GameCore {
 
     public start() {
 
-        this._camera = new CanvasCamera('main', new Vector3(5,0,35), new Orientation(0,90));
+        this._camera = new CanvasCamera('main', new Vector3(5, 0, 35), new Orientation(0, 90));
 
         // ========= SHADER ==========
-        
+
         /* Shader com Iluminação */
         ResourceManager.loadShader([{
             name: 'shader1',
-            vertexShaderPathname: '/resources/shader/shader1/vert.glsl', 
+            vertexShaderPathname: '/resources/shader/shader1/vert.glsl',
             fragmentShaderPathname: '/resources/shader/shader1/frag.glsl'
         }])
 
         /* Shader sem Iluminação */
         ResourceManager.loadShader([{
-            name: 'shader2',
-            vertexShaderPathname: '/resources/shader/shader2/vert.glsl', 
-            fragmentShaderPathname: '/resources/shader/shader2/frag.glsl'
+            name: 'gui',
+            vertexShaderPathname: '/resources/shader/gui/vert.glsl',
+            fragmentShaderPathname: '/resources/shader/gui/frag.glsl'
+        }])
+
+        /* Shader de Texto */
+        ResourceManager.loadShader([{
+            name: 'text',
+            vertexShaderPathname: '/resources/shader/text/vert.glsl',
+            fragmentShaderPathname: '/resources/shader/text/frag.glsl'
         }])
 
         ResourceManager.loadTextures([
             {
                 name: 'level',
                 pathname: '/resources/objects/level/level-texture.png'
-            }, 
+            },
             {
                 name: 'elevator',
                 pathname: '/resources/objects/level/elevator-texture.png'
@@ -58,39 +71,56 @@ class GameTest extends GameCore {
             {
                 name: 'lamp',
                 pathname: '/resources/objects/lamp/lamp-texture.png'
+            },
+            {
+                name: 'text',
+                /*
+                texture: () => {
+                    var image = new Image();
+                    image.src = "/resources/objects/8x8-font.png";
+                    const texture = new TextTexture(image);
+
+                    return texture;
+                }*/
+                pathname: '/resources/objects/8x8-font.png'
             }
         ])
-        
+
         ResourceManager.addMaterials([
             new DefaultMaterial(
-                'level', 
+                'level',
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('level'),
             ),
             new DefaultMaterial(
-                'elevator', 
+                'elevator',
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('elevator'),
             ),
             new DefaultMaterial(
-                'elevator-door', 
+                'elevator-door',
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('elevator-door'),
             ),
             new DefaultMaterial(
-                'lamp', 
+                'lamp',
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('lamp'),
             ),
             new DefaultMaterial(
-                'gui', 
-                ResourceManager.getShader('shader2'),
-                ResourceManager.getTexture('lamp'),
+                'gui',
+                ResourceManager.getShader('gui')
+            ),
+            new DefaultMaterial(
+                'text',
+                ResourceManager.getShader('text'),
+                ResourceManager.getTexture('text'),
             )
+        
         ])
-        .forEachMaterial((material) => {
-            material.create()
-        })
+            .forEachMaterial((material) => {
+                material.create()
+            })
 
         ResourceManager.loadVAO([
             {
@@ -112,37 +142,63 @@ class GameTest extends GameCore {
             {
                 name: 'lamp',
                 objectData: '/resources/objects/lamp/lamp.obj'
+            },
+            {
+                name: 'text',
+                objectData: () => {
+                    const text = Text.render("c");
+                    const vbos = [];
+                    vbos.push(new VBO(text.arrays.position, 2, true, gl.DYNAMIC_DRAW));
+                    vbos.push(new VBO(text.arrays.texcoord, 2, true, gl.DYNAMIC_DRAW));
+                    return new VAO(vbos,2);
+                }
+            },
+            {
+                name: 'gui',
+                objectData: () => {
+                    const width = 100;
+                    const height = 100;
+                    const positions = [
+                        0,0,
+                        0,width,
+                        width,height,
+                        width,height,
+                        width,0,
+                        0,0
+                    ]
+                    return new VAO([new VBO(new Float32Array(positions),2,true)], 2);
+                }
             }
         ])
-        .forEachVAO((vao) => {
-            vao.create();
-        })
+            .forEachVAO((vao) => {
+                vao.create();
+            })
 
 
-        const simpleRenderer = new SimpleRenderer(this._camera);
         const guiRenderer = new GuiRenderer(this._camera);
-        this.getRenderStrategy().add(simpleRenderer)
         this.getRenderStrategy().add(guiRenderer)
+        const simpleRenderer = new SimpleRenderer(this._camera);
+        this.getRenderStrategy().add(simpleRenderer)
 
         this.getSceneManager()
             .add(new Scene('scene1'), true)
 /*
             .get('scene1')
             .add(new SimpleEntity(
-                'entity1', 
-                ResourceManager.getVAO('level'), 
+                'entity1',
+                ResourceManager.getVAO('level'),
                 ResourceManager.getMaterial('level'),
                 simpleRenderer
             ))
         const entity1 = this.getSceneManager().get('scene1').get('entity1');
-            entity1.getTransform().setTranslation(new Vector3(0, -0.75, 0))
-            entity1.getTransform().setScale(new Vector3(10, 10, 10))
+        entity1.getTransform().setTranslation(new Vector3(0, -0.75, 0))
+        entity1.getTransform().setScale(new Vector3(10, 10, 10))
 
         this.getSceneManager()
             .get('scene1')
             .add(new SimpleEntity(
-                'entity2', 
-                ResourceManager.getVAO('hall'), 
+                'entity2',
+                ResourceManager.getVAO('hall'),
                 ResourceManager.getMaterial('level'),
                 simpleRenderer
             ));
@@ -154,8 +210,8 @@ class GameTest extends GameCore {
         this.getSceneManager()
             .get('scene1')
             .add(new SimpleEntity(
-                'entity3', 
-                ResourceManager.getVAO('elevator'), 
+                'entity3',
+                ResourceManager.getVAO('elevator'),
                 ResourceManager.getMaterial('elevator'),
                 simpleRenderer
             ));
@@ -167,8 +223,8 @@ class GameTest extends GameCore {
         this.getSceneManager()
             .get('scene1')
             .add(new SimpleEntity(
-                'elevator-door', 
-                ResourceManager.getVAO('elevator-door'), 
+                'elevator-door',
+                ResourceManager.getVAO('elevator-door'),
                 ResourceManager.getMaterial('elevator-door'),
                 simpleRenderer
             ));
@@ -181,7 +237,8 @@ class GameTest extends GameCore {
             'lamp',
             ResourceManager.getVAO("lamp"),
             ResourceManager.getMaterial("lamp"),
-            simpleRenderer    
+            simpleRenderer,
+            new Vector3(0.6,0.6,0.6)
         ));
 
         const entity4 = this.getSceneManager().get('scene1').get('lamp');
@@ -191,21 +248,54 @@ class GameTest extends GameCore {
             'lamp2',
             ResourceManager.getVAO("lamp"),
             ResourceManager.getMaterial("lamp"),
-            simpleRenderer    
+            simpleRenderer,
+            new Vector3(0.6,0.4,0.2)
         ));
 
         const entity5 = this.getSceneManager().get('scene1').get('lamp2');
         entity5.getTransform().setTranslation(new Vector3(-20, 0, -30))
-/*
+        
         this.getSceneManager().get("scene1").add(new SimpleEntity(
-            'test',
-            ResourceManager.getVAO("hall"),
+            'guileft',
+            ResourceManager.getVAO("gui"),
             ResourceManager.getMaterial("gui"),
-            guiRenderer    
+            guiRenderer
         ));
-        const test = this.getSceneManager().get('scene1').get('test');
-        test.getTransform().setTranslation(new Vector3(0,1,0))*/
-        Event.trigger("loadScene",this.getSceneManager().getActive());
+        const guileft = this.getSceneManager().get('scene1').get('guileft');
+        const bottom = -Razor.CANVAS.height + 100;
+        guileft.getTransform().setTranslation(new Vector3(0,bottom,0))
+
+        this.getSceneManager().get("scene1").add(new SimpleEntity(
+            'guiright',
+            ResourceManager.getVAO("gui"),
+            ResourceManager.getMaterial("gui"),
+            guiRenderer
+        ));
+        const guiright = this.getSceneManager().get('scene1').get('guiright');
+        guiright.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width + 100,bottom,0))
+        //test.getTransform().setScale(new Vector3(0.1, 0.3,0.1))
+        
+        this.getSceneManager().get("scene1").add(new SimpleEntity(
+            'text',
+            ResourceManager.getVAO("text"),
+            ResourceManager.getMaterial("text"),
+            guiRenderer
+        ));
+        const text = this.getSceneManager().get('scene1').get('text');
+        text.getTransform().setTranslation(new Vector3(15, 2, 25))
+        text.getTransform().setRotation(new Orientation(0, 90))
+        const translation = text.getTransform().getTranslation();
+        /* start Gambiarra temporária */
+        var fromEye = normalize(translation);
+        var amountToMoveTowardEye = 150;  // because the F is 150 units long
+
+        var desiredTextScale = -1 / gl.canvas.height * 2;  // 1x1 pixels
+        var viewZ = translation[2] - fromEye[2] * amountToMoveTowardEye;
+        var scale = viewZ * desiredTextScale;
+        text.getTransform().setScale(new Vector3(scale,scale,1));
+        /* end Gambiarra temporária */
+
+        Event.trigger("loadScene", this.getSceneManager().getActive());
 
         this.importAll()
     }
@@ -307,4 +397,15 @@ class GameTest extends GameCore {
 
 }
 
+function normalize(v) {
+    const dst = new Float32Array(3);
+    var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+    // make sure we don't divide by 0.
+    if (length > 0.00001) {
+        dst[0] = v[0] / length;
+        dst[1] = v[1] / length;
+        dst[2] = v[2] / length;
+    }
+    return dst;
+}
 export default GameTest
