@@ -16,7 +16,7 @@ abstract class Entity {
 
     private _transform: Transform
 
-    public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
+    public constructor(name: string, vao?: VAO, material?: Material, renderer?: Renderer) {
         this._name = name;
         this._vao = vao;
         this._material = material;
@@ -28,6 +28,10 @@ abstract class Entity {
     //public abstract start() : void;
 
     public abstract update(time: number, delta: number): void;
+
+    public render(): void{
+
+    }
 
     public setVAO(vao: VAO) {
         this._vao = vao

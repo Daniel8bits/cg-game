@@ -64,40 +64,40 @@ class Text {
             if (glyphInfo) {
                 var x2 = x + glyphInfo.width;
                 var u1 = glyphInfo.x / maxX;
-                var v1 = 1 - (glyphInfo.y + fontInfo.letterHeight - 1) / maxY;
+                var v1 = (glyphInfo.y + fontInfo.letterHeight - 1) / maxY;
                 var u2 = (glyphInfo.x + glyphInfo.width - 1) / maxX;
-                var v2 = 1 - glyphInfo.y / maxY;
+                var v2 = glyphInfo.y / maxY;
 
                 // 6 vertices per letter
                 positions[offset + 0] = x;
                 positions[offset + 1] = 0;
                 texcoords[offset + 0] = u1;
-                texcoords[offset + 1] = v1;
+                texcoords[offset + 1] = v2;//v1;
 
                 positions[offset + 2] = x2;
                 positions[offset + 3] = 0;
                 texcoords[offset + 2] = u2;
-                texcoords[offset + 3] = v1;
+                texcoords[offset + 3] = v2;//v1;
 
                 positions[offset + 4] = x;
                 positions[offset + 5] = fontInfo.letterHeight;
                 texcoords[offset + 4] = u1;
-                texcoords[offset + 5] = v2;
+                texcoords[offset + 5] = v1;//v2;
 
                 positions[offset + 6] = x;
                 positions[offset + 7] = fontInfo.letterHeight;
                 texcoords[offset + 6] = u1;
-                texcoords[offset + 7] = v2;
+                texcoords[offset + 7] = v1;//v2;
 
                 positions[offset + 8] = x2;
                 positions[offset + 9] = 0;
                 texcoords[offset + 8] = u2;
-                texcoords[offset + 9] = v1;
+                texcoords[offset + 9] = v2;//v1;
 
                 positions[offset + 10] = x2;
                 positions[offset + 11] = fontInfo.letterHeight;
                 texcoords[offset + 10] = u2;
-                texcoords[offset + 11] = v2;
+                texcoords[offset + 11] = v1;//v2;
 
                 x += glyphInfo.width + fontInfo.spacing;
                 offset += 12;
@@ -117,5 +117,6 @@ class Text {
             numVertices: offset / 2,
         };
     }
+
 }
 export default Text;

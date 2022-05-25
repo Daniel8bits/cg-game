@@ -1,6 +1,6 @@
 import { gl } from "../gl/GLUtils";
-import Float32Buffer from "../utils/Float32Buffer";
-import Int32Buffer from "../utils/Int32Buffer";
+//import Float32Buffer from "../utils/Float32Buffer";
+//import Int32Buffer from "../utils/Int32Buffer";
 
 type IntTypedArray = BigInt64Array | Int32Array | Int16Array | Int8Array ;
 type UintTypedArray = BigUint64Array | Uint32Array | Uint16Array | Uint8Array ;
@@ -38,6 +38,10 @@ class VBO {
 
     public getBuffer() : TypedArray {
         return this._buffer;
+    }
+
+    public setBuffer(buffer : TypedArray) : void {
+        this._buffer = buffer;
     }
 
     public getOffset(): number {
