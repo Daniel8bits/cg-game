@@ -12,6 +12,7 @@ import Lamp from "./entities/Lamp";
 import GuiRenderer from "./renderers/GuiRenderer";
 
 import Event from "src/event"; // @temp
+import FileUtils from "@razor/utils/FileUtils";
 
 class GameTest extends GameCore {
 
@@ -125,6 +126,7 @@ class GameTest extends GameCore {
 
         this.getSceneManager()
             .add(new Scene('scene1'), true)
+/*
             .get('scene1')
             .add(new SimpleEntity(
                 'entity1', 
@@ -174,7 +176,7 @@ class GameTest extends GameCore {
         const elevatorDoor = this.getSceneManager().get('scene1').get('elevator-door');
         elevatorDoor.getTransform().setTranslation(new Vector3(-102, -0.75, 0))
         elevatorDoor.getTransform().setScale(new Vector3(10, 10, 10))
-
+*/
         this.getSceneManager().get("scene1").add(new Lamp(
             'lamp',
             ResourceManager.getVAO("lamp"),
@@ -204,6 +206,8 @@ class GameTest extends GameCore {
         const test = this.getSceneManager().get('scene1').get('test');
         test.getTransform().setTranslation(new Vector3(0,1,0))*/
         Event.trigger("loadScene",this.getSceneManager().getActive());
+
+        this.importAll()
     }
 
     public update(time: number, delta: number) {
@@ -215,6 +219,90 @@ class GameTest extends GameCore {
     public render() {
         super.render();
     }
+
+
+    public importAll(): void {
+
+        interface EntityImportJSON {
+          [name: string]: {
+            translation: {
+              x: number
+              y: number
+              z: number
+            },
+            rotation: {
+              x: number
+              y: number
+              z: number
+            },
+            scale: {
+              x: number
+              y: number
+              z: number
+            },
+          }
+        }
+
+        function getCorrespondingMaterialName(object: string): string {
+            switch (object) {
+                case 'hall':
+                    return 'level'
+                default:
+            }
+            return object
+        }
+    
+        FileUtils.load('/resources/entities.json',
+          (data) => {
+    
+            const entities: EntityImportJSON = JSON.parse(data)
+    
+            Object.keys(entities).forEach(key => {
+              const data = entities[key]
+    
+              const vaoName = ((): string => {
+                for(let i = key.length-1; i >= 0; i--) {
+                  if(key[i] === '_') {
+                    return key.substring(0, i)
+                  }
+                }
+                return '';
+              })();
+    
+              const entity = new SimpleEntity(
+                key,
+                ResourceManager.getVAO(vaoName), 
+                ResourceManager.getMaterial(getCorrespondingMaterialName(vaoName)),
+                this.getRenderStrategy().get('renderer1')
+              )
+    
+              entity.getTransform().setTranslation(new Vector3(
+                data.translation.x,
+                data.translation.y,
+                data.translation.z,
+              ))
+              entity.getTransform().setRotation(new Orientation(
+                data.rotation.x,
+                data.rotation.y,
+                data.rotation.z,
+              ))
+              entity.getTransform().setScale(new Vector3(
+                data.scale.x,
+                data.scale.y,
+                data.scale.z,
+              ))
+    
+              this.getSceneManager().getActive().add(entity)
+    
+            })
+    
+    
+          },
+          function onError(err) {
+            console.error('Could not import entities from json: ', err);
+          },
+        )
+      } 
 
 
 }
