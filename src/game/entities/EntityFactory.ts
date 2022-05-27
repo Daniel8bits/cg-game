@@ -1,10 +1,12 @@
 import { Vector3 } from '@math.gl/core';
 import Material from '@razor/appearance/material/Material';
+import Entity from '@razor/core/Entity';
 import ResourceManager from '@razor/core/ResourceManager';
 import SceneManager from '@razor/core/SceneManager';
 import Orientation from '@razor/math/Orientation';
 import RenderStrategy from '@razor/renderer/RenderStrategy';
 import FileUtils from '@razor/utils/FileUtils';
+import Lamp from './Lamp';
 import SimpleEntity from './SimpleEntity';
 
 class EntityFactory {
@@ -56,12 +58,7 @@ class EntityFactory {
             return '';
           })();
 
-          const entity = new SimpleEntity(
-            key,
-            ResourceManager.getVAO(vaoName), 
-            this._getMaterial(vaoName),
-            this._renderStrategy.get('renderer1')
-          )
+          const entity = this._createEntity(key, vaoName)
 
           entity.getTransform().setTranslation(new Vector3(
             data.translation.x,
@@ -70,7 +67,8 @@ class EntityFactory {
           ))
           entity.getTransform().setRotation(new Orientation(
             data.rotation.x,
-            data.rotation.y*2,
+            data.rotation.y,
+            //data.rotation.y < 0 ? (data.rotation.y*2 - 180) : data.rotation.y*2,
             data.rotation.z,
           ))
           entity.getTransform().setScale(new Vector3(
@@ -88,11 +86,32 @@ class EntityFactory {
       function onError(err) {
         console.error('Could not import entities from json: ', err);
       },
-    )
+    );
 
-    console.log(this._sceneManager);
+    (this._sceneManager.getActive().get('lamp_2') as Lamp).color = new Vector3(1, 1, 1);
+    (this._sceneManager.getActive().get('lamp_33') as Lamp).color = new Vector3(1, 1, 1)
     
   } 
+
+  private _createEntity(name: string, vao: string): Entity {
+
+    switch (vao) {
+      case 'lamp':
+          return new Lamp(
+            name, 
+            this._renderStrategy.get('renderer1'),
+            new Vector3(1, 0, 0)
+          )
+      default:
+    }
+
+    return new SimpleEntity(
+      name,
+      ResourceManager.getVAO(vao), 
+      this._getMaterial(vao),
+      this._renderStrategy.get('renderer1')
+    )
+  }
 
   private _getMaterial(object: string): Material {
     switch (object) {
@@ -103,8 +122,6 @@ class EntityFactory {
     }
     return ResourceManager.getMaterial(object)
   }
-
-
 
 }
 

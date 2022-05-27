@@ -83,6 +83,8 @@ void main() {
 
     float gamma = 1.0;
     gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma));
+
+    //gl_FragColor = vec4(texturevec3, 1);
  
   /*
     vec3 ambient = u_lightColor * texturevec3;

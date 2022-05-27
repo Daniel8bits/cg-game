@@ -1,4 +1,5 @@
 import {Matrix4, Vector3} from "@math.gl/core"
+import ResourceManager from "@razor/core/ResourceManager";
 import Material from "../../engine/appearance/material/Material";
 import VAO from "../../engine/buffer/VAO";
 import Entity from "../../engine/core/Entity";
@@ -6,12 +7,17 @@ import Renderer from "../../engine/renderer/Renderer";
 
 class Lamp extends Entity {
 
-    public color : Vector3 = new Vector3(1.0,1.0,1.0)
+    public color : Vector3
     public distance: number = 100;
     public shininess:number = 32;
 
-    public constructor(name: string, vao: VAO, material: Material, renderer: Renderer,color: Vector3 ) {
-        super(name, vao, material, renderer);
+    public constructor(name: string, renderer: Renderer, color: Vector3 ) {
+        super(
+            name, 
+            ResourceManager.getVAO('lamp'), 
+            ResourceManager.getMaterial('lamp'), 
+            renderer
+        );
         this.color = color;
         //this.color = new Vector3(Math.random(),Math.random(),Math.random());
     }

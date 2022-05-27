@@ -37,7 +37,6 @@ class GuiRenderer extends Renderer {
             shader.setMatrix4x4('u_projection', this._projection);
             //shader.setVector3('u_resolution', new Vector3(Razor.CANVAS.width,Razor.CANVAS.height,0));
             this.getEntitiesByMaterial(material).forEach((entity: Entity, index: number) => {
-                console.log(entity.getName())
                 material.getShader().setMatrix4x4('u_transform', entity.transform.worldMatrix());
                 entity.render();
                 entity.getVAO().bind()
