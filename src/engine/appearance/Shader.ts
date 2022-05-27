@@ -19,28 +19,33 @@ class Shader implements IResource{
     private _program: WebGLProgram;
 
     private _textureCounter: number
+    private _created: boolean
 
     public constructor(params: ShaderType) {
         this._name = params.name;
         this._vertexShaderPathname = params.vertexShaderPathname;
         this._fragmentShaderPathname = params.fragmentShaderPathname;
         this._textureCounter = 0;
+        this._created = false
     }
     
     public create() : void {
-        this._program = gl.createProgram();
-        
-        const vertexShader : WebGLShader = this.load(this._vertexShaderPathname, gl.VERTEX_SHADER);
-        const fragmentShader : WebGLShader = this.load(this._fragmentShaderPathname, gl.FRAGMENT_SHADER);
-        
-        gl.attachShader(this._program, vertexShader);
-        gl.attachShader(this._program, fragmentShader);
-        
-        gl.linkProgram(this._program);
-        
-        const error : string = gl.getProgramInfoLog(this._program).trim();
-        if(error !== '') {
-            throw new Error(`Error trying to link shader: ${this._name}.\n ${error}`);
+        if(!this._created) {
+            this._program = gl.createProgram();
+            
+            const vertexShader : WebGLShader = this.load(this._vertexShaderPathname, gl.VERTEX_SHADER);
+            const fragmentShader : WebGLShader = this.load(this._fragmentShaderPathname, gl.FRAGMENT_SHADER);
+            
+            gl.attachShader(this._program, vertexShader);
+            gl.attachShader(this._program, fragmentShader);
+            
+            gl.linkProgram(this._program);
+            
+            const error : string = gl.getProgramInfoLog(this._program).trim();
+            if(error !== '') {
+                throw new Error(`Error trying to link shader: ${this._name}.\n ${error}`);
+            }
+            this._created = true
         }
     }
 
@@ -77,6 +82,7 @@ class Shader implements IResource{
 
     public destroy() : void {
         gl.deleteShader(this._program)
+        this._created = false
     }
 
     public getUniformLocation(name : string) : WebGLUniformLocation {

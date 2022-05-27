@@ -1,4 +1,4 @@
-import Material from "../../engine/appearance/material/Material";
+import Material from "@razor/appearance/material/Material";
 import VAO from "../../engine/buffer/VAO";
 import Entity from "../../engine/core/Entity";
 import Renderer from "../../engine/renderer/Renderer";

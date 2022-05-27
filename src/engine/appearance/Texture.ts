@@ -34,17 +34,19 @@ class Texture implements IResource{
 
   public create() {
 
-    this._program = gl.createTexture();
-
-    if(this._data) {
-      this._bindData()
-    }
+    if(!this._created) {
+      this._program = gl.createTexture();
     
-    if((this._width < 1 || this._height < 1) && this._data) {
-      throw new Error("Invalid image size!")
-    }
+      if(this._data) {
+        this._bindData()
+      }
+      
+      if((this._width < 1 || this._height < 1) && this._data) {
+        throw new Error("Invalid image size!")
+      }
 
-    this._created = true
+      this._created = true
+    }
 
   }
 
@@ -63,6 +65,7 @@ class Texture implements IResource{
 
   public destroy() {
     gl.deleteTexture(this._program)
+    this._created = false
   }
 
   public getWidth(): number {
