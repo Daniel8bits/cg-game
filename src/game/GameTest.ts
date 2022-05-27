@@ -13,13 +13,14 @@ import GuiRenderer from "./renderers/GuiRenderer";
 
 import Event from "src/event"; // @temp
 import FileUtils from "@razor/utils/FileUtils";
-import Text from "./gui/Text";
+import Text from "./utils/Text";
 import VAO from "@razor/buffer/VAO";
 import VBO from "@razor/buffer/VBO";
-import TextTexture from "./gui/TextTexture";
 import { gl } from "@razor/gl/GLUtils";
 import Razor from "@razor/core/Razor";
 import EntityFactory from "./entities/EntityFactory";
+import TextEntity from "./entities/gui/TextEntity";
+import GuiEntity from "./entities/gui/GuiEntity";
 
 class GameTest extends GameCore {
 
@@ -90,6 +91,7 @@ class GameTest extends GameCore {
                 pathname: '/resources/objects/8x8-font.png'
             }
         ])
+        //const textTexture = ResourceManager.getTexture("text");
 
         ResourceManager.addMaterials([
             new DefaultMaterial(
@@ -123,7 +125,7 @@ class GameTest extends GameCore {
                 ResourceManager.getTexture('lamp'),
             ),
             new DefaultMaterial(
-                'gui',
+                'rectangle',
                 ResourceManager.getShader('gui')
             ),
             new DefaultMaterial(
@@ -173,27 +175,38 @@ class GameTest extends GameCore {
             {
                 name: 'text',
                 objectData: () => {
-                    const text = Text.render("c");
-                    const vbos = [];
-                    vbos.push(new VBO(text.arrays.position, 2, true, gl.DYNAMIC_DRAW));
-                    vbos.push(new VBO(text.arrays.texcoord, 2, true, gl.DYNAMIC_DRAW));
-                    return new VAO(vbos,2);
+                    
+                    //const text = Text.render("vida");
+                    //const vbos = [];
+                    //vbos.push(new VBO(new Float32Array([]), 2, true, gl.DYNAMIC_DRAW));
+                    //vbos.push(new VBO(new Float32Array([]), 2, true, gl.DYNAMIC_DRAW));
+                    const vao = new VAO([],2);
+                    vao.addEmpty(2);
+                    return vao;
                 }
             },
             {
-                name: 'gui',
+                name: 'rectangle',
                 objectData: () => {
-                    const width = 100;
+                    /*const width = 200;
                     const height = 100;
+                    var x1 = 0;
+                    var x2 = 0 + width;
+                    var y1 = 0;
+                    var y2 = 0 + height;
                     const positions = [
-                        0,0,
-                        0,width,
-                        width,height,
-                        width,height,
-                        width,0,
-                        0,0
+                        x1, y1,
+                        x2, y1,
+                        x1, y2,
+                        x1, y2,
+                        x2, y1,
+                        x2, y2,
                     ]
                     return new VAO([new VBO(new Float32Array(positions),2,true)], 2);
+                    */
+                    const vao = new VAO([],2);
+                    vao.addEmpty(1);
+                    return vao;
                 }
             }
         ])
@@ -208,46 +221,37 @@ class GameTest extends GameCore {
         this.getRenderStrategy().add(simpleRenderer)
 
         this.getSceneManager().add(new Scene('scene1'), true)
-
-        this.getSceneManager().get("scene1").add(new SimpleEntity(
-            'guileft',
-            ResourceManager.getVAO("gui"),
-            ResourceManager.getMaterial("gui"),
-            guiRenderer
-        ));
-        const guileft = this.getSceneManager().get('scene1').get('guileft');
+        
         const bottom = -Razor.CANVAS.height + 100;
-        guileft.getTransform().setTranslation(new Vector3(0,bottom,0))
+        const guileft = new GuiEntity('guileft',guiRenderer);
+        guileft.getTransform().setTranslation(new Vector3(0,bottom,0));
 
-        this.getSceneManager().get("scene1").add(new SimpleEntity(
+        this.getSceneManager().get("scene1").add(guileft);
+        
+        const rectangle= guileft.addRectangle("rectangle_left");
+        rectangle.setSize(200,100);
+        this.getSceneManager().get("scene1").add(rectangle);
+        const text = guileft.addText("text");
+        this.getSceneManager().get("scene1").add(text);
+
+        this.getSceneManager().get("scene1").add(new GuiEntity(
             'guiright',
-            ResourceManager.getVAO("gui"),
-            ResourceManager.getMaterial("gui"),
             guiRenderer
         ));
         const guiright = this.getSceneManager().get('scene1').get('guiright');
         guiright.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width + 100,bottom,0))
-        //test.getTransform().setScale(new Vector3(0.1, 0.3,0.1))
-        
-        this.getSceneManager().get("scene1").add(new SimpleEntity(
+/*
+        this.getSceneManager().get("scene1").add(new TextEntity(
             'text',
             ResourceManager.getVAO("text"),
             ResourceManager.getMaterial("text"),
             guiRenderer
         ));
         const text = this.getSceneManager().get('scene1').get('text');
-        text.getTransform().setTranslation(new Vector3(15, 2, 25))
-        text.getTransform().setRotation(new Orientation(0, 90))
-        const translation = text.getTransform().getTranslation();
-        /* start Gambiarra temporária */
-        var fromEye = normalize(translation);
-        var amountToMoveTowardEye = 150;  // because the F is 150 units long
+        text.transform.parent = guileft;*/
+        text.getTransform().setTranslation(new Vector3(-20,-40,-1))
+        text.getTransform().setScale(new Vector3(2,2,2))
 
-        var desiredTextScale = -1 / gl.canvas.height * 2;  // 1x1 pixels
-        var viewZ = translation[2] - fromEye[2] * amountToMoveTowardEye;
-        var scale = viewZ * desiredTextScale;
-        text.getTransform().setScale(new Vector3(scale,scale,1));
-        /* end Gambiarra temporária */
 
         Event.trigger("loadScene", this.getSceneManager().getActive());
 
@@ -268,17 +272,5 @@ class GameTest extends GameCore {
         super.render();
     }
 
-}
-
-function normalize(v) {
-    const dst = new Float32Array(3);
-    var length = Math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
-    // make sure we don't divide by 0.
-    if (length > 0.00001) {
-        dst[0] = v[0] / length;
-        dst[1] = v[1] / length;
-        dst[2] = v[2] / length;
-    }
-    return dst;
 }
 export default GameTest
