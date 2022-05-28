@@ -31,7 +31,7 @@ class Transform {
     }
 
     public set parent(entity : Entity) {
-        entity.transform.children.add(this._entity);
+        entity.getTransform().children.add(this._entity);
         this._parent = entity;
     }
 
