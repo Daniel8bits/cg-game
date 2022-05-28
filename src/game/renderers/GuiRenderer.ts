@@ -3,9 +3,7 @@ import { Matrix4, Vector3, cos } from "@math.gl/core"
 import Renderer from "../../engine/renderer/Renderer";
 import ResourceManager from "../../engine/core/ResourceManager";
 import GLUtils, { gl } from "../../engine/gl/GLUtils";
-import Mat4 from "../../engine/math/Mat4";
-import Entity from "../../engine/core/Entity";
-import Vec3 from "../../engine/math/Vec3";
+import Entity from "../../engine/core/entities/Entity";
 import CanvasCamera from '../CanvasCamera'
 import { toRadians } from "@razor/math/math";
 import Lamp from "../entities/Lamp";

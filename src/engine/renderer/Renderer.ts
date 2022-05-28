@@ -1,5 +1,5 @@
-import Entity from "../core/Entity";
-import Scene from "../core/Scene";
+import Entity from "../core/entities/Entity";
+import Scene from "../core/scenes/Scene";
 import Shader from "../appearance/Shader";
 import Material from "@razor/appearance/material/Material";
 

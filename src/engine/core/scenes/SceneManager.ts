@@ -1,4 +1,4 @@
-import RenderStrategy from "../renderer/RenderStrategy";
+import RenderStrategy from "../../renderer/RenderStrategy";
 import Scene from "./Scene";
 
 

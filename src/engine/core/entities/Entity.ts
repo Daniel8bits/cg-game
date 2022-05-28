@@ -1,8 +1,8 @@
-import VAO from "../buffer/VAO";
-import Renderer from "../renderer/Renderer";
-import Transform from "../math/Transform"
-import Material from "../appearance/material/Material";
-import Scene from "./Scene";
+import VAO from "../../buffer/VAO";
+import Renderer from "../../renderer/Renderer";
+import Transform from "../../math/Transform"
+import Material from "../../appearance/material/Material";
+import Scene from "../scenes/Scene";
 import { Matrix4 } from "@math.gl/core";
 
 

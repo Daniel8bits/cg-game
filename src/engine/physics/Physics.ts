@@ -1,4 +1,4 @@
-import Scene from '../core/Scene'
+import Scene from '../core/scenes/Scene'
 
 function Physics(scene: (new () => Scene)): (new () => Scene) {
   return class extends scene {

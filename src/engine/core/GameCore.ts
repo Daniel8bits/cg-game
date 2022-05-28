@@ -1,4 +1,4 @@
-import SceneManager from './SceneManager'
+import SceneManager from './scenes/SceneManager'
 import RenderStrategy from '../renderer/RenderStrategy'
 
 abstract class GameCore {
