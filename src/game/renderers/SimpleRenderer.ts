@@ -84,6 +84,10 @@ class SimpleRenderer extends Renderer {
             shader.setMatrix4x4('u_projection', this._projection);
             shader.setMatrix4x4('u_view', this._camera.getView());
             shader.setVector3('u_color',new Vector3(1,0.2,0.3));
+
+            //Update these uniform settings to set value from gui input
+            shader.setFloat("u_gamma", 1.0);
+
             shader.setVector3("lightCamera.color.ambient", new Vector3(1,1,1));
             shader.setVector3("lightCamera.color.diffuse", new Vector3(0.5,0.5,0.5))
             shader.setVector3("lightCamera.color.specular",new Vector3(0.3,0.3,0.3));

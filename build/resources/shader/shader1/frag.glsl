@@ -1,5 +1,8 @@
 precision mediump float;
 
+//uniform filter
+uniform float u_gamma;
+
 varying vec2 v_uvCoord;
 //varying vec4 v_color;
 
@@ -11,7 +14,6 @@ varying vec3 v_FragPos;
 varying vec3 v_camera_view;
 
 #define MAX_LIGHTS 2
-
 
 struct LightProperties{
   vec3 ambient;
@@ -57,6 +59,7 @@ LightProperties CalcDirLight(Light light, vec3 normal, vec3 viewDir,vec3 texture
     
     return properties;
 }  
+
 vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
 {
     LightProperties properties = CalcDirLight(light,normal,viewDir,texturevec3);
@@ -81,8 +84,8 @@ void main() {
       result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
     gl_FragColor = vec4(result, 1.0);
 
-    float gamma = 1.0;
-    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma));
+    //float gamma = 1.0;
+    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/u_gamma));
 
     //gl_FragColor = vec4(texturevec3, 1);
  
