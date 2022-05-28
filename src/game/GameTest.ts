@@ -21,6 +21,7 @@ import Razor from "@razor/core/Razor";
 import EntityFactory from "./entities/EntityFactory";
 import TextEntity from "./entities/gui/TextEntity";
 import GuiEntity from "./entities/gui/GuiEntity";
+import OBJLoader from "@razor/loader/OBJLoader";
 import SelectEntity from "./entities/gui/SelectEntity";
 import EmptyMaterial from "@razor/appearance/material/EmptyMaterial";
 
