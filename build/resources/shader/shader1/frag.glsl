@@ -4,6 +4,7 @@ varying vec2 v_uvCoord;
 //varying vec4 v_color;
 
 uniform sampler2D u_texture;
+uniform vec3 u_camera_position;
 
 //
 varying vec3 v_normal;
@@ -70,15 +71,23 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
     return (properties.ambient + properties.diffuse + properties.specular);
 } 
 
+bool isVisible(vec3 camera,vec3 light){
+  float dx = camera.x - light.x;
+  float dy = camera.y - light.y;
+  float dz = camera.z - light.z;
+
+  return sqrt(dx * dx + dy * dy + dz * dz) < 100.0;
+}
+
 void main() {
     vec3 texturevec3 = vec3(texture2D(u_texture, v_uvCoord));
 
     vec3 norm = normalize(v_normal);
-    vec3 viewDir = normalize(v_camera_view - v_FragPos);
+    vec3 viewDir = normalize(u_camera_position - v_FragPos);
     vec3 result = vec3(0.0);
-    if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);
+    //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);
     for(int i = 0; i < MAX_LIGHTS; i++)
-      result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
+        result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
     gl_FragColor = vec4(result, 1.0);
 
     float gamma = 1.0;
