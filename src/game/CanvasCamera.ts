@@ -39,7 +39,7 @@ class CanvasCamera extends Camera {
     ) {
         super(translation, rotation)
         this._name = name
-        this._speed = 10
+        this._speed = 40
         this._sensitivity = 7.5
         this._pitch = 0
         this._lockedIn = null

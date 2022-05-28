@@ -1,7 +1,7 @@
 import { Vector3, Quaternion, Matrix4 } from "@math.gl/core"
 import GameCore from '@razor/core/GameCore'
-import ResourceManager from '../engine/core/ResourceManager'
-import Scene from '../engine/core/Scene';
+import ResourceManager from '@razor/core/ResourceManager'
+import Scene from '@razor/core/Scene';
 import SimpleRenderer from './renderers/SimpleRenderer'
 import SimpleEntity from './entities/SimpleEntity'
 import Vec3 from '../engine/math/Vec3';
@@ -18,6 +18,7 @@ import VAO from "@razor/buffer/VAO";
 import VBO from "@razor/buffer/VBO";
 import { gl } from "@razor/gl/GLUtils";
 import Razor from "@razor/core/Razor";
+import EntityFactory from "./entities/EntityFactory";
 import TextEntity from "./entities/gui/TextEntity";
 import GuiEntity from "./entities/gui/GuiEntity";
 import SelectEntity from "./entities/gui/SelectEntity";
@@ -77,6 +78,18 @@ class GameTest extends GameCore {
                 pathname: '/resources/objects/doors/elevator-door-texture.png'
             },
             {
+                name: 'hall-door',
+                pathname: '/resources/objects/doors/hall-door-texture.png'
+            },
+            {
+                name: 'door-panel-locked',
+                pathname: '/resources/objects/panels/door-panel-locked.png'
+            },
+            {
+                name: 'door-panel-unlocked',
+                pathname: '/resources/objects/panels/door-panel-unlocked.png'
+            },
+            {
                 name: 'lamp',
                 pathname: '/resources/objects/lamp/lamp-texture.png'
             },
@@ -104,6 +117,16 @@ class GameTest extends GameCore {
                 ResourceManager.getTexture('elevator-door'),
             ),
             new DefaultMaterial(
+                'hall-door',
+                ResourceManager.getShader('shader1'),
+                ResourceManager.getTexture('hall-door'),
+            ),
+            new DefaultMaterial(
+                'door-panel',
+                ResourceManager.getShader('shader1'),
+                ResourceManager.getTexture('door-panel-locked'),
+            ),
+            new DefaultMaterial(
                 'lamp',
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('lamp'),
@@ -119,14 +142,18 @@ class GameTest extends GameCore {
             )
         
         ])
-            .forEachMaterial((material) => {
-                material.create()
-            })
+        .forEachMaterial((material) => {
+            material.create()
+        })
 
         ResourceManager.loadVAO([
             {
                 name: 'level',
                 objectData: '/resources/objects/level/level.obj'
+            },
+            {
+                name: 'level-2',
+                objectData: '/resources/objects/level/level-2.obj'
             },
             {
                 name: 'hall',
@@ -139,6 +166,14 @@ class GameTest extends GameCore {
             {
                 name: 'elevator-door',
                 objectData: '/resources/objects/doors/elevator-door.obj'
+            },
+            {
+                name: 'hall-door',
+                objectData: '/resources/objects/doors/hall-door.obj'
+            },
+            {
+                name: 'door-panel',
+                objectData: '/resources/objects/panels/door-panel.obj'
             },
             {
                 name: 'lamp',
@@ -182,9 +217,9 @@ class GameTest extends GameCore {
                 }
             }
         ])
-            .forEachVAO((vao) => {
-                vao.create();
-            })
+        .forEachVAO((vao) => {
+            vao.create();
+        })
 
 
         const guiRenderer = new GuiRenderer(this._camera);
@@ -193,28 +228,6 @@ class GameTest extends GameCore {
         this.getRenderStrategy().add(simpleRenderer)
 
         this.getSceneManager().add(new Scene('scene1'), true)
-
-        this.getSceneManager().get("scene1").add(new Lamp(
-            'lamp',
-            ResourceManager.getVAO("lamp"),
-            ResourceManager.getMaterial("lamp"),
-            simpleRenderer,
-            new Vector3(0.6,0.6,0.6)
-        ));
-
-        const entity4 = this.getSceneManager().get('scene1').get('lamp');
-        entity4.getTransform().setTranslation(new Vector3(20, 0, 30))
-
-        this.getSceneManager().get("scene1").add(new Lamp(
-            'lamp2',
-            ResourceManager.getVAO("lamp"),
-            ResourceManager.getMaterial("lamp"),
-            simpleRenderer,
-            new Vector3(0.6,0.4,0.2)
-        ));
-
-        const entity5 = this.getSceneManager().get('scene1').get('lamp2');
-        entity5.getTransform().setTranslation(new Vector3(-20, 0, -30))
         
         const bottom = -Razor.CANVAS.height + 100;
         const guileft = new GuiEntity('guileft',guiRenderer) as GuiEntity;
@@ -252,9 +265,11 @@ class GameTest extends GameCore {
 
         Event.trigger("loadScene", this.getSceneManager().getActive());
 
-        
 
-        this.importAll()
+        new EntityFactory(
+            this.getSceneManager(),
+            this.getRenderStrategy()
+        ).load()
     }
 
     public update(time: number, delta: number) {
@@ -266,91 +281,6 @@ class GameTest extends GameCore {
     public render() {
         super.render();
     }
-
-
-    public importAll(): void {
-
-        interface EntityImportJSON {
-          [name: string]: {
-            translation: {
-              x: number
-              y: number
-              z: number
-            },
-            rotation: {
-              x: number
-              y: number
-              z: number
-            },
-            scale: {
-              x: number
-              y: number
-              z: number
-            },
-          }
-        }
-
-        function getCorrespondingMaterialName(object: string): string {
-            switch (object) {
-                case 'hall':
-                    return 'level'
-                default:
-            }
-            return object
-        }
-    
-        FileUtils.load('/resources/entities.json',
-          (data) => {
-    
-            const entities: EntityImportJSON = JSON.parse(data)
-    
-            Object.keys(entities).forEach(key => {
-              const data = entities[key]
-    
-              const vaoName = ((): string => {
-                for(let i = key.length-1; i >= 0; i--) {
-                  if(key[i] === '_') {
-                    return key.substring(0, i)
-                  }
-                }
-                return '';
-              })();
-    
-              const entity = new SimpleEntity(
-                key,
-                ResourceManager.getVAO(vaoName), 
-                ResourceManager.getMaterial(getCorrespondingMaterialName(vaoName)),
-                this.getRenderStrategy().get('renderer1')
-              )
-    
-              entity.getTransform().setTranslation(new Vector3(
-                data.translation.x,
-                data.translation.y,
-                data.translation.z,
-              ))
-              entity.getTransform().setRotation(new Orientation(
-                data.rotation.x,
-                data.rotation.y*2,
-                data.rotation.z,
-              ))
-              entity.getTransform().setScale(new Vector3(
-                data.scale.x,
-                data.scale.y,
-                data.scale.z,
-              ))
-    
-              this.getSceneManager().getActive().add(entity)
-    
-            })
-    
-    
-          },
-          function onError(err) {
-            console.error('Could not import entities from json: ', err);
-          },
-        )
-      } 
-
 
 }
 export default GameTest
