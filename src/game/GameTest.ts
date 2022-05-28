@@ -1,7 +1,7 @@
 import { Vector3, Quaternion, Matrix4 } from "@math.gl/core"
 import GameCore from '@razor/core/GameCore'
 import ResourceManager from '@razor/core/ResourceManager'
-import Scene from '@razor/core/Scene';
+import Scene from '@razor/core/scenes/Scene';
 import SimpleRenderer from './renderers/SimpleRenderer'
 import SimpleEntity from './entities/SimpleEntity'
 import CanvasCamera from './CanvasCamera'

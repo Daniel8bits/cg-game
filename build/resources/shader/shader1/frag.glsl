@@ -86,14 +86,20 @@ void main() {
     vec3 viewDir = normalize(u_camera_position - v_FragPos);
     vec3 result = vec3(0.0);
     //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);
+
+    /*
+
+      RESOLVER O SORTING ANTES DE LIBERAR A ILUMINAÇÃO
+
     for(int i = 0; i < MAX_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
     gl_FragColor = vec4(result, 1.0);
 
     float gamma = 1.0;
     gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma));
+    */
 
-    //gl_FragColor = vec4(texturevec3, 1);
+    gl_FragColor = vec4(texturevec3, 1);
  
   /*
     vec3 ambient = u_lightColor * texturevec3;
