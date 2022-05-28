@@ -83,24 +83,29 @@ class SimpleRenderer extends Renderer {
             const shader = material.getShader();
             shader.setMatrix4x4('u_projection', this._projection);
             shader.setMatrix4x4('u_view', this._camera.getView());
+            const cameraPosition = this._camera.getTransform().getTranslation();
+            shader.setVector3('u_camera_position',cameraPosition.negate())
             shader.setVector3('u_color',new Vector3(1,0.2,0.3));
             shader.setVector3("lightCamera.color.ambient", new Vector3(1,1,1));
             shader.setVector3("lightCamera.color.diffuse", new Vector3(0.5,0.5,0.5))
             shader.setVector3("lightCamera.color.specular",new Vector3(0.3,0.3,0.3));
             //shader.setFloat("u_light.cutOff",cos(toRadians(0))); AINDA NÃO SEI O QUE FAZER AQUI
 
-            shader.setVector3("lightCamera.position",this._camera.getTransform().getTranslation().negate())
+            shader.setVector3("lightCamera.position",cameraPosition.negate())
             const distance = this.distanceConfig[100];
             shader.setFloat("lightCamera.distance.constant", distance[0]);
             shader.setFloat("lightCamera.distance.linear", distance[1])
             shader.setFloat("lightCamera.distance.quadratic",distance[2]);
             shader.setFloat("lightCamera.shininess",32)
             
+            let lampCount = 0;
             this.getEntitiesByMaterial(material).forEach((entity: Entity,index : number) => {
                 if(entity instanceof Lamp){
                     shader.setInt("applyLight",0);
                     const lamp = entity as Lamp;
-                    const path = `pointLights[${index}]`;
+                    if(lamp.getTransform().getTranslation().distanceTo(cameraPosition) > 100) return;
+                    //console.log(lamp.getTransform().getTranslation(),cameraPosition);
+                    const path = `pointLights[${lampCount++}]`;
 
                     shader.setVector3(path+".color.ambient", lamp.color);
                     shader.setVector3(path+".color.diffuse", lamp.color)

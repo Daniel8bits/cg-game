@@ -20,7 +20,6 @@ class EntityFactory {
   }
 
   public load(): void {
-
     interface EntityImportJSON {
       [name: string]: {
         translation: {

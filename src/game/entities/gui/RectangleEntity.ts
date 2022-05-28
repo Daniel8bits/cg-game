@@ -10,6 +10,7 @@ import Text from "../../utils/Text";
 class RectangleEntity extends Entity {
     private size: Vector2;
 
+    public color : Vector3 = new Vector3(0.3,0.3,0.3);
     public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
         super(name, vao, material, renderer);
         this.size = new Vector2(1,1);

@@ -31,7 +31,7 @@ class Transform {
     }
 
     public set parent(entity : Entity) {
-        entity.getTransform().children.add(this._entity);
+        //entity.getTransform().children.add(this._entity);
         this._parent = entity;
     }
 
@@ -145,7 +145,7 @@ class Transform {
         const localMatrix = this.toMatrix();
         let worldMatrix = localMatrix.clone();
         if(this.parent){
-            worldMatrix = this.parent.getTransform().toMatrix().multiplyRight(localMatrix);
+            worldMatrix = this.parent.getTransform().worldMatrix().multiplyRight(localMatrix);
         }
         return worldMatrix;
     }

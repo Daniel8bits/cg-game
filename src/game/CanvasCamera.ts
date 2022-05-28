@@ -11,6 +11,7 @@ import { toRadians } from "../engine/math/math";
 import Vec3 from "../engine/math/Vec3";
 //import CameraManager from "./CameraManager";
 import SimpleEntity from "./entities/SimpleEntity";
+import GameTest from "./GameTest";
 
 
 class CanvasCamera extends Camera {
@@ -49,8 +50,7 @@ class CanvasCamera extends Camera {
     }
 
     public update(delta: number) {
-
-        if(this._mode === CanvasCamera.MODE.FIRST_PERSON) {
+        if(this._mode === CanvasCamera.MODE.FIRST_PERSON && GameTest.getInstance().getSceneManager().getActive().getName() != "menu") {
             this._firstPersonMovement(delta)
         }
 /*
