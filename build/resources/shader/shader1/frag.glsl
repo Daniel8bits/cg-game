@@ -10,7 +10,7 @@ varying vec3 v_normal;
 varying vec3 v_FragPos;
 varying vec3 v_camera_view;
 
-#define MAX_LIGHTS 2
+#define MAX_LIGHTS 33
 
 
 struct LightProperties{

@@ -21,6 +21,7 @@ import Razor from "@razor/core/Razor";
 import EntityFactory from "./entities/EntityFactory";
 import TextEntity from "./entities/gui/TextEntity";
 import GuiEntity from "./entities/gui/GuiEntity";
+import OBJLoader from "@razor/loader/OBJLoader";
 
 class GameTest extends GameCore {
 
@@ -260,6 +261,8 @@ class GameTest extends GameCore {
             this.getSceneManager(),
             this.getRenderStrategy()
         ).load()
+
+        new OBJLoader().loadHitboxes('/resources/hitboxes.json');
     }
 
     public update(time: number, delta: number) {
