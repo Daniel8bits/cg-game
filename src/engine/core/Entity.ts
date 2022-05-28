@@ -15,6 +15,7 @@ abstract class Entity {
     private _renderer: Renderer;
 
     private _transform: Transform
+    private _scene : Scene;
 
     public constructor(name: string, vao?: VAO, material?: Material, renderer?: Renderer) {
         this._name = name;
@@ -22,7 +23,7 @@ abstract class Entity {
         this._material = material;
         this._renderer = renderer;
         this._transform = new Transform()
-        this.transform.setEntity(this);
+        this.getTransform().setEntity(this);
     }
 
     //public abstract start() : void;
@@ -65,8 +66,12 @@ abstract class Entity {
         return this._transform
     }
 
-    public get transform() :Transform{
-        return this._transform;
+    public setScene(scene : Scene) : void{
+        this._scene = scene;
+    }
+
+    public getScene() : Scene{
+        return this._scene;
     }
 
 }

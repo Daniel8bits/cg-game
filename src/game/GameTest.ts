@@ -20,13 +20,20 @@ import { gl } from "@razor/gl/GLUtils";
 import Razor from "@razor/core/Razor";
 import TextEntity from "./entities/gui/TextEntity";
 import GuiEntity from "./entities/gui/GuiEntity";
+import SelectEntity from "./entities/gui/SelectEntity";
 
 class GameTest extends GameCore {
 
     private _camera: CanvasCamera
+    private static instance : GameTest;
 
     public constructor() {
         super()
+        GameTest.instance = this;
+    }
+
+    public static getInstance() : GameTest{
+        return GameTest.instance;
     }
 
     public start() {
@@ -211,15 +218,16 @@ class GameTest extends GameCore {
         
         const bottom = -Razor.CANVAS.height + 100;
         const guileft = new GuiEntity('guileft',guiRenderer) as GuiEntity;
+        this.getSceneManager().get("scene1").add(guileft);
         guileft.getTransform().setTranslation(new Vector3(0,bottom,0));
 
-        this.getSceneManager().get("scene1").add(guileft);
         
         const rectangle= guileft.addRectangle("rectangle_left");
         rectangle.setSize(200,100);
-        this.getSceneManager().get("scene1").add(rectangle);
-        const text = guileft.addText("text");
-        this.getSceneManager().get("scene1").add(text);
+        //this.getSceneManager().get("scene1").add(rectangle);
+        const text = guileft.addText("text_rectangle_left");
+        text.setText("loading")
+        //this.getSceneManager().get("scene1").add(text);
 
         this.getSceneManager().get("scene1").add(new GuiEntity(
             'guiright',
@@ -238,9 +246,13 @@ class GameTest extends GameCore {
         text.transform.parent = guileft;*/
         text.getTransform().setTranslation(new Vector3(-20,-40,-1))
         text.getTransform().setScale(new Vector3(2,2,2))
-
+        const select1 = new SelectEntity("select1",guiRenderer,this.getSceneManager().get("scene1"));
+        this.getSceneManager().get("scene1").add(select1)
+        select1.addOption("opcao 1")
 
         Event.trigger("loadScene", this.getSceneManager().getActive());
+
+        
 
         this.importAll()
     }

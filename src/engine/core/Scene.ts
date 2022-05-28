@@ -32,6 +32,7 @@ class Scene {
      */
     public add(entity: Entity, visible: boolean = true): Scene {
         const key: string = this._validate(entity, this._entities);
+        entity.setScene(this);
         this._entities.set(entity.getName(), entity);
         if(visible) {
             this._visible.set(entity.getName(), entity);

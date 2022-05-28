@@ -116,7 +116,7 @@ class SimpleRenderer extends Renderer {
                 }
                 
                 shader.setVector3("u_resolution",new Vector3(0,0,0))
-                material.getShader().setMatrix4x4('u_transform', entity.transform.worldMatrix());
+                material.getShader().setMatrix4x4('u_transform', entity.getTransform().worldMatrix());
                 
                 material.getShader().setMatrix4x4('u_worldInverseTranspose',entity.getTransform().toMatrix().invert().transpose());
                 entity.getVAO().bind()
