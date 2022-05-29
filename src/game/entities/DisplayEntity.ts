@@ -13,9 +13,9 @@ class DisplayEntity extends GuiEntity {
         super(name, renderer);
     }
     
-    public setText(name: string) : void {
+    public setText(name: string,color : Vector3 = new Vector3(0.9,0.9,0.9)) : void {
         const rectangle = this.addRectangle(this.getName()+"_rectangle_left");
-        rectangle.color = new Vector3(1, 0, 0);
+        rectangle.color = color;
         rectangle.setSize(120, 50);
         rectangle.getTransform().parent = this;
         const text = this.addText(this.getName()+"_text_rectangle_left");
@@ -31,8 +31,9 @@ class DisplayEntity extends GuiEntity {
         image.getTransform().parent = this;
     }
 
-    public updateText(text : string){
-        this._text.setText(text);
+    public updateText(text : number){
+        
+        this._text.setText(String(text));
     }
 
     public update(time: number, delta: number): void {

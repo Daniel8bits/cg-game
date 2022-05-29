@@ -27,6 +27,7 @@ import Texture from "@razor/appearance/Texture";
 import TextureLoader from "@razor/loader/TextureLoader";
 import DisplayEntity from "./entities/DisplayEntity";
 import ImageEntity from "./entities/gui/ImageEntity";
+import DialogEntity from "./entities/gui/DialogEntity";
 
 class GameTest extends GameCore {
 
@@ -216,80 +217,41 @@ class GameTest extends GameCore {
 
         this.getSceneManager().add(new Scene('scene1'), true)
 
-        const guiAmmunition = new DisplayEntity('guiAmmunition',guiRenderer);
+        const guiAmmunition = new DisplayEntity('guiAmmunition', guiRenderer);
         const bottom = -Razor.CANVAS.height + 100;
         this.getSceneManager().getActive().add(guiAmmunition);
         guiAmmunition.getTransform().setTranslation(new Vector3(0, bottom, 0));
-        guiAmmunition.setText("123");
+        guiAmmunition.setText("123", new Vector3(0.2, 0.9, 0.9));
         //// https://www.pngwing.com/pt/free-png-stupy/download
-        guiAmmunition.setImage(new ImageEntity("ammunition","/resources/images/ammunition.png",guiRenderer));
+        guiAmmunition.setImage(new ImageEntity("ammunition", "/resources/images/ammunition.png", guiRenderer));
 
-        const guiLife = new DisplayEntity('guiLife',guiRenderer);
+        const guiLife = new DisplayEntity('guiLife', guiRenderer);
         this.getSceneManager().getActive().add(guiLife);
         guiLife.getTransform().setTranslation(new Vector3(0, bottom - 50, 0));
-        guiLife.setText("123");
+        guiLife.setText("123", new Vector3(1, 0.2, 0.2));
         //https://www.onlinewebfonts.com/icon/146242
-        guiLife.setImage(new ImageEntity("life","/resources/images/life.png",guiRenderer));
+        guiLife.setImage(new ImageEntity("life", "/resources/images/life.png", guiRenderer));
+
+        const dialog = new DialogEntity("dialog", guiRenderer);
+        this.getSceneManager().getActive().add(dialog);
+        dialog.getTransform().setTranslation(new Vector3(100,100,-1).negate())
+        dialog.init();
+        dialog.animateText("oque voce ta fazendo aqui seu animal voce deveria tar longe",50);
         /*
-        const guiAmmunition = new GuiEntity('guileft', guiRenderer) as GuiEntity;
-        
-        /* Arma 
-        image.getTransform().setTranslation(new Vector3(0,0, 1).negate());
-        image.getTransform().setScale(new Vector3(0.09,0.09, 1));
-        this.getSceneManager().get("scene1").add(image)
-        image.getTransform().parent = guiAmmunition;
-
-        const rectangle = guiAmmunition.addRectangle("rectangle_left");
-        rectangle.color = new Vector3(1,0,0);
-        rectangle.setSize(150, 50);
-        rectangle.getTransform().parent = guiAmmunition;
-        const text = guiAmmunition.addText("text_rectangle_left");
-        text.setText("100")
-        text.getTransform().setTranslation(new Vector3(50, 20, 1).negate())
-        text.getTransform().setScale(new Vector3(2, 2, 2))
-
-        const guiLife = new GuiEntity('guileft2', guiRenderer) as GuiEntity;
-        this.getSceneManager().getActive().add(guiLife);
-        guiLife.getTransform().setTranslation(new Vector3(0, bottom - 50, 0));
-        /* Vida 
-        const image2 = new SimpleEntity(
-            "image2",
-            ResourceManager.getVAO("image"),
-            ResourceManager.getMaterial("image"),
-            guiRenderer
-        );
-        image2.getTransform().setTranslation(new Vector3(0,0, 1).negate());
-        image2.getTransform().setScale(new Vector3(0.09,0.09, 1));
-        this.getSceneManager().get("scene1").add(image2)
-        image2.getTransform().parent = guiLife;
-
-        const rectangle2 = guiLife.addRectangle("rectangle_left2");
-        rectangle2.color = new Vector3(1,0,0);
-        rectangle2.setSize(150, 50);
-        rectangle2.getTransform().parent = guiLife;
-        const text2 = guiLife.addText("text_rectangle_left2");
-        text2.setText("100")
-        text2.getTransform().setTranslation(new Vector3(50, 20, 1).negate())
-        text2.getTransform().setScale(new Vector3(2, 2, 2))
-*/
-
-        /*this.getSceneManager().getActive().add(new GuiEntity(
-            'guiright',
-            guiRenderer
-        ));*/
-        //        const guiright = this.getSceneManager().get('scene1').get('guiright');
-        //        guiright.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width + 100,bottom,0))
-
-
-
-
+                const pauseContainer = new GuiEntity("pause_container",guiRenderer);
+                this.getSceneManager().getActive().add(pauseContainer);
+                const rectanglePause = pauseContainer.addRectangle("pause_rectangle");
+                rectanglePause.getTransform().setScale(new Vector3(Razor.CANVAS.width,Razor.CANVAS.height,1));
+                rectanglePause.color = new Vector3(0.1,0.1,0.1);
+                const textPause = pauseContainer.addText("pause_text").setText("Pause");
+        */
         new EntityFactory(
             this.getSceneManager(),
             this.getRenderStrategy()
         ).load()
 
         this.getSceneManager().add(new Scene('menu'), true)
-        
+
         const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
         select1.addOption("comecar").setExecute(() => {
