@@ -228,7 +228,7 @@ class GameTest extends GameCore {
         this.getSceneManager().getActive().add(guiLife);
         guiLife.getTransform().setTranslation(new Vector3(0, bottom - 50, 0));
         guiLife.setText("123");
-        guiLife.setImage(new ImageEntity("life","/resources/images/life.png",guiRenderer));
+        guiLife.setImage(new ImageEntity("life","/resources/images/ammunition.png",guiRenderer));
         /*
         const guiAmmunition = new GuiEntity('guileft', guiRenderer) as GuiEntity;
         

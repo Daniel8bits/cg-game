@@ -12,11 +12,11 @@ class DisplayEntity extends GuiEntity {
     }
     
     public setText(name: string) : void {
-        const rectangle = this.addRectangle("rectangle_left");
+        const rectangle = this.addRectangle(this.getName()+"_rectangle_left");
         rectangle.color = new Vector3(1, 0, 0);
         rectangle.setSize(150, 50);
         rectangle.getTransform().parent = this;
-        const text = this.addText("text_rectangle_left");
+        const text = this.addText(this.getName()+"_text_rectangle_left");
         text.setText("100")
         text.getTransform().setTranslation(new Vector3(50, 15, 1).negate())
         text.getTransform().setScale(new Vector3(2, 2, 2))
