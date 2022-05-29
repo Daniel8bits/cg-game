@@ -1,10 +1,11 @@
-import VAO from "../buffer/VAO";
-import Renderer from "../renderer/Renderer";
-import Transform from "../math/Transform"
-import Material from "../appearance/material/Material";
-import Scene from "./Scene";
+import VAO from "../../buffer/VAO";
+import Renderer from "../../renderer/Renderer";
+import Transform from "../../math/Transform"
+import Material from "../../appearance/material/Material";
+import Scene from "../scenes/Scene";
 import { Matrix4 } from "@math.gl/core";
 
+type Constructor<T> = { new (...args: any[]): T };
 
 abstract class Entity {
 
@@ -15,6 +16,7 @@ abstract class Entity {
     private _renderer: Renderer;
 
     private _transform: Transform
+    private _scene : Scene;
 
     public constructor(name: string, vao?: VAO, material?: Material, renderer?: Renderer) {
         this._name = name;
@@ -22,7 +24,7 @@ abstract class Entity {
         this._material = material;
         this._renderer = renderer;
         this._transform = new Transform()
-        this.transform.setEntity(this);
+        this.getTransform().setEntity(this);
     }
 
     //public abstract start() : void;
@@ -65,8 +67,12 @@ abstract class Entity {
         return this._transform
     }
 
-    public get transform() :Transform{
-        return this._transform;
+    public setScene(scene : Scene) : void{
+        this._scene = scene;
+    }
+
+    public getScene() : Scene{
+        return this._scene;
     }
 
 }

@@ -3,7 +3,7 @@ import Texture from '../appearance/Texture';
 class TextureLoader {
     
 
-  public load(pathname: string): Texture {
+  public load(pathname: string,callback?: (texture : Texture) => void): Texture {
     
     const texture = new Texture()
     const img = new Image();
@@ -21,6 +21,7 @@ class TextureLoader {
       const data = new Uint8Array(ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight).data)
 
       texture.setData(data)
+      if(callback) callback(texture);
     }
 
     img.onerror = (err) => {

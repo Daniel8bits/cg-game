@@ -1,6 +1,6 @@
-import RenderStrategy from "../renderer/RenderStrategy";
+import RenderStrategy from "../../renderer/RenderStrategy";
 import Scene from "./Scene";
-
+import Event from "src/event";
 
 class SceneManager {
 
@@ -36,6 +36,7 @@ class SceneManager {
         this._scenes.set(key, scene);
         if(active) {
             this._active = scene;
+            Event.trigger("loadScene",this._active);
         }
         return this
     }
@@ -60,6 +61,8 @@ class SceneManager {
     public setActive(scene: Scene|string): SceneManager|never {
         const key: string = this._validate(scene, false);
         this._active = this._scenes.get(key);
+        Event.trigger("loadScene",this._active);
+
         return this
     }
 

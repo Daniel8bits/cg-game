@@ -10,12 +10,14 @@ const Properties = ({entity}) => {
     const [translation,setTranslation] = useState(new Vector3);
     const [scale,setScale] = useState(new Vector3);
     const [rotation,setRotation] = useState(new Orientation);
+    const [parent,setParent] = useState("");
 
     useEffect(() => {
         const transform = entity.getTransform();
         setTranslation(transform.getTranslation());
         setRotation(transform.getRotation());
         setScale(transform.getScale());
+        setParent(transform.parent?.getName())
     },[entity])
 
     const updated = (only = false) => {
@@ -70,6 +72,7 @@ const Properties = ({entity}) => {
                 <input type='number' step="0.01" onChange={changeValue('scale')} name='1' value={scale[1]} />
                 <input type='number' step="0.01" onChange={changeValue('scale')} name='2' value={scale[2]} />
             </div>
+            <p><b>Parent</b> {parent ?? "-x-"}</p>
             {className == "Lamp" && <Lamp entity={entity} updated={updated} />}
         </div>
     )

@@ -103,6 +103,24 @@ class OBJLoader {
         return vao
     }
 
+
+    public loadHitboxes(pathname: string): any {
+
+        FileUtils.load(
+            pathname, 
+            function onSuccess(file) {
+                const data = JSON.parse(file)
+
+                console.log(data);
+                
+            },
+            function onError(err) {
+                throw new Error(`Error trying to load hitbox data: ${pathname}.\n ${err}`);
+            },
+        )
+
+    }
+
 }
 
 export default OBJLoader

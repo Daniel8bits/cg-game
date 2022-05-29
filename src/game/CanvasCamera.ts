@@ -1,6 +1,6 @@
 import {Vector3, Euler} from "@math.gl/core"
 
-import Entity from "../engine/core/Entity";
+import Entity from "../engine/core/entities/Entity";
 import Razor from "../engine/core/Razor";
 //import SceneManager from "@engine/core/SceneManager";
 import Orientation from "@razor/math/Orientation";
@@ -8,9 +8,9 @@ import Transform from "../engine/math/Transform";
 import Camera from "../engine/core/Camera";
 import InputManager, {Keys} from "../engine/core/InputManager";
 import { toRadians } from "../engine/math/math";
-import Vec3 from "../engine/math/Vec3";
 //import CameraManager from "./CameraManager";
 import SimpleEntity from "./entities/SimpleEntity";
+import GameTest from "./GameTest";
 
 
 class CanvasCamera extends Camera {
@@ -49,8 +49,7 @@ class CanvasCamera extends Camera {
     }
 
     public update(delta: number) {
-
-        if(this._mode === CanvasCamera.MODE.FIRST_PERSON) {
+        if(this._mode === CanvasCamera.MODE.FIRST_PERSON && GameTest.getInstance().getSceneManager().getActive().getName() != "menu") {
             this._firstPersonMovement(delta)
         }
 /*

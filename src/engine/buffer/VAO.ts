@@ -46,7 +46,7 @@ class VAO implements IResource {
     private _createVBO(target: number, vbo: VBO): void {
         if(vbo.getId() == null) vbo.setId(gl.createBuffer());
         gl.bindBuffer(vbo.getType(), vbo.getId());
-        gl.bufferData(vbo.getType(), vbo.getBuffer(), vbo.getUsage());
+        if(vbo.getBuffer().length > 0) gl.bufferData(vbo.getType(), vbo.getBuffer(), vbo.getUsage());
 
         if (vbo.getType() === gl.ARRAY_BUFFER) {
             this._setAttributePointer(target, vbo);

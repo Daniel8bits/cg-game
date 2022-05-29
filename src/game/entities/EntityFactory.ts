@@ -1,8 +1,8 @@
 import { Vector3 } from '@math.gl/core';
 import Material from '@razor/appearance/material/Material';
-import Entity from '@razor/core/Entity';
+import Entity from '@razor/core/entities/Entity';
 import ResourceManager from '@razor/core/ResourceManager';
-import SceneManager from '@razor/core/SceneManager';
+import SceneManager from '@razor/core/scenes/SceneManager';
 import Orientation from '@razor/math/Orientation';
 import RenderStrategy from '@razor/renderer/RenderStrategy';
 import FileUtils from '@razor/utils/FileUtils';
@@ -20,7 +20,6 @@ class EntityFactory {
   }
 
   public load(): void {
-
     interface EntityImportJSON {
       [name: string]: {
         translation: {
@@ -87,8 +86,7 @@ class EntityFactory {
       },
     );
 
-    (this._sceneManager.getActive().get('lamp_2') as Lamp).color = new Vector3(1, 1, 1);
-    (this._sceneManager.getActive().get('lamp_33') as Lamp).color = new Vector3(1, 1, 1)
+    this._configureEntities()
     
   } 
 
@@ -120,6 +118,46 @@ class EntityFactory {
       default:
     }
     return ResourceManager.getMaterial(object)
+  }
+
+
+  private _configureEntities(): void {
+
+    (this._sceneManager.getActive().get('lamp_2') as Lamp).color = new Vector3(1, 1, 1);
+    (this._sceneManager.getActive().get('lamp_33') as Lamp).color = new Vector3(1, 1, 1)
+
+    this._distributeClosestLampsForStaticEntities()
+
+  }
+
+  private _distributeClosestLampsForStaticEntities() {
+
+    const lamps: Lamp[] = []
+
+    this._sceneManager.getActive().forEach((entity: Entity) => {
+      if(entity instanceof Lamp) {
+        lamps.push(entity)
+      }
+    })
+
+    this._sceneManager.getActive().forEach((entity: Entity) => {
+      if(entity instanceof SimpleEntity) {
+
+        const position = entity.getTransform().getTranslation()
+        
+        const closestLamps = Array.from(lamps).sort((a, b) => {
+          const distanceA = position.distanceTo(a.getTransform().getTranslation())
+          const distanceB = position.distanceTo(b.getTransform().getTranslation())
+          if(distanceA > distanceB) return 1;
+          if(distanceA < distanceB) return -1;
+          return 0;
+        }).slice(0, 5);
+
+        (entity as SimpleEntity).setLampList(closestLamps)
+
+      }
+    })
+
   }
 
 }

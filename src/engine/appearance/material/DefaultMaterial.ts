@@ -20,7 +20,6 @@ class DefaultMaterial extends Material {
   public bind(): void {
     this.getShader().bind()
     if(this._texture){
-
       gl.activeTexture(gl.TEXTURE0);
       this._texture.bind();
       this.getShader().setInt('u_texture', 0)
