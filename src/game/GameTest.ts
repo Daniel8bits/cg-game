@@ -23,18 +23,22 @@ import GuiEntity from "./entities/gui/GuiEntity";
 import OBJLoader from "@razor/loader/OBJLoader";
 import SelectEntity from "./entities/gui/SelectEntity";
 import EmptyMaterial from "@razor/appearance/material/EmptyMaterial";
+import Texture from "@razor/appearance/Texture";
+import TextureLoader from "@razor/loader/TextureLoader";
+import DisplayEntity from "./entities/DisplayEntity";
+import ImageEntity from "./entities/gui/ImageEntity";
 
 class GameTest extends GameCore {
 
     private _camera: CanvasCamera
-    private static instance : GameTest;
+    private static instance: GameTest;
 
     public constructor() {
         super()
         GameTest.instance = this;
     }
 
-    public static getInstance() : GameTest{
+    public static getInstance(): GameTest {
         return GameTest.instance;
     }
 
@@ -63,6 +67,13 @@ class GameTest extends GameCore {
             name: 'text',
             vertexShaderPathname: '/resources/shader/text/vert.glsl',
             fragmentShaderPathname: '/resources/shader/text/frag.glsl'
+        }])
+
+        /* Shader da Imagem */
+        ResourceManager.loadShader([{
+            name: 'image',
+            vertexShaderPathname: '/resources/shader/image/vert.glsl',
+            fragmentShaderPathname: '/resources/shader/image/frag.glsl'
         }])
 
         ResourceManager.loadTextures([
@@ -145,11 +156,11 @@ class GameTest extends GameCore {
                 ResourceManager.getShader('text'),
                 ResourceManager.getTexture('text'),
             )
-        
+
         ])
-        .forEachMaterial((material) => {
-            material.create()
-        })
+            .forEachMaterial((material) => {
+                material.create()
+            })
 
         ResourceManager.loadVAO([
             {
@@ -185,25 +196,17 @@ class GameTest extends GameCore {
                 objectData: '/resources/objects/lamp/lamp.obj'
             },
             {
-                name: 'text',
-                objectData: () => {
-                    const vao = new VAO([],2);
-                    vao.addEmpty(2);
-                    return vao;
-                }
-            },
-            {
                 name: 'rectangle',
                 objectData: () => {
-                    const vao = new VAO([],2);
+                    const vao = new VAO([], 2);
                     vao.addEmpty(1);
                     return vao;
                 }
             }
         ])
-        .forEachVAO((vao) => {
-            vao.create();
-        })
+            .forEachVAO((vao) => {
+                vao.create();
+            })
 
 
         const guiRenderer = new GuiRenderer(this._camera);
@@ -213,53 +216,89 @@ class GameTest extends GameCore {
 
         this.getSceneManager().add(new Scene('scene1'), true)
 
+        const guiAmmunition = new DisplayEntity('guiAmmunition',guiRenderer);
         const bottom = -Razor.CANVAS.height + 100;
-        const guileft = new GuiEntity('guileft',guiRenderer) as GuiEntity;
-        this.getSceneManager().getActive().add(guileft);
-        guileft.getTransform().setTranslation(new Vector3(0,bottom,0));
+        this.getSceneManager().getActive().add(guiAmmunition);
+        guiAmmunition.getTransform().setTranslation(new Vector3(0, bottom, 0));
+        guiAmmunition.setText("123");
+        //// https://www.pngwing.com/pt/free-png-stupy/download
+        guiAmmunition.setImage(new ImageEntity("ammunition","/resources/images/ammunition.png",guiRenderer));
 
+        const guiLife = new DisplayEntity('guiLife',guiRenderer);
+        this.getSceneManager().getActive().add(guiLife);
+        guiLife.getTransform().setTranslation(new Vector3(0, bottom - 50, 0));
+        guiLife.setText("123");
+        guiLife.setImage(new ImageEntity("life","/resources/images/life.png",guiRenderer));
+        /*
+        const guiAmmunition = new GuiEntity('guileft', guiRenderer) as GuiEntity;
         
-        const rectangle= guileft.addRectangle("rectangle_left");
-        rectangle.setSize(200,100);
-        const text = guileft.addText("text_rectangle_left");
-        text.setText("loading")
-        text.getTransform().setTranslation(new Vector3(-20,-40,-1))
-        text.getTransform().setScale(new Vector3(2,2,2))
-        
-        
+        /* Arma 
+        image.getTransform().setTranslation(new Vector3(0,0, 1).negate());
+        image.getTransform().setScale(new Vector3(0.09,0.09, 1));
+        this.getSceneManager().get("scene1").add(image)
+        image.getTransform().parent = guiAmmunition;
+
+        const rectangle = guiAmmunition.addRectangle("rectangle_left");
+        rectangle.color = new Vector3(1,0,0);
+        rectangle.setSize(150, 50);
+        rectangle.getTransform().parent = guiAmmunition;
+        const text = guiAmmunition.addText("text_rectangle_left");
+        text.setText("100")
+        text.getTransform().setTranslation(new Vector3(50, 20, 1).negate())
+        text.getTransform().setScale(new Vector3(2, 2, 2))
+
+        const guiLife = new GuiEntity('guileft2', guiRenderer) as GuiEntity;
+        this.getSceneManager().getActive().add(guiLife);
+        guiLife.getTransform().setTranslation(new Vector3(0, bottom - 50, 0));
+        /* Vida 
+        const image2 = new SimpleEntity(
+            "image2",
+            ResourceManager.getVAO("image"),
+            ResourceManager.getMaterial("image"),
+            guiRenderer
+        );
+        image2.getTransform().setTranslation(new Vector3(0,0, 1).negate());
+        image2.getTransform().setScale(new Vector3(0.09,0.09, 1));
+        this.getSceneManager().get("scene1").add(image2)
+        image2.getTransform().parent = guiLife;
+
+        const rectangle2 = guiLife.addRectangle("rectangle_left2");
+        rectangle2.color = new Vector3(1,0,0);
+        rectangle2.setSize(150, 50);
+        rectangle2.getTransform().parent = guiLife;
+        const text2 = guiLife.addText("text_rectangle_left2");
+        text2.setText("100")
+        text2.getTransform().setTranslation(new Vector3(50, 20, 1).negate())
+        text2.getTransform().setScale(new Vector3(2, 2, 2))
+*/
 
         /*this.getSceneManager().getActive().add(new GuiEntity(
             'guiright',
             guiRenderer
         ));*/
-//        const guiright = this.getSceneManager().get('scene1').get('guiright');
-//        guiright.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width + 100,bottom,0))
+        //        const guiright = this.getSceneManager().get('scene1').get('guiright');
+        //        guiright.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width + 100,bottom,0))
 
-        
 
-        
+
+
         new EntityFactory(
             this.getSceneManager(),
             this.getRenderStrategy()
         ).load()
-        
+
         this.getSceneManager().add(new Scene('menu'), true)
-        this.getSceneManager().setActive("menu");
-        const select1 = new SelectEntity("select1",guiRenderer,this.getSceneManager().getActive());
+        
+        const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
-        /*
-        const rectangle2= select1.addRectangle("rectangle_left2");
-        rectangle2.setSize(200,100);
-        const text2 = select1.addText("text_rectangle_left2");
-        text2.setText("loading")
-        text2.getTransform().setTranslation(new Vector3(-20,-40,-1))
-        text2.getTransform().setScale(new Vector3(2,2,2))
-        */
         select1.addOption("comecar").setExecute(() => {
             this.getSceneManager().setActive("scene1")
         })
         select1.addOption("opcao 2")
         select1.addOption("opcao 3")
+
+        this.getSceneManager().setActive("scene1");
+
     }
 
     public update(time: number, delta: number) {
