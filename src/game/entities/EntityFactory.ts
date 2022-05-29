@@ -1,6 +1,6 @@
 import { Vector3 } from '@math.gl/core';
 import Material from '@razor/appearance/material/Material';
-import Entity from '@razor/core/Entity';
+import Entity from '@razor/core/entities';
 import ResourceManager from '@razor/core/ResourceManager';
 import SceneManager from '@razor/core/SceneManager';
 import Orientation from '@razor/math/Orientation';

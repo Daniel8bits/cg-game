@@ -8,6 +8,13 @@ import CanvasCamera from '../CanvasCamera'
 import { toRadians } from "@razor/math/math";
 import Lamp from "../entities/Lamp";
 
+class LampConfig{
+
+    constructor(public lamp: Lamp,public distance: number){
+
+    }
+}
+
 class SimpleRenderer extends Renderer {
 
     private _projection: Matrix4;
@@ -97,11 +104,18 @@ class SimpleRenderer extends Renderer {
             shader.setFloat("lightCamera.shininess",32)
             
             let lampCount = 0;
+            const listLamps = new Map<string,LampConfig>();
             this.getEntitiesByMaterial(material).forEach((entity: Entity,index : number) => {
                 if(entity instanceof Lamp){
-                    shader.setInt("applyLight",0);
                     const lamp = entity as Lamp;
-                    if(lamp.getTransform().getTranslation().distanceTo(cameraPosition) > 100) return;
+                    const distance = lamp.getTransform().getTranslation().distanceTo(cameraPosition);
+                    if(distance < 100 && !listLamps.has(lamp.getName())){
+                        listLamps.set(lamp.getName(),new LampConfig(lamp,distance));
+                    }
+                    return;
+                }
+                /*
+                    shader.setInt("applyLight",0);
                     //console.log(lamp.getTransform().getTranslation(),cameraPosition);
                     const path = `pointLights[${lampCount++}]`;
 
@@ -115,9 +129,9 @@ class SimpleRenderer extends Renderer {
                     shader.setFloat(path+".shininess",lamp.shininess);
                     shader.setVector3(path+".position",entity.getTransform().getTranslation().negate());
                 }else{
-                    shader.setInt("applyLight",1);
-                }
+                }*/
                 
+                shader.setInt("applyLight",1);
                 shader.setVector3("u_resolution",new Vector3(0,0,0))
                 material.getShader().setMatrix4x4('u_transform', entity.getTransform().worldMatrix());
                 
@@ -126,7 +140,34 @@ class SimpleRenderer extends Renderer {
                 GLUtils.draw(entity.getVAO().getLength())
                 entity.getVAO().unbind();
             })
+            if(listLamps.size > 0){
+               Array.from(listLamps,([,value]) => value).sort((a,b) => {
+                    if(a.distance > b.distance) return 1;
+                    if(a.distance < b.distance) return -1;
+                    return 0;
+                }).slice(0,5).map(({lamp},index) => {
+                    shader.setInt("applyLight",0);
+                    //console.log(lamp.getTransform().getTranslation(),cameraPosition);
+                    const path = `pointLights[${lampCount++}]`;
 
+                    shader.setVector3(path+".color.ambient", lamp.color);
+                    shader.setVector3(path+".color.diffuse", lamp.color)
+                    shader.setVector3(path+".color.specular",lamp.color);
+                    const distance = this.distanceConfig[lamp.distance];
+                    shader.setFloat(path+".distance.constant", distance[0]);
+                    shader.setFloat(path+".distance.linear", distance[1])
+                    shader.setFloat(path+".distance.quadratic",distance[2]);
+                    shader.setFloat(path+".shininess",lamp.shininess);
+                    shader.setVector3(path+".position",lamp.getTransform().getTranslation().negate());
+                    shader.setVector3("u_resolution",new Vector3(0,0,0))
+                    material.getShader().setMatrix4x4('u_transform', lamp.getTransform().worldMatrix());
+                    
+                    material.getShader().setMatrix4x4('u_worldInverseTranspose',lamp.getTransform().toMatrix().invert().transpose());
+                    lamp.getVAO().bind()
+                    GLUtils.draw(lamp.getVAO().getLength())
+                    lamp.getVAO().unbind();
+                })
+            }
             material.unbind()
 
         })

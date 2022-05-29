@@ -11,7 +11,7 @@ varying vec3 v_normal;
 varying vec3 v_FragPos;
 varying vec3 v_camera_view;
 
-#define MAX_LIGHTS 33
+#define MAX_LIGHTS 5
 
 
 struct LightProperties{
@@ -87,9 +87,8 @@ void main() {
     vec3 result = vec3(0.0);
     //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);
 
-    /*
+    
 
-      RESOLVER O SORTING ANTES DE LIBERAR A ILUMINAÇÃO
 
     for(int i = 0; i < MAX_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
@@ -97,9 +96,9 @@ void main() {
 
     float gamma = 1.0;
     gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma));
-    */
+    
 
-    gl_FragColor = vec4(texturevec3, 1);
+  //  gl_FragColor = vec4(texturevec3, 1);
  
   /*
     vec3 ambient = u_lightColor * texturevec3;

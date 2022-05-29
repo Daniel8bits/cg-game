@@ -211,28 +211,7 @@ class GameTest extends GameCore {
         const simpleRenderer = new SimpleRenderer(this._camera);
         this.getRenderStrategy().add(simpleRenderer)
 
-        this.getSceneManager().add(new Scene('scene1'), false)
-        
-        
-
-        /*this.getSceneManager().getActive().add(new GuiEntity(
-            'guiright',
-            guiRenderer
-        ));*/
-//        const guiright = this.getSceneManager().get('scene1').get('guiright');
-//        guiright.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width + 100,bottom,0))
-
-        
-
-        
-        this.getSceneManager().setActive("scene1");
-        new EntityFactory(
-            this.getSceneManager(),
-            this.getRenderStrategy()
-        ).load()
-        
-        this.getSceneManager().add(new Scene('menu'), true)
-        this.getSceneManager().setActive("menu");
+        this.getSceneManager().add(new Scene('scene1'), true)
 
         const bottom = -Razor.CANVAS.height + 100;
         const guileft = new GuiEntity('guileft',guiRenderer) as GuiEntity;
@@ -246,7 +225,26 @@ class GameTest extends GameCore {
         text.setText("loading")
         text.getTransform().setTranslation(new Vector3(-20,-40,-1))
         text.getTransform().setScale(new Vector3(2,2,2))
+        
+        
 
+        /*this.getSceneManager().getActive().add(new GuiEntity(
+            'guiright',
+            guiRenderer
+        ));*/
+//        const guiright = this.getSceneManager().get('scene1').get('guiright');
+//        guiright.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width + 100,bottom,0))
+
+        
+
+        
+        new EntityFactory(
+            this.getSceneManager(),
+            this.getRenderStrategy()
+        ).load()
+        
+        this.getSceneManager().add(new Scene('menu'), true)
+        this.getSceneManager().setActive("menu");
         const select1 = new SelectEntity("select1",guiRenderer,this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
         /*
