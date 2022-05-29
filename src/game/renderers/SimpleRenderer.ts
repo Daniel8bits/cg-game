@@ -96,7 +96,7 @@ class SimpleRenderer extends Renderer {
                     shader.setFloat(path+".distance.linear", distance[1])
                     shader.setFloat(path+".distance.quadratic",distance[2]);
                     shader.setFloat(path+".shininess",lamp.shininess);
-                    shader.setVector3(path+".position",entity.getTransform().getTranslation().negate());
+                    shader.setVector3(path+".position",lamp.getTransform().getTranslation().negate());
 
                 })
                 
