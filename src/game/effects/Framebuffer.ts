@@ -2,10 +2,6 @@ import { gl } from "@razor/gl/GLUtils";
 
 class Framebuffer {
 
-    //private attachments : any;
-    //private drawBuffers : any;
-    //private readBuffer : any;
-
     private fbo : any;
     private rbo : any;
     //private texture : any;
