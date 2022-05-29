@@ -83,11 +83,10 @@ class SimpleRenderer extends Renderer {
             
 
             this.getEntitiesByMaterial(material).forEach((entity: Entity,index : number) => {
-                
                 (entity as SimpleEntity).getLampList().forEach((lamp, i) => {
-
+                    
                     const path = `pointLights[${i}]`;
-
+                    
                     shader.setVector3(path+".color.ambient", lamp.color);
                     shader.setVector3(path+".color.diffuse", lamp.color)
                     shader.setVector3(path+".color.specular",lamp.color);
@@ -97,7 +96,7 @@ class SimpleRenderer extends Renderer {
                     shader.setFloat(path+".distance.quadratic",distance[2]);
                     shader.setFloat(path+".shininess",lamp.shininess);
                     shader.setVector3(path+".position",lamp.getTransform().getTranslation().negate());
-
+                    
                 })
                 
                 shader.setInt("applyLight", entity instanceof Lamp ? 0 : 1);

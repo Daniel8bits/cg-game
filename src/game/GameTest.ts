@@ -236,7 +236,7 @@ class GameTest extends GameCore {
         this.getSceneManager().getActive().add(dialog);
         dialog.getTransform().setTranslation(new Vector3(100,100,-1).negate())
         dialog.init();
-        dialog.animateText("oque voce ta fazendo aqui seu animal voce deveria tar longe",50);
+        dialog.animateText("salve salve familia",50,{vertical:'10%',horizontal:'center'});
         /*
                 const pauseContainer = new GuiEntity("pause_container",guiRenderer);
                 this.getSceneManager().getActive().add(pauseContainer);

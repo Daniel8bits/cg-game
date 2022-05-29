@@ -33,6 +33,11 @@ class RectangleEntity extends Entity {
         this.getTransform().setScale(new Vector3(width,height ,1));
     }
 
+    public getSize(){
+        const scale = this.getTransform().getScale();
+        return {width: scale[0],height: scale[1]}
+    }
+
     
     public update(time: number, delta: number): void {
 
