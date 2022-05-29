@@ -84,6 +84,30 @@ class Framebuffer {
         gl.deleteFramebuffer(this.fbo);
         gl.deleteRenderbuffer(this.rbo);
     }
+
+    public configTest() {
+        // first pass
+        gl.bindFramebuffer(gl.FRAMEBUFFER, this.fbo);
+        gl.clearColor(0.1, 0.1, 0.1, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); // we're not using the stencil buffer now
+        gl.enable(gl.DEPTH_TEST);
+        //ATTENTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //DrawScene();
+        
+        // second pass
+        gl.bindFramebuffer(gl.FRAMEBUFFER, 0); // back to default
+        gl.clearColor(1.0, 1.0, 1.0, 1.0); 
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        
+        //ATTENTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //screenShader.use();  
+        //Use something like glVertexAttribPointer instead of below
+        //glBindVertexArray(quadVAO);
+        gl.disable(gl.DEPTH_TEST);
+        gl.bindTexture(gl.TEXTURE_2D, this.textureColorBuffer);
+        //This is basic draw
+        //glDrawArrays(GL_TRIANGLES, 0, 6); 
+    }
 }
 
 export default Framebuffer
