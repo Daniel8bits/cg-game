@@ -1,11 +1,9 @@
-import {Matrix4, Vector3} from "@math.gl/core"
+import {Vector3} from "@math.gl/core"
 import ResourceManager from "@razor/core/ResourceManager";
-import Material from "../../engine/appearance/material/Material";
-import VAO from "../../engine/buffer/VAO";
-import Entity from "../../engine/core/entities/Entity";
 import Renderer from "../../engine/renderer/Renderer";
+import SimpleEntity from "./SimpleEntity";
 
-class Lamp extends Entity {
+class Lamp extends SimpleEntity {
 
     public color : Vector3
     public distance: number = 100;

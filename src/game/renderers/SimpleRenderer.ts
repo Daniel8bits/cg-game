@@ -7,6 +7,7 @@ import Entity from "../../engine/core/entities/Entity";
 import CanvasCamera from '../CanvasCamera'
 import { toRadians } from "@razor/math/math";
 import Lamp from "../entities/Lamp";
+import SimpleEntity from "../entities/SimpleEntity";
 
 class LampConfig{
 
@@ -18,11 +19,9 @@ class LampConfig{
 class SimpleRenderer extends Renderer {
 
     private _projection: Matrix4;
-    private _camera: CanvasCamera
 
     constructor(camera: CanvasCamera) {
-        super('renderer1')
-        this._camera = camera
+        super('renderer1', camera)
         //this._projection = Mat4.perspective(70, window.innerWidth / window.innerHeight, 1, 1000)
         this._projection = new Matrix4().perspective({
             fovy: toRadians(70), 
@@ -30,6 +29,9 @@ class SimpleRenderer extends Renderer {
             near: 1, 
             far: 1000
         })
+
+        this._maximumRenderDistance = 150
+
         /*
         this._ortho = Mat4.orthographic(
             0, 
@@ -59,29 +61,64 @@ class SimpleRenderer extends Renderer {
 
     public render() {
 
-        /*
-        ResourceManager.forEachShader((shader) => {
-            shader.bind();
+        ResourceManager.forEachMaterial((material) => {
+            material.bind()
+            const shader = material.getShader();
             shader.setMatrix4x4('u_projection', this._projection);
-            shader.setMatrix4x4('u_view', Mat4.view(
-                this._camera.getTransform().getTranslation(),
-                this._camera.getTransform().getRotation(),
-            ));
+            shader.setMatrix4x4('u_view', this.getCamera().getView());
+            const cameraPosition = this.getCamera().getTransform().getTranslation();
+            shader.setVector3('u_camera_position',cameraPosition.negate())
+            shader.setVector3('u_color',new Vector3(1,0.2,0.3));
+            shader.setVector3("lightCamera.color.ambient", new Vector3(1,1,1));
+            shader.setVector3("lightCamera.color.diffuse", new Vector3(0.5,0.5,0.5))
+            shader.setVector3("lightCamera.color.specular",new Vector3(0.3,0.3,0.3));
+            //shader.setFloat("u_light.cutOff",cos(toRadians(0))); AINDA NÃO SEI O QUE FAZER AQUI
 
-            gl.activeTexture(gl.TEXTURE0);
-            ResourceManager.getTexture('level-texture').bind();
-            shader.setInt('u_texture', 0)
-            //shader.setTexture('u_texture');
+            shader.setVector3("lightCamera.position",cameraPosition.negate())
+            const distance = this.distanceConfig[100];
+            shader.setFloat("lightCamera.distance.constant", distance[0]);
+            shader.setFloat("lightCamera.distance.linear", distance[1])
+            shader.setFloat("lightCamera.distance.quadratic",distance[2]);
+            shader.setFloat("lightCamera.shininess",32)
+            
 
-            this.getEntitiesByShader(shader). forEach((entity: Entity) => {
-                shader.setMatrix4x4('u_transform', entity.getTransform().toMatrix());
+            this.getEntitiesByMaterial(material).forEach((entity: Entity,index : number) => {
                 
+                (entity as SimpleEntity).getLampList().forEach((lamp, i) => {
+
+                    const path = `pointLights[${i}]`;
+
+                    shader.setVector3(path+".color.ambient", lamp.color);
+                    shader.setVector3(path+".color.diffuse", lamp.color)
+                    shader.setVector3(path+".color.specular",lamp.color);
+                    const distance = this.distanceConfig[lamp.distance];
+                    shader.setFloat(path+".distance.constant", distance[0]);
+                    shader.setFloat(path+".distance.linear", distance[1])
+                    shader.setFloat(path+".distance.quadratic",distance[2]);
+                    shader.setFloat(path+".shininess",lamp.shininess);
+                    shader.setVector3(path+".position",entity.getTransform().getTranslation().negate());
+
+                })
+                
+                shader.setInt("applyLight", entity instanceof Lamp ? 0 : 1);
+                shader.setVector3("u_resolution",new Vector3(0,0,0))
+                material.getShader().setMatrix4x4('u_transform', entity.getTransform().worldMatrix());
+                
+                material.getShader().setMatrix4x4('u_worldInverseTranspose',entity.getTransform().toMatrix().invert().transpose());
                 entity.getVAO().bind()
                 GLUtils.draw(entity.getVAO().getLength())
                 entity.getVAO().unbind();
             })
+            
+            material.unbind()
+
         })
-        */
+
+
+    }
+
+    /*
+    public render() {
 
         ResourceManager.forEachMaterial((material) => {
             material.bind()
@@ -129,7 +166,7 @@ class SimpleRenderer extends Renderer {
                     shader.setFloat(path+".shininess",lamp.shininess);
                     shader.setVector3(path+".position",entity.getTransform().getTranslation().negate());
                 }else{
-                }*/
+                }*
                 
                 shader.setInt("applyLight",1);
                 shader.setVector3("u_resolution",new Vector3(0,0,0))
@@ -173,6 +210,7 @@ class SimpleRenderer extends Renderer {
         })
 
     }
+    */
 }
 
 export default SimpleRenderer
