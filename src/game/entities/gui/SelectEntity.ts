@@ -23,13 +23,13 @@ class SelectEntity extends GuiEntity {
         super(name, renderer);
         this.setScene(scene);
     }
-
+    
     
     public addOption(text: string): OptionEntity {
         const name = text.toLowerCase().replace(/ /g, '_').replace(/[^\w-]+/g, '');
-        const entity = new OptionEntity(this, name, this.getRenderer(),this.getScene())
+        const entity = new OptionEntity(this, this.getName()+"_"+name, this.getRenderer(),this.getScene())
+
         if(this.padding > 0) entity.selected(false);
-        //else entity.selected(false);
         this.options.push(entity);
         entity.getTransform().setTranslation(new Vector3(0,70 * (this.padding++),0).negate());
         entity.setText(text);

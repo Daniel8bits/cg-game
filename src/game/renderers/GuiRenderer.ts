@@ -8,14 +8,14 @@ import CanvasCamera from '../CanvasCamera'
 import { toRadians } from "@razor/math/math";
 import Lamp from "../entities/Lamp";
 import Razor from "@razor/core/Razor";
+import ImageEntity from "../entities/gui/ImageEntity";
 
 class GuiRenderer extends Renderer {
 
     private _projection: Matrix4;
-    private _camera: CanvasCamera;
+
     constructor(camera: CanvasCamera) {
-        super('guirenderer')
-        this._camera = camera;
+        super('guirenderer',camera)
         this._projection = new Matrix4().ortho({
             top: 0,
             left: 0,
@@ -31,19 +31,16 @@ class GuiRenderer extends Renderer {
         ResourceManager.forEachMaterial((material) => {
             material.bind()
             const shader = material.getShader();
-            //shader.setVector3('u_color',new Vector3(1,0.2,0.3));
             shader.setMatrix4x4('u_projection', this._projection);
-            //shader.setVector3('u_resolution', new Vector3(Razor.CANVAS.width,Razor.CANVAS.height,0));
             this.getEntitiesByMaterial(material).forEach((entity: Entity, index: number) => {
-                //@ts-ignore
-                if(typeof entity.color != "undefined"){
+                if('color' in entity){
                     //@ts-ignore
                     shader.setVector3('u_color',entity.color);
                 }
+
                 material.getShader().setMatrix4x4('u_transform', entity.getTransform().worldMatrix());
                 entity.render();
                 entity.getVAO().bind()
-                //entity.getVAO().getIbo().getLength()/2
                 GLUtils.draw(entity.getVAO().getLength())
                 entity.getVAO().unbind();
 

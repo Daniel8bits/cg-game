@@ -24,7 +24,7 @@ class Texture implements IResource{
     this._created = false
     const observer = setInterval(() => {
       if(this._created && this._data) {
-        console.log(this);
+       // console.log(this);
         
         this._bindData()
         clearInterval(observer)
@@ -57,6 +57,8 @@ class Texture implements IResource{
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
   }
 
   public unbind() {

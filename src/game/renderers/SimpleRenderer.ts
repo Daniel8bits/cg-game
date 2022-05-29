@@ -101,9 +101,7 @@ class SimpleRenderer extends Renderer {
                 })
                 
                 shader.setInt("applyLight", entity instanceof Lamp ? 0 : 1);
-                shader.setVector3("u_resolution",new Vector3(0,0,0))
                 material.getShader().setMatrix4x4('u_transform', entity.getTransform().worldMatrix());
-                
                 material.getShader().setMatrix4x4('u_worldInverseTranspose',entity.getTransform().toMatrix().invert().transpose());
                 entity.getVAO().bind()
                 GLUtils.draw(entity.getVAO().getLength())
