@@ -49,11 +49,11 @@ LightProperties CalcDirLight(Light light, vec3 normal, vec3 viewDir,vec3 texture
     vec3 reflectDir = reflect(-lightDir, normal);
     vec3 halfwayDir = normalize(lightDir + viewDir);
 
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), light.shininess);
+    float spec = pow(max(dot(viewDir, halfwayDir), 0.0), light.shininess);
 
     properties.ambient  = light.color.ambient  * texturevec3;
-    //properties.diffuse = pow(texturevec3, vec3(2.2));
-    properties.diffuse  = light.color.diffuse  * diff * texturevec3;
+    properties.diffuse = light.color.diffuse * pow(texturevec3, vec3(2.2)) * texturevec3;
+    //properties.diffuse  = light.color.diffuse  * diff * texturevec3;
     properties.specular = light.color.specular * spec * texturevec3;
     
     return properties;
@@ -86,19 +86,12 @@ void main() {
     vec3 viewDir = normalize(u_camera_position - v_FragPos);
     vec3 result = vec3(0.0);
     //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);
-
-    
-
-
     for(int i = 0; i < MAX_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
     gl_FragColor = vec4(result, 1.0);
 
     float gamma = 1.0;
     gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma));
-    
-
-  //  gl_FragColor = vec4(texturevec3, 1);
  
   /*
     vec3 ambient = u_lightColor * texturevec3;
