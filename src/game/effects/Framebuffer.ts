@@ -109,6 +109,8 @@ class Framebuffer {
         gl.bindTexture(gl.TEXTURE_2D, this.textureColorBuffer);
         //This is basic draw
         //glDrawArrays(GL_TRIANGLES, 0, 6); 
+
+        //return this;
     }
 }
 
