@@ -36,6 +36,7 @@ class SceneManager {
         this._scenes.set(key, scene);
         if(active) {
             this._active = scene;
+            Event.trigger("loadScene",this._active);
         }
         return this
     }

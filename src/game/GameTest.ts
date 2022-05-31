@@ -28,18 +28,23 @@ import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import PhysicsScene from "@razor/core/scenes/PhysicsScene";
 import MapRenderer from "./renderers/MapRenderer";
 import Player from "./entities/Player";
+import Texture from "@razor/appearance/Texture";
+import TextureLoader from "@razor/loader/TextureLoader";
+import DisplayEntity from "./entities/DisplayEntity";
+import ImageEntity from "./entities/gui/ImageEntity";
+import DialogEntity from "./entities/gui/DialogEntity";
 
 class GameTest extends GameCore {
 
     private _camera: CanvasCamera
-    private static instance : GameTest;
+    private static instance: GameTest;
 
     public constructor() {
         super()
         GameTest.instance = this;
     }
 
-    public static getInstance() : GameTest{
+    public static getInstance(): GameTest {
         return GameTest.instance;
     }
 
@@ -74,6 +79,13 @@ class GameTest extends GameCore {
             name: 'text',
             vertexShaderPathname: '/resources/shader/text/vert.glsl',
             fragmentShaderPathname: '/resources/shader/text/frag.glsl'
+        }])
+
+        /* Shader da Imagem */
+        ResourceManager.loadShader([{
+            name: 'image',
+            vertexShaderPathname: '/resources/shader/image/vert.glsl',
+            fragmentShaderPathname: '/resources/shader/image/frag.glsl'
         }])
 
         ResourceManager.loadTextures([
@@ -161,11 +173,11 @@ class GameTest extends GameCore {
                 ResourceManager.getShader('text'),
                 ResourceManager.getTexture('text'),
             )
-        
+
         ])
-        .forEachMaterial((material) => {
-            material.create()
-        })
+            .forEachMaterial((material) => {
+                material.create()
+            })
 
         ResourceManager.loadVAO([
             {
@@ -201,25 +213,17 @@ class GameTest extends GameCore {
                 objectData: '/resources/objects/lamp/lamp.obj'
             },
             {
-                name: 'text',
-                objectData: () => {
-                    const vao = new VAO([],2);
-                    vao.addEmpty(2);
-                    return vao;
-                }
-            },
-            {
                 name: 'rectangle',
                 objectData: () => {
-                    const vao = new VAO([],2);
+                    const vao = new VAO([], 2);
                     vao.addEmpty(1);
                     return vao;
                 }
             }
         ])
-        .forEachVAO((vao) => {
-            vao.create();
-        })
+            .forEachVAO((vao) => {
+                vao.create();
+            })
 
 
         const guiRenderer = new GuiRenderer(this._camera);
@@ -231,30 +235,34 @@ class GameTest extends GameCore {
 
         this.getSceneManager().add(new PhysicsScene('scene1'), true)
 
+        const guiAmmunition = new DisplayEntity('guiAmmunition', guiRenderer);
         const bottom = -Razor.CANVAS.height + 100;
-        const guileft = new GuiEntity('guileft',guiRenderer) as GuiEntity;
-        this.getSceneManager().getActive().add(guileft);
-        guileft.getTransform().setTranslation(new Vector3(0,bottom,0));
+        this.getSceneManager().getActive().add(guiAmmunition);
+        guiAmmunition.getTransform().setTranslation(new Vector3(0, bottom, 0));
+        guiAmmunition.setText("123", new Vector3(0.2, 0.9, 0.9));
+        //// https://www.pngwing.com/pt/free-png-stupy/download
+        guiAmmunition.setImage(new ImageEntity("ammunition", "/resources/images/ammunition.png", guiRenderer));
 
-        
-        const rectangle= guileft.addRectangle("rectangle_left");
-        rectangle.setSize(200,100);
-        const text = guileft.addText("text_rectangle_left");
-        text.setText("loading")
-        text.getTransform().setTranslation(new Vector3(-20,-40,-1))
-        text.getTransform().setScale(new Vector3(2,2,2))
-        
-        
+        const guiLife = new DisplayEntity('guiLife', guiRenderer);
+        this.getSceneManager().getActive().add(guiLife);
+        guiLife.getTransform().setTranslation(new Vector3(0, bottom - 50, 0));
+        guiLife.setText("123", new Vector3(1, 0.2, 0.2));
+        //https://www.onlinewebfonts.com/icon/146242
+        guiLife.setImage(new ImageEntity("life", "/resources/images/life.png", guiRenderer));
 
-        /*this.getSceneManager().getActive().add(new GuiEntity(
-            'guiright',
-            guiRenderer
-        ));*/
-//        const guiright = this.getSceneManager().get('scene1').get('guiright');
-//        guiright.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width + 100,bottom,0))
-
-        
-
+        const dialog = new DialogEntity("dialog", guiRenderer);
+        this.getSceneManager().getActive().add(dialog);
+        dialog.getTransform().setTranslation(new Vector3(100,100,-1).negate())
+        dialog.init();
+        dialog.animateText("salve salve familia",50,{vertical:'10%',horizontal:'center'});
+        /*
+                const pauseContainer = new GuiEntity("pause_container",guiRenderer);
+                this.getSceneManager().getActive().add(pauseContainer);
+                const rectanglePause = pauseContainer.addRectangle("pause_rectangle");
+                rectanglePause.getTransform().setScale(new Vector3(Razor.CANVAS.width,Razor.CANVAS.height,1));
+                rectanglePause.color = new Vector3(0.1,0.1,0.1);
+                const textPause = pauseContainer.addText("pause_text").setText("Pause");
+        */
         new EntityFactory(
             this.getSceneManager(),
             this.getRenderStrategy()
@@ -285,22 +293,17 @@ class GameTest extends GameCore {
 
         
         this.getSceneManager().add(new Scene('menu'), true)
-        this.getSceneManager().setActive("menu");
-        const select1 = new SelectEntity("select1",guiRenderer,this.getSceneManager().getActive());
+
+        const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
-        /*
-        const rectangle2= select1.addRectangle("rectangle_left2");
-        rectangle2.setSize(200,100);
-        const text2 = select1.addText("text_rectangle_left2");
-        text2.setText("loading")
-        text2.getTransform().setTranslation(new Vector3(-20,-40,-1))
-        text2.getTransform().setScale(new Vector3(2,2,2))
-        */
         select1.addOption("comecar").setExecute(() => {
             this.getSceneManager().setActive("scene1")
         })
         select1.addOption("opcao 2")
         select1.addOption("opcao 3")
+
+        this.getSceneManager().setActive("scene1");
+
     }
 
     public update(time: number, delta: number) {

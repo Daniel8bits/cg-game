@@ -5,6 +5,7 @@ import Material from "../../appearance/material/Material";
 import Scene from "../scenes/Scene";
 import { Matrix4 } from "@math.gl/core";
 
+type Constructor<T> = { new (...args: any[]): T };
 
 abstract class Entity {
 
