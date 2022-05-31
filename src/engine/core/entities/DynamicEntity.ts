@@ -10,6 +10,7 @@ abstract class DynamicEntity extends SolidEntity {
 
   private _mass: number;
   private _force: Vector3;
+  private _speed: Vector3;
 
   constructor(
     name: string, 
@@ -22,6 +23,19 @@ abstract class DynamicEntity extends SolidEntity {
     super(name, hitbox, vao, material, renderer);
     this._mass = mass;
     this._force = new Vector3(0, 0, 0);
+    this._speed = new Vector3(0, 0, 0);
+  }
+
+  public updateSpeed(delta: number) {
+    if(!this._force.exactEquals([0, 0, 0])) {
+      this.updateSpeedByAcceleration(
+        this._force.divideScalar(this._mass).multiplyByScalar(delta)
+      )
+    }
+  }
+
+  public updateSpeedByAcceleration(acceleration: Vector3) {
+    this._speed.add(acceleration)
   }
 
   public setMass(mass: number) {
@@ -38,6 +52,14 @@ abstract class DynamicEntity extends SolidEntity {
 
   public getForce(): Vector3 {
     return this._force
+  }
+
+  public setSpeed(speed: Vector3) {
+    this._speed = speed
+  }
+
+  public getSpeed(): Vector3 {
+    return this._speed
   }
 
 }

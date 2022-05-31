@@ -22,6 +22,7 @@ abstract class Renderer {
     protected getEntitiesByMaterial(material: Material): Entity[] {
         return this._scene.filterVisible(
             (entity: Entity) => 
+                entity.getRenderer() &&
                 entity.getRenderer().getName() === this._name &&
                 entity.getMaterial() && 
                 entity.getMaterial().getName() === material.getName() &&

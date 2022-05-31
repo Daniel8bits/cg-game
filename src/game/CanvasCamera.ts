@@ -49,10 +49,11 @@ class CanvasCamera extends Camera {
     }
 
     public update(delta: number) {
+/*
         if(this._mode === CanvasCamera.MODE.FIRST_PERSON && GameTest.getInstance().getSceneManager().getActive().getName() != "menu") {
             this._firstPersonMovement(delta)
         }
-/*
+
         if(this._mode === CanvasCamera.MODE.THIRD_PERSON) {
             this._thirdPersonMovement(delta)
         }

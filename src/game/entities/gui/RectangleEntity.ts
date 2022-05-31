@@ -30,9 +30,12 @@ class RectangleEntity extends Entity {
     }
     
     public setSize(width: number,height : number){
-        //this.size = new Vector2(width,height);
-        //this.DrawRectangle();
         this.getTransform().setScale(new Vector3(width,height ,1));
+    }
+
+    public getSize(){
+        const scale = this.getTransform().getScale();
+        return {width: scale[0],height: scale[1]}
     }
 
     
