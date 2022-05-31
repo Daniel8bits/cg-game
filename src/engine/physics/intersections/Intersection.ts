@@ -1,6 +1,7 @@
+import { Vector3 } from "@math.gl/core";
 import SolidEntity from "../../core/entities/SolidEntity";
 
-class Intersection {
+abstract class Intersection {
 
   private _solid1: SolidEntity 
   private _solid2: SolidEntity
@@ -17,6 +18,10 @@ class Intersection {
   public getSolid2(): SolidEntity {
     return this._solid2
   }
+
+  public abstract getAccelerationOnSolid1(): Vector3;
+
+  public abstract getAccelerationOnSolid2(): Vector3;
 
 }
 

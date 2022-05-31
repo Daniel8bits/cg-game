@@ -23,6 +23,11 @@ import GuiEntity from "./entities/gui/GuiEntity";
 import OBJLoader from "@razor/loader/OBJLoader";
 import SelectEntity from "./entities/gui/SelectEntity";
 import EmptyMaterial from "@razor/appearance/material/EmptyMaterial";
+import DoorPanelEntity from "./entities/DoorPanelEntity";
+import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
+import PhysicsScene from "@razor/core/scenes/PhysicsScene";
+import MapRenderer from "./renderers/MapRenderer";
+import Player from "./entities/Player";
 
 class GameTest extends GameCore {
 
@@ -49,6 +54,12 @@ class GameTest extends GameCore {
             name: 'shader1',
             vertexShaderPathname: '/resources/shader/shader1/vert.glsl',
             fragmentShaderPathname: '/resources/shader/shader1/frag.glsl'
+        }])
+
+        ResourceManager.loadShader([{
+            name: 'map',
+            vertexShaderPathname: '/resources/shader/map/vert.glsl',
+            fragmentShaderPathname: '/resources/shader/map/frag.glsl'
         }])
 
         /* Shader sem Iluminação */
@@ -132,6 +143,11 @@ class GameTest extends GameCore {
                 ResourceManager.getTexture('door-panel-locked'),
             ),
             new DefaultMaterial(
+                'door-panel-2',
+                ResourceManager.getShader('map'),
+                ResourceManager.getTexture('door-panel-locked'),
+            ),
+            new DefaultMaterial(
                 'lamp',
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('lamp'),
@@ -210,8 +226,10 @@ class GameTest extends GameCore {
         this.getRenderStrategy().add(guiRenderer)
         const simpleRenderer = new SimpleRenderer(this._camera);
         this.getRenderStrategy().add(simpleRenderer)
+        const mapRenderer = new MapRenderer(this._camera);
+        this.getRenderStrategy().add(mapRenderer)
 
-        this.getSceneManager().add(new Scene('scene1'), true)
+        this.getSceneManager().add(new PhysicsScene('scene1'), true)
 
         const bottom = -Razor.CANVAS.height + 100;
         const guileft = new GuiEntity('guileft',guiRenderer) as GuiEntity;
@@ -237,11 +255,34 @@ class GameTest extends GameCore {
 
         
 
-        
         new EntityFactory(
             this.getSceneManager(),
             this.getRenderStrategy()
         ).load()
+        
+        
+        const doorPanel = new DoorPanelEntity(
+            'door-panel',
+            new CircleHitbox(2),
+            1,
+                ResourceManager.getVAO('door-panel'),
+                ResourceManager.getMaterial('door-panel-2'),
+                mapRenderer
+        )
+
+        doorPanel.getTransform().setZ(10)
+
+        this.getSceneManager().getActive().add(doorPanel)
+
+        const player = new Player('player', new CircleHitbox(2), this._camera)
+
+        player.getTransform().setTranslation(new Vector3(51.1, 0, -88))
+        player.getTransform().setRotation(new Orientation(0, -32))
+
+        this.getSceneManager().getActive().add(player)
+
+
+
         
         this.getSceneManager().add(new Scene('menu'), true)
         this.getSceneManager().setActive("menu");

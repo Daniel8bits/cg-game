@@ -12,10 +12,8 @@ import Razor from "@razor/core/Razor";
 class GuiRenderer extends Renderer {
 
     private _projection: Matrix4;
-    private _camera: CanvasCamera;
     constructor(camera: CanvasCamera) {
-        super('guirenderer')
-        this._camera = camera;
+        super('guirenderer', camera)
         this._projection = new Matrix4().ortho({
             top: 0,
             left: 0,
