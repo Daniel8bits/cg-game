@@ -26,10 +26,10 @@ abstract class DynamicEntity extends SolidEntity {
     this._speed = new Vector3(0, 0, 0);
   }
 
-  public updateSpeed() {
+  public updateSpeed(delta: number) {
     if(!this._force.exactEquals([0, 0, 0])) {
       this.updateSpeedByAcceleration(
-        this._force.divideScalar(this._mass)
+        this._force.divideScalar(this._mass).multiplyByScalar(delta)
       )
     }
   }

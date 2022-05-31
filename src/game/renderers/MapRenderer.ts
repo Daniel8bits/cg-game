@@ -28,7 +28,7 @@ class MapRenderer extends Renderer {
 
 
     public render() {
-
+        
         ResourceManager.forEachMaterial((material) => {
             material.bind()
             const shader = material.getShader();
@@ -38,10 +38,7 @@ class MapRenderer extends Renderer {
             this.getEntitiesByMaterial(material).forEach((entity: Entity,index : number) => {
                 if(!(entity instanceof MapEntity)) return;
                 
-                shader.setVector3("u_resolution",new Vector3(0,0,0))
                 material.getShader().setMatrix4x4('u_transform', entity.getTransform().worldMatrix());
-                
-                material.getShader().setMatrix4x4('u_worldInverseTranspose',entity.getTransform().toMatrix().invert().transpose());
                 entity.getVAO().bind()
                 GLUtils.draw(entity.getVAO().getLength())
                 entity.getVAO().unbind();

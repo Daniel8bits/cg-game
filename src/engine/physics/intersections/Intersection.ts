@@ -23,6 +23,8 @@ abstract class Intersection {
 
   public abstract getAccelerationOnSolid2(): Vector3;
 
+  public abstract solve(): void;
+
 }
 
 export default Intersection

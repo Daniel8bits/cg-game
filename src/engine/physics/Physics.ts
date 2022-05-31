@@ -44,7 +44,7 @@ class Physics {
 
   public applyPhysics(entity: DynamicEntity, sceneProperties: PhysicsSceneProperties, delta: number): void {
     
-    entity.updateSpeed()
+    entity.updateSpeed(delta)
 
     // apply gravity if suspended
     if(entity.getTransform().getY() < sceneProperties.defaultFakeFloor) {
@@ -52,7 +52,7 @@ class Physics {
     }
     // apply air resistance
     entity.getSpeed().add(new Vector3(entity.getSpeed())
-    .multiplyByScalar(-sceneProperties.airFrictionCoefficient))
+    .multiplyByScalar(-sceneProperties.airFrictionCoefficient*delta))
 
     entity.getTransform().setTranslation(
       entity.getTransform().getTranslation().add(entity.getSpeed())
@@ -84,6 +84,8 @@ class Physics {
           return;
         }
 
+        
+        
         const intersection = this._test(dynamicEntity, entity)
 
         if(intersection) {
@@ -111,9 +113,19 @@ class Physics {
     this._intersections.forEach((intersection) => {
 
       const dynamicEntity = intersection.getSolid1() as DynamicEntity
-      const reflectedAcceleration = intersection.getAccelerationOnSolid1()
+      //const reflectedAcceleration = intersection.getAccelerationOnSolid1()
+      intersection.solve()
 
-      dynamicEntity.setSpeed(reflectedAcceleration)
+      //dynamicEntity.setSpeed()
+      /*
+      dynamicEntity.getTransform().setTranslation(
+        dynamicEntity.getTransform().getTranslation().subtract(reflectedAcceleration)
+      )
+      */
+      console.log(dynamicEntity.getTransform().getTranslation().distanceTo(intersection.getSolid2().getTransform().getTranslation()));
+
+      dynamicEntity.getSpeed().x = 0;
+      dynamicEntity.getSpeed().z = 0;
 
     })
 

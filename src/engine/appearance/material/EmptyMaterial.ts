@@ -7,7 +7,7 @@ class EmptyMaterial extends Material {
 
 
     public constructor() {
-        super("empty")
+        super("empty", null)
     }
 
     public create(): void {

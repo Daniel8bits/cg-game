@@ -233,7 +233,10 @@ class GameTest extends GameCore {
         const mapRenderer = new MapRenderer(this._camera);
         this.getRenderStrategy().add(mapRenderer)
 
-        this.getSceneManager().add(new PhysicsScene('scene1'), true)
+        const scene1 = new PhysicsScene('scene1')
+        scene1.getProperties().gravity = 0
+
+        this.getSceneManager().add(scene1, true)
 
         const guiAmmunition = new DisplayEntity('guiAmmunition', guiRenderer);
         const bottom = -Razor.CANVAS.height + 100;
@@ -270,17 +273,15 @@ class GameTest extends GameCore {
         
         
         const doorPanel = new DoorPanelEntity(
-            'door-panel',
+            'teste',
             new CircleHitbox(2),
             1,
-                ResourceManager.getVAO('door-panel'),
-                ResourceManager.getMaterial('door-panel-2'),
-                mapRenderer
+            ResourceManager.getVAO('door-panel'),
+            ResourceManager.getMaterial('door-panel-2'),
+            mapRenderer
         )
 
-        doorPanel.getTransform().setZ(10)
-
-        this.getSceneManager().getActive().add(doorPanel)
+        scene1.add(doorPanel)
 
         const player = new Player('player', new CircleHitbox(2), this._camera)
 
@@ -303,6 +304,7 @@ class GameTest extends GameCore {
         select1.addOption("opcao 3")
 
         this.getSceneManager().setActive("scene1");
+        
 
     }
 

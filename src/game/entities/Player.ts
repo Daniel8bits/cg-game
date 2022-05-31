@@ -21,7 +21,7 @@ class Player extends DynamicEntity {
     super(name, hitbox, 1, null, null, null);
     this._camera = camera;
     this._sensitivity = 7.5
-    this._impulse = 10
+    this._impulse = 100
   }
 
 
@@ -59,7 +59,7 @@ class Player extends DynamicEntity {
       this.getForce().add(new Vector3(-z, 0, x))
     }
 
-    if(InputManager.isKeyPressed(Keys.KEY_SPACE) && this.getTransform().getY() === 0 && this.getSpeed().y === 0){ // UP
+    if(InputManager.isKeyPressed(Keys.KEY_SPACE)){// && this.getTransform().getY() === 0 && this.getSpeed().y === 0){ // UP
       this.getForce().add(new Vector3(0, -this._impulse*10 * delta, 0))
     }
 
@@ -73,12 +73,12 @@ class Player extends DynamicEntity {
 
     if(InputManager.isKeyPressed(Keys.KEY_LEFT)){ // RIGHT
       const rotation = this.getTransform().getRotation()
-      this.getTransform().setYaw(rotation.yaw + this._impulse*2 * this._sensitivity * delta)
+      this.getTransform().setYaw(rotation.yaw + this._impulse*2 * delta)
     }
 
     if(InputManager.isKeyPressed(Keys.KEY_RIGHT)){ // RIGHT
       const rotation = this.getTransform().getRotation()
-      this.getTransform().setYaw(rotation.yaw + -this._impulse*2 * this._sensitivity * delta)
+      this.getTransform().setYaw(rotation.yaw + -this._impulse*2 * delta)
     }
 
     

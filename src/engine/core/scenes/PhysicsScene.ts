@@ -21,7 +21,7 @@ class PhysicsScene extends Scene {
     this._physics = new Physics()
     this._properties = {
       gravity: 9.807,
-      airFrictionCoefficient: 0.35,
+      airFrictionCoefficient: 5,
       defaultFakeFloor: 0
     }
   }
@@ -63,6 +63,7 @@ class PhysicsScene extends Scene {
 
     if(this._physics.anyCollisionDetected()) {
       this._physics.distributeForces()
+      //this._physics.reapplyPhysics(this._properties, delta)
     }
 
   }
