@@ -3,6 +3,21 @@ import VAO from '../buffer/VAO'
 import VBO from '../buffer/VBO';
 import FileUtils from '../utils/FileUtils';
 
+
+export interface HitboxesJSON {
+    circle: {
+        [name: string]: {
+            radius: number
+        }
+    },
+    edge: {
+        [name: string]: {
+            indices: number[],
+            vertices: number[]
+        }
+    }
+}
+
 class OBJLoader {
     
 
@@ -104,20 +119,21 @@ class OBJLoader {
     }
 
 
-    public loadHitboxes(pathname: string): any {
+    public loadHitboxes(pathname: string): HitboxesJSON {
+
+        let data: HitboxesJSON
 
         FileUtils.load(
             pathname, 
             function onSuccess(file) {
-                const data = JSON.parse(file)
-
-                console.log(data);
-                
+                data = JSON.parse(file)
             },
             function onError(err) {
                 throw new Error(`Error trying to load hitbox data: ${pathname}.\n ${err}`);
             },
         )
+
+        return data
 
     }
 

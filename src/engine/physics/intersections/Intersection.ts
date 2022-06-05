@@ -19,9 +19,9 @@ abstract class Intersection {
     return this._solid2
   }
 
-  public abstract getAccelerationOnSolid1(): Vector3;
+  //public abstract getAccelerationOnSolid1(): Vector3;
 
-  public abstract getAccelerationOnSolid2(): Vector3;
+  //public abstract getAccelerationOnSolid2(): Vector3;
 
   public abstract solve(): void;
 

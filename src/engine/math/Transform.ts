@@ -140,6 +140,21 @@ class Transform {
         //return scale.multiplyRight(this._pose.getTransformationMatrix())
     }
 
+    public toInversePositionMatrix() : Matrix4 {
+
+        const translation = new Matrix4().translate(this._translation.clone());
+
+        const rotationX = new Matrix4().rotateX(toRadians(this._rotation.pitch))
+        const rotationY = new Matrix4().rotateY(toRadians(this._rotation.yaw))
+        const rotationZ = new Matrix4().rotateZ(toRadians(this._rotation.roll))
+
+        const rotation = rotationX.multiplyRight(rotationY.multiplyRight(rotationZ))
+
+        const scale = new Matrix4().scale(this._scale);
+
+        return translation.multiplyRight(rotation.multiplyRight(scale))
+    }
+
     public worldMatrix() : Matrix4{
         const localMatrix = this.toMatrix();
         let worldMatrix = localMatrix.clone();

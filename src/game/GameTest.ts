@@ -1,4 +1,4 @@
-import { Vector3, Quaternion, Matrix4 } from "@math.gl/core"
+import { Vector3, Quaternion, Matrix4, Vector2 } from "@math.gl/core"
 import GameCore from '@razor/core/GameCore'
 import ResourceManager from '@razor/core/ResourceManager'
 import Scene from '@razor/core/scenes/Scene';
@@ -33,6 +33,15 @@ import TextureLoader from "@razor/loader/TextureLoader";
 import DisplayEntity from "./entities/DisplayEntity";
 import ImageEntity from "./entities/gui/ImageEntity";
 import DialogEntity from "./entities/gui/DialogEntity";
+
+import { 
+    bhaskara,
+    circunferenceEquationOf,
+    distanceBetweenPointAndLine, 
+    intersectionPointsBetweenLineAndCircunference,
+    LineEquation, 
+    lineEquationOf 
+  } from "@razor/math/math";
 
 class GameTest extends GameCore {
 
@@ -304,8 +313,23 @@ class GameTest extends GameCore {
         select1.addOption("opcao 3")
 
         this.getSceneManager().setActive("scene1");
-        
 
+
+
+        console.log('eq0: ', lineEquationOf(new Vector2(1,1), new Vector2(6,5)));
+        console.log('eq1: ', circunferenceEquationOf(new Vector2(1,-4), 4));
+        console.log('eq2: ', intersectionPointsBetweenLineAndCircunference(
+            {a: 3, b: 0, c: -2},
+            {a: 2, b: 1, r: 2}
+        ));
+
+        console.log('eq3: ', bhaskara({a: 2, b: -3, c: -3}))
+
+        console.log('eq4: ', lineEquationOf(new Vector2(6, 5), new Vector2(1, 1)));
+        
+        
+        
+        
     }
 
     public update(time: number, delta: number) {

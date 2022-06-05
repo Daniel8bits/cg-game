@@ -1,7 +1,7 @@
 import { Vector2 } from "@math.gl/core"
 import Hitbox from "./HitBox"
 
-class Line {
+export class Line {
 
   private _p: Vector2
   private _q: Vector2
@@ -29,13 +29,17 @@ class EdgeHitbox extends Hitbox {
     this._lines = []
 
     for(let i = 0; i < indices.length; i+=2) {
-      const ax = vertices[i*3];
-      const az = vertices[i*3+1];
-      const bx = vertices[(i+1)*3];
-      const bz = vertices[(i+1)*3+1];
+      const ax = vertices[indices[i]*2];
+      const az = vertices[indices[i]*2+1];
+      const bx = vertices[indices[i+1]*2];
+      const bz = vertices[indices[i+1]*2+1];
       this._lines.push(new Line(new Vector2(ax, az), new Vector2(bx, bz)))
     }
     
+  }
+
+  public getLines(): Line[] { 
+    return this._lines
   }
 
 }

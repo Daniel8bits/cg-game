@@ -3,10 +3,14 @@ import Material from '@razor/appearance/material/Material';
 import Entity from '@razor/core/entities/Entity';
 import ResourceManager from '@razor/core/ResourceManager';
 import SceneManager from '@razor/core/scenes/SceneManager';
+import OBJLoader, { HitboxesJSON } from '@razor/loader/OBJLoader';
 import Orientation from '@razor/math/Orientation';
+import EdgeHitbox from '@razor/physics/hitboxes/EdgeHitbox';
+import Hitbox from '@razor/physics/hitboxes/HitBox';
 import RenderStrategy from '@razor/renderer/RenderStrategy';
 import FileUtils from '@razor/utils/FileUtils';
 import Lamp from './Lamp';
+import MapEntity from './MapEntity';
 import SimpleEntity from './SimpleEntity';
 
 class EntityFactory {
@@ -40,6 +44,8 @@ class EntityFactory {
       }
     }
 
+    const hitboxes = new OBJLoader().loadHitboxes('/resources/hitboxes.json')
+
     FileUtils.load('/resources/entities.json',
       (data) => {
 
@@ -57,7 +63,7 @@ class EntityFactory {
             return '';
           })();
 
-          const entity = this._createEntity(key, vaoName)
+          const entity = this._createEntity(key, vaoName, hitboxes)
 
           entity.getTransform().setTranslation(new Vector3(
             data.translation.x,
@@ -90,7 +96,7 @@ class EntityFactory {
     
   } 
 
-  private _createEntity(name: string, vao: string): Entity {
+  private _createEntity(name: string, vao: string, hitboxes: HitboxesJSON): Entity {
 
     switch (vao) {
       case 'lamp':
@@ -102,8 +108,10 @@ class EntityFactory {
       default:
     }
 
-    return new SimpleEntity(
+    return new MapEntity(
       name,
+      this._getHitbox(vao, hitboxes),
+      1,
       ResourceManager.getVAO(vao), 
       this._getMaterial(vao),
       this._renderStrategy.get('renderer1')
@@ -141,7 +149,7 @@ class EntityFactory {
     })
 
     this._sceneManager.getActive().forEach((entity: Entity) => {
-      if(entity instanceof SimpleEntity) {
+      if(entity instanceof MapEntity) {
 
         const position = entity.getTransform().getTranslation()
         
@@ -153,10 +161,18 @@ class EntityFactory {
           return 0;
         }).slice(0, 5);
 
-        (entity as SimpleEntity).setLampList(closestLamps)
+        (entity as MapEntity).setLampList(closestLamps)
 
       }
     })
+
+  }
+
+  private _getHitbox(vao: string, hitboxes: HitboxesJSON): Hitbox {
+    return new EdgeHitbox(
+      hitboxes.edge[vao].vertices,
+      hitboxes.edge[vao].indices
+    )
 
   }
 

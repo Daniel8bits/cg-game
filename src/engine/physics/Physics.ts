@@ -4,7 +4,9 @@ import SolidEntity from '@razor/core/entities/SolidEntity'
 import StaticEntity from '@razor/core/entities/StaticEntity'
 import { PhysicsSceneProperties } from '@razor/core/scenes/PhysicsScene'
 import CircleHitbox from './hitboxes/CircleHitbox'
+import EdgeHitbox from './hitboxes/EdgeHitbox'
 import CircleCircleIntersection from './intersections/CircleCircleIntersection'
+import CircleEdgeIntersection from './intersections/CircleEdgeIntersection'
 import Intersection from './intersections/Intersection'
 
 class Physics {
@@ -106,6 +108,13 @@ class Physics {
     ) {
       return CircleCircleIntersection.test(dynamicEntity, entity)
     }
+
+    if(
+      dynamicEntity.getHitbox() instanceof CircleHitbox &&
+      entity.getHitbox() instanceof EdgeHitbox
+    ) {
+      return CircleEdgeIntersection.test(dynamicEntity, entity)
+    }
   }
 
   public distributeForces(): void {
@@ -122,7 +131,7 @@ class Physics {
         dynamicEntity.getTransform().getTranslation().subtract(reflectedAcceleration)
       )
       */
-      console.log(dynamicEntity.getTransform().getTranslation().distanceTo(intersection.getSolid2().getTransform().getTranslation()));
+      //console.log(dynamicEntity.getTransform().getTranslation().distanceTo(intersection.getSolid2().getTransform().getTranslation()));
 
       dynamicEntity.getSpeed().x = 0;
       dynamicEntity.getSpeed().z = 0;

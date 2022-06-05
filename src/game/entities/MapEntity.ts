@@ -5,7 +5,7 @@ import VAO from "../../engine/buffer/VAO";
 import Renderer from "../../engine/renderer/Renderer";
 import Lamp from "./Lamp";
 
-abstract class MapEntity extends StaticEntity {
+class MapEntity extends StaticEntity {
 
     private _lampList: Lamp[]
 
@@ -19,6 +19,10 @@ abstract class MapEntity extends StaticEntity {
     ) {
         super(name, hitbox, friction, vao, material, renderer);
         this._lampList = []
+    }
+
+    public update(time: number, delta: number): void {
+        
     }
 
     public setLampList(lampList: Lamp[]): void {
