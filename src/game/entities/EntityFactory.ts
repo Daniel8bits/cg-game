@@ -2,6 +2,7 @@ import { Vector3 } from '@math.gl/core';
 import Material from '@razor/appearance/material/Material';
 import Entity from '@razor/core/entities/Entity';
 import ResourceManager from '@razor/core/ResourceManager';
+import Scene from '@razor/core/scenes/Scene';
 import SceneManager from '@razor/core/scenes/SceneManager';
 import OBJLoader, { HitboxesJSON } from '@razor/loader/OBJLoader';
 import Orientation from '@razor/math/Orientation';
@@ -11,15 +12,17 @@ import RenderStrategy from '@razor/renderer/RenderStrategy';
 import FileUtils from '@razor/utils/FileUtils';
 import Lamp from './Lamp';
 import MapEntity from './MapEntity';
+import HallDoorEntity from './HallDoorEntity';
 import SimpleEntity from './SimpleEntity';
+import DoorPanelEntity from './DoorPanelEntity';
 
 class EntityFactory {
 
-  private _sceneManager: SceneManager
+  private _scene: Scene
   private _renderStrategy: RenderStrategy
 
-  public constructor(sceneManager: SceneManager, renderStrategy: RenderStrategy) {
-    this._sceneManager = sceneManager;
+  public constructor(scene: Scene, renderStrategy: RenderStrategy) {
+    this._scene = scene;
     this._renderStrategy = renderStrategy;
   }
 
@@ -81,7 +84,7 @@ class EntityFactory {
             data.scale.z,
           ))
 
-          this._sceneManager.getActive().add(entity)
+          this._scene.add(entity)
 
         })
 
@@ -100,11 +103,23 @@ class EntityFactory {
 
     switch (vao) {
       case 'lamp':
-          return new Lamp(
-            name, 
-            this._renderStrategy.get('renderer1'),
-            new Vector3(1, 0, 0)
-          )
+        return new Lamp(
+          name, 
+          this._renderStrategy.get('renderer1'),
+          new Vector3(1, 0, 0)
+        )
+      case 'hall-door':
+        return new HallDoorEntity(
+          name,
+          this._getHitbox(vao, hitboxes),
+          this._renderStrategy.get('renderer1')
+        )
+      case 'door-panel':
+        return new DoorPanelEntity(
+          name,
+          this._getHitbox(vao, hitboxes),
+          this._renderStrategy.get('renderer1')
+        )
       default:
     }
 
@@ -131,8 +146,8 @@ class EntityFactory {
 
   private _configureEntities(): void {
 
-    (this._sceneManager.getActive().get('lamp_2') as Lamp).color = new Vector3(1, 1, 1);
-    (this._sceneManager.getActive().get('lamp_33') as Lamp).color = new Vector3(1, 1, 1)
+    (this._scene.get('lamp_2') as Lamp).color = new Vector3(1, 1, 1);
+    (this._scene.get('lamp_33') as Lamp).color = new Vector3(1, 1, 1)
 
     this._distributeClosestLampsForStaticEntities()
 
@@ -142,13 +157,13 @@ class EntityFactory {
 
     const lamps: Lamp[] = []
 
-    this._sceneManager.getActive().forEach((entity: Entity) => {
+    this._scene.forEach((entity: Entity) => {
       if(entity instanceof Lamp) {
         lamps.push(entity)
       }
     })
 
-    this._sceneManager.getActive().forEach((entity: Entity) => {
+    this._scene.forEach((entity: Entity) => {
       if(entity instanceof MapEntity) {
 
         const position = entity.getTransform().getTranslation()

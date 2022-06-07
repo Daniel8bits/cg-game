@@ -58,14 +58,15 @@ class Player extends DynamicEntity {
     if(InputManager.isKeyPressed(Keys.KEY_D)){ // RIGHT
       this.getForce().add(new Vector3(-z, 0, x))
     }
-
-    if(InputManager.isKeyPressed(Keys.KEY_SPACE)){// && this.getTransform().getY() === 0 && this.getSpeed().y === 0){ // UP
+/*
+    if(InputManager.isKeyPressed(Keys.KEY_SPACE) && this.getTransform().getY() > -1 && this.getSpeed().y > -1){ // UP
       this.getForce().add(new Vector3(0, -this._impulse*10 * delta, 0))
     }
 
     if(InputManager.isKeyPressed(Keys.KEY_C)){ // DOWN
         this.getForce().add(new Vector3(0, this._impulse*3 * delta, 0))
     }
+*/
 
     if(InputManager.isKeyPressed(Keys.KEY_K)){ // RIGHT
       this.getTransform().setPitch(0)

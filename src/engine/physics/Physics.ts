@@ -86,6 +86,12 @@ class Physics {
           return;
         }
 
+        if(
+          dynamicEntity.getHitbox().isCollisionDisabled() || 
+          entity.getHitbox().isCollisionDisabled()
+        ) {
+          return;
+        }
         
         
         const intersection = this._test(dynamicEntity, entity)

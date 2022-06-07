@@ -34,14 +34,7 @@ import DisplayEntity from "./entities/DisplayEntity";
 import ImageEntity from "./entities/gui/ImageEntity";
 import DialogEntity from "./entities/gui/DialogEntity";
 
-import { 
-    bhaskara,
-    circunferenceEquationOf,
-    distanceBetweenPointAndLine, 
-    intersectionPointsBetweenLineAndCircunference,
-    LineEquation, 
-    lineEquationOf 
-  } from "@razor/math/math";
+import MainScene from "./scenes/MainScene";
 
 class GameTest extends GameCore {
 
@@ -164,11 +157,6 @@ class GameTest extends GameCore {
                 ResourceManager.getTexture('door-panel-locked'),
             ),
             new DefaultMaterial(
-                'door-panel-2',
-                ResourceManager.getShader('map'),
-                ResourceManager.getTexture('door-panel-locked'),
-            ),
-            new DefaultMaterial(
                 'lamp',
                 ResourceManager.getShader('shader1'),
                 ResourceManager.getTexture('lamp'),
@@ -242,8 +230,8 @@ class GameTest extends GameCore {
         const mapRenderer = new MapRenderer(this._camera);
         this.getRenderStrategy().add(mapRenderer)
 
-        const scene1 = new PhysicsScene('scene1')
-        scene1.getProperties().gravity = 0
+        const scene1 = new MainScene(this.getRenderStrategy(), this._camera)
+        //scene1.getProperties().gravity = 0
 
         this.getSceneManager().add(scene1, true)
 
@@ -275,29 +263,6 @@ class GameTest extends GameCore {
                 rectanglePause.color = new Vector3(0.1,0.1,0.1);
                 const textPause = pauseContainer.addText("pause_text").setText("Pause");
         */
-        new EntityFactory(
-            this.getSceneManager(),
-            this.getRenderStrategy()
-        ).load()
-        
-        
-        const doorPanel = new DoorPanelEntity(
-            'teste',
-            new CircleHitbox(2),
-            1,
-            ResourceManager.getVAO('door-panel'),
-            ResourceManager.getMaterial('door-panel-2'),
-            mapRenderer
-        )
-
-        scene1.add(doorPanel)
-
-        const player = new Player('player', new CircleHitbox(2), this._camera)
-
-        player.getTransform().setTranslation(new Vector3(51.1, 0, -88))
-        player.getTransform().setRotation(new Orientation(0, -32))
-
-        this.getSceneManager().getActive().add(player)
 
 
 
@@ -307,28 +272,12 @@ class GameTest extends GameCore {
         const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
         select1.addOption("comecar").setExecute(() => {
-            this.getSceneManager().setActive("scene1")
+            this.getSceneManager().setActive("main")
         })
         select1.addOption("opcao 2")
         select1.addOption("opcao 3")
 
-        this.getSceneManager().setActive("scene1");
-
-
-
-        console.log('eq0: ', lineEquationOf(new Vector2(1,1), new Vector2(6,5)));
-        console.log('eq1: ', circunferenceEquationOf(new Vector2(1,-4), 4));
-        console.log('eq2: ', intersectionPointsBetweenLineAndCircunference(
-            {a: 3, b: 0, c: -2},
-            {a: 2, b: 1, r: 2}
-        ));
-
-        console.log('eq3: ', bhaskara({a: 2, b: -3, c: -3}))
-
-        console.log('eq4: ', lineEquationOf(new Vector2(6, 5), new Vector2(1, 1)));
-        
-        
-        
+        this.getSceneManager().setActive("main");
         
     }
 
