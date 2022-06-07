@@ -43,7 +43,7 @@ class DialogEntity extends GuiEntity {
         this._text.getTransform().setScale(new Vector3(2, 2, 2))
     }
 
-    public setImage(image) {
+    public setImage(image: Entity) {
         image.getTransform().setTranslation(new Vector3(0, 0, 1).negate());
         image.getTransform().setScale(new Vector3(0.09, 0.09, 1));
         this.getScene().add(image);

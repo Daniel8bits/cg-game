@@ -35,6 +35,7 @@ import ImageEntity from "./entities/gui/ImageEntity";
 import DialogEntity from "./entities/gui/DialogEntity";
 
 import MainScene from "./scenes/MainScene";
+import DoorPanelMaterial from "./materials/DoorPanelMaterial";
 
 class GameTest extends GameCore {
 
@@ -58,15 +59,16 @@ class GameTest extends GameCore {
 
         /* Shader com Iluminação */
         ResourceManager.loadShader([{
-            name: 'shader1',
-            vertexShaderPathname: '/resources/shader/shader1/vert.glsl',
-            fragmentShaderPathname: '/resources/shader/shader1/frag.glsl'
-        }])
-
-        ResourceManager.loadShader([{
             name: 'map',
             vertexShaderPathname: '/resources/shader/map/vert.glsl',
             fragmentShaderPathname: '/resources/shader/map/frag.glsl'
+        }])
+
+        /* Shader com Iluminação para o DoorPanelEntity */
+        ResourceManager.loadShader([{
+            name: 'door-panel',
+            vertexShaderPathname: '/resources/shader/door-panel/vert.glsl',
+            fragmentShaderPathname: '/resources/shader/door-panel/frag.glsl'
         }])
 
         /* Shader sem Iluminação */
@@ -116,6 +118,10 @@ class GameTest extends GameCore {
                 pathname: '/resources/objects/panels/door-panel-unlocked.png'
             },
             {
+                name: 'door-panel-display-map',
+                pathname: '/resources/objects/panels/display-map.png'
+            },
+            {
                 name: 'lamp',
                 pathname: '/resources/objects/lamp/lamp-texture.png'
             },
@@ -133,32 +139,28 @@ class GameTest extends GameCore {
             ),
             new DefaultMaterial(
                 'level',
-                ResourceManager.getShader('shader1'),
+                ResourceManager.getShader('map'),
                 ResourceManager.getTexture('level'),
             ),
             new DefaultMaterial(
                 'elevator',
-                ResourceManager.getShader('shader1'),
+                ResourceManager.getShader('map'),
                 ResourceManager.getTexture('elevator'),
             ),
             new DefaultMaterial(
                 'elevator-door',
-                ResourceManager.getShader('shader1'),
+                ResourceManager.getShader('map'),
                 ResourceManager.getTexture('elevator-door'),
             ),
             new DefaultMaterial(
                 'hall-door',
-                ResourceManager.getShader('shader1'),
+                ResourceManager.getShader('map'),
                 ResourceManager.getTexture('hall-door'),
             ),
-            new DefaultMaterial(
-                'door-panel',
-                ResourceManager.getShader('shader1'),
-                ResourceManager.getTexture('door-panel-locked'),
-            ),
+            new DoorPanelMaterial(),
             new DefaultMaterial(
                 'lamp',
-                ResourceManager.getShader('shader1'),
+                ResourceManager.getShader('map'),
                 ResourceManager.getTexture('lamp'),
             ),
             new DefaultMaterial(

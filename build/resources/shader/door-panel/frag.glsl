@@ -3,8 +3,10 @@ precision mediump float;
 varying vec2 v_uvCoord;
 //varying vec4 v_color;
 
-uniform sampler2D u_texture;
-uniform sampler2D u_texture2;
+uniform sampler2D u_lockedTexture;
+uniform sampler2D u_unlockedTexture;
+uniform sampler2D u_displayMap;
+uniform int u_locked;
 uniform vec3 u_camera_position;
 
 
@@ -74,19 +76,31 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
 
 void main() {
 
-  vec3 texturevec3 = vec3(texture2D(u_texture, v_uvCoord));
+  vec3 texture;
 
-  vec3 norm = normalize(v_normal);
-  vec3 viewDir = normalize(u_camera_position - v_FragPos);
+  if(u_locked == 1) {
+    texture = vec3(texture2D(u_lockedTexture, v_uvCoord));
+  } else {
+    texture = vec3(texture2D(u_unlockedTexture, v_uvCoord));
+  }
+
+  float displayMap = vec3(texture2D(u_displayMap, v_uvCoord)).x;
+
   vec3 result = vec3(0.0);
-  if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);// Luz da Camera
-  for(int i = 0; i < MAX_LIGHTS; i++)
-      result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
+  if(displayMap == 0.0) {
+    vec3 norm = normalize(v_normal);
+    vec3 viewDir = normalize(u_camera_position - v_FragPos);
+    if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texture);// Luz da Camera
+    for(int i = 0; i < MAX_LIGHTS; i++)
+        result += CalcPointLight(pointLights[i], norm, viewDir,texture);
+  } else {
+    result = texture;
+  }
       
   gl_FragColor = vec4(result, 1.0);
 
-  float gamma = 1.0;
-  gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma));
+  //float gamma = 1.0;
+  //gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma));
 
   //gl_FragColor = vec4(texturevec3, 1.0);
 

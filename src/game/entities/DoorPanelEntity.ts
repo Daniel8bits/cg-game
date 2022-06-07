@@ -2,7 +2,8 @@ import InputManager, { Keys } from "@razor/core/InputManager";
 import ResourceManager from "@razor/core/ResourceManager";
 import Hitbox from "@razor/physics/hitboxes/HitBox";
 import Renderer from "../../engine/renderer/Renderer";
-import HallDoorEntity from "./HallDoorEntity";
+import DoorPanelMaterial from "../materials/DoorPanelMaterial";
+import HallDoorEntity, { HallDoorState } from "./HallDoorEntity";
 import MapEntity from "./MapEntity";
 import Player from "./Player";
 
@@ -35,6 +36,12 @@ class DoorPanelEntity extends MapEntity {
       
     if(position.distanceTo(playerPosition) < 5 && InputManager.isKeyPressed(Keys.KEY_F)) {
       this._hallDoor.interact()
+
+      if(this._hallDoor.getState() === HallDoorState.CLOSING) {
+        (this.getMaterial() as DoorPanelMaterial).setLocked(true);
+      } else if(this._hallDoor.getState() === HallDoorState.OPENING) {
+        (this.getMaterial() as DoorPanelMaterial).setLocked(false);
+      }
     }
 
   }
