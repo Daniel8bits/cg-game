@@ -23,7 +23,7 @@ class OptionEntity extends GuiEntity {
 
     public constructor(select : SelectEntity,name: string, renderer: Renderer,scene : Scene) {
         super(name, renderer);
-        this.getTransform().parent = select;
+        this.getTransform().parent = select.getTransform();
         this.setScene(scene);
         
         this.selection = this.addRectangle(this.getName()+"_option_selection");

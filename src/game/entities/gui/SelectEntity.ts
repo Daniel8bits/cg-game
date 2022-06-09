@@ -33,7 +33,7 @@ class SelectEntity extends GuiEntity {
         this.options.push(entity);
         entity.getTransform().setTranslation(new Vector3(0,70 * (this.padding++),0).negate());
         entity.setText(text);
-        entity.getTransform().parent = this;
+        entity.getTransform().parent = this.getTransform();
         this.getScene().add(entity);
         this.updateTranslation();
         return entity;

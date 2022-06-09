@@ -27,7 +27,7 @@ import DoorPanelEntity from "./entities/DoorPanelEntity";
 import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import PhysicsScene from "@razor/core/scenes/PhysicsScene";
 import MapRenderer from "./renderers/MapRenderer";
-import Player from "./entities/Player";
+import Player from "./entities/player/Player";
 import Texture from "@razor/appearance/Texture";
 import TextureLoader from "@razor/loader/TextureLoader";
 import DisplayEntity from "./entities/DisplayEntity";
@@ -36,7 +36,8 @@ import DialogEntity from "./entities/gui/DialogEntity";
 
 import MainScene from "./scenes/MainScene";
 import DoorPanelMaterial from "./materials/DoorPanelMaterial";
-import FrameRenderer from "./renderers/FrameRenderer";
+import PlayerRenderer from "./renderers/PlayerRenderer";
+import Gun from "./entities/player/Gun";
 
 class GameTest extends GameCore {
 
@@ -132,6 +133,14 @@ class GameTest extends GameCore {
             {
                 name: 'lamp',
                 pathname: '/resources/objects/lamp/lamp-texture.png'
+            },////
+            {
+                name: 'hand',
+                pathname: '/resources/objects/gun/hand-texture.png'
+            },
+            {
+                name: 'gun',
+                pathname: '/resources/objects/gun/gun-texture.png'
             },
             {
                 name: 'text',
@@ -170,6 +179,16 @@ class GameTest extends GameCore {
                 'lamp',
                 ResourceManager.getShader('map'),
                 ResourceManager.getTexture('lamp'),
+            ),
+            new DefaultMaterial(
+                'hand',
+                ResourceManager.getShader('map'),
+                ResourceManager.getTexture('hand'),
+            ),
+            new DefaultMaterial(
+                'gun',
+                ResourceManager.getShader('map'),
+                ResourceManager.getTexture('gun'),
             ),
             new DefaultMaterial(
                 'rectangle',
@@ -220,6 +239,18 @@ class GameTest extends GameCore {
                 objectData: '/resources/objects/lamp/lamp.obj'
             },
             {
+                name: 'hand',
+                objectData: '/resources/objects/gun/hand.obj'
+            },
+            {
+                name: 'gun-receiver',
+                objectData: '/resources/objects/gun/receiver.obj'
+            },
+            {
+                name: 'gun-slider',
+                objectData: '/resources/objects/gun/slider.obj'
+            },
+            {
                 name: 'rectangle',
                 objectData: () => {
                     const vao = new VAO([], 2);
@@ -239,13 +270,18 @@ class GameTest extends GameCore {
         this.getRenderStrategy().add(simpleRenderer)
         const mapRenderer = new MapRenderer(this._camera);
         this.getRenderStrategy().add(mapRenderer)
-       // const frameRenderer = new FrameRenderer(this._camera,this.getSceneManager());
-      //  this.getRenderStrategy().add(frameRenderer)
+        const playerRenderer = new PlayerRenderer(this._camera);
+        this.getRenderStrategy().add(playerRenderer)
 
         const scene1 = new MainScene(this.getRenderStrategy(), this._camera)
         //scene1.getProperties().gravity = 0
 
         this.getSceneManager().add(scene1, true)
+
+        playerRenderer.setPlayer(
+            scene1.get('player') as Player,
+            scene1.get('gun') as Gun
+        )
 
         const guiAmmunition = new DisplayEntity('guiAmmunition', guiRenderer);
         const bottom = -Razor.CANVAS.height + 100;

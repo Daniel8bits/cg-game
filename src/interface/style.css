@@ -22,7 +22,7 @@
     max-width:800px;
     height:500px;
     margin:0 auto;
-    background:rgba(255,255,255,0.8);
+    background:rgba(255,255,255,0.35);
 }
 input{
     border:1px solid #dedede;

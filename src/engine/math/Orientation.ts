@@ -5,6 +5,11 @@ class Orientation extends Vector3 {
   public constructor(pitch: number = 0, yaw: number = 0, roll: number = 0) {
     super(pitch, yaw, roll)
   }
+
+  public add(orientation: Orientation): Orientation {
+    super.add(orientation)
+    return this
+  }
   
   public get pitch() : number {
     return this.x

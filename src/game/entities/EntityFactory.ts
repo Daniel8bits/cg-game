@@ -165,22 +165,24 @@ class EntityFactory {
 
     this._scene.forEach((entity: Entity) => {
       if(entity instanceof MapEntity) {
-
-        const position = entity.getTransform().getTranslation()
-        
-        const closestLamps = Array.from(lamps).sort((a, b) => {
-          const distanceA = position.distanceTo(a.getTransform().getTranslation())
-          const distanceB = position.distanceTo(b.getTransform().getTranslation())
-          if(distanceA > distanceB) return 1;
-          if(distanceA < distanceB) return -1;
-          return 0;
-        }).slice(0, 5);
-
-        (entity as MapEntity).setLampList(closestLamps)
-
+        (entity as MapEntity).setLampList(this.get5ClosestLamps(entity, lamps))
       }
     })
 
+  }
+
+  public get5ClosestLamps(
+    entity: Entity, 
+    lamps: Lamp[], 
+    position: Vector3 = entity.getTransform().getTranslation()
+  ): Lamp[] {
+    return Array.from(lamps).sort((a, b) => {
+      const distanceA = position.distanceTo(a.getTransform().getTranslation())
+      const distanceB = position.distanceTo(b.getTransform().getTranslation())
+      if(distanceA > distanceB) return 1;
+      if(distanceA < distanceB) return -1;
+      return 0;
+    }).slice(0, 5);
   }
 
   private _getHitbox(vao: string, hitboxes: HitboxesJSON): Hitbox {
