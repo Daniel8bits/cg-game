@@ -86,7 +86,6 @@ class SimpleRenderer extends Renderer {
                 (entity as SimpleEntity).getLampList().forEach((lamp, i) => {
                     
                     const path = `pointLights[${i}]`;
-                    
                     shader.setVector3(path+".color.ambient", lamp.color);
                     shader.setVector3(path+".color.diffuse", lamp.color)
                     shader.setVector3(path+".color.specular",lamp.color);

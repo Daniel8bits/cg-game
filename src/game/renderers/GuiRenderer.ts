@@ -28,6 +28,7 @@ class GuiRenderer extends Renderer {
 
     public render() {
         gl.disable(gl.CULL_FACE)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         ResourceManager.forEachMaterial((material) => {
             material.bind()
             const shader = material.getShader();
@@ -49,6 +50,7 @@ class GuiRenderer extends Renderer {
             material.unbind()
 
         })
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.enable(gl.CULL_FACE)
 
     }

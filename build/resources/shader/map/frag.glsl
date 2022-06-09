@@ -65,7 +65,7 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
     float distance    = length(light.position - v_FragPos);
     float attenuation = 1.0 / (light.distance.constant + light.distance.linear * distance + light.distance.quadratic * (distance * distance));    
     properties.ambient *= attenuation;
-    properties.diffuse *= attenuation;
+    //properties.diffuse *= attenuation; Ta bugando a luz por algum motivo (?)
     properties.specular *= attenuation;
 
     return (properties.ambient + properties.diffuse + properties.specular);

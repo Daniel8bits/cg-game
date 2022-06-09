@@ -52,12 +52,20 @@ class Razor {
 
     private configs() {
         window.addEventListener('click', (e) => {
-            Razor.FOCUSED = Razor.isInsideCanvas(e.clientX, e.clientY)
-           // Razor.CANVAS.requestPointerLock(); (Responsável por remover o mouse)
+            if(!Razor.IS_MOUSE_INSIDE){
+
+                Razor.FOCUSED = Razor.isInsideCanvas(e.clientX, e.clientY)
+                Razor.CANVAS.requestPointerLock();// (Responsável por remover o mouse)
+            }
+            //Razor.IS_MOUSE_INSIDE = true;
         })
+        document.addEventListener('pointerlockchange', event => { 
+            console.log(event);
+            Razor.IS_MOUSE_INSIDE = !Razor.IS_MOUSE_INSIDE;
+        });
 
         Razor.CANVAS.addEventListener('mousemove', (e) => {
-            Razor.IS_MOUSE_INSIDE = Razor.isInsideCanvas(e.clientX, e.clientY)
+         //   Razor.IS_MOUSE_INSIDE = Razor.isInsideCanvas(e.clientX, e.clientY)
         })
         Razor.CANVAS.addEventListener('mouseleave', (e) => {
             Razor.IS_MOUSE_INSIDE = false;

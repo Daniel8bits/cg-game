@@ -20,6 +20,7 @@ class DisplayEntity extends GuiEntity {
         rectangle.setSize(120, 50);
         rectangle.getTransform().parent = this.getTransform();
         const text = this.addText(this.getName()+"_text_rectangle_left");
+        this._text = text;
         text.setText(name)
         text.getTransform().setTranslation(new Vector3(50, 15, 1).negate())
         text.getTransform().setScale(new Vector3(2, 2, 2))
@@ -32,7 +33,7 @@ class DisplayEntity extends GuiEntity {
         image.getTransform().parent = this.getTransform();
     }
 
-    public updateText(text : number){
+    public updateText(text : string | number){
         
         this._text.setText(String(text));
     }

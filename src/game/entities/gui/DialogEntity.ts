@@ -28,9 +28,15 @@ class DialogEntity extends GuiEntity {
     private _rectangle: RectangleEntity;
     private paddingTop = 5;
     private paddingLeft = 5;
+    private static _dialogs: Map<string, DialogEntity> = new Map;
 
     public constructor(name: string, renderer: Renderer) {
         super(name, renderer);
+        DialogEntity._dialogs.set(name, this);
+    }
+
+    public static getDialog(name: string) {
+        return DialogEntity._dialogs.get(name);
     }
 
     public init(color: Vector3 = new Vector3(0.9, 0.9, 0.9)): void {
@@ -48,6 +54,11 @@ class DialogEntity extends GuiEntity {
         image.getTransform().setScale(new Vector3(0.09, 0.09, 1));
         this.getScene().add(image);
         image.getTransform().parent = this.getTransform();
+    }
+
+    public remove(){
+        this._text.setText("");
+        this._rectangle.setSize(0,0);
     }
 
     public updateText(name: string, position: DialogPosition) {
@@ -69,7 +80,7 @@ class DialogEntity extends GuiEntity {
             case "center":
             case "bottom":
                 top = Razor.CANVAS.height;
-                if(position.vertical == "bottom") top =- height;
+                if (position.vertical == "bottom") top = - height;
                 if (position.vertical == "center") top = top / 2 - height / 2;
                 break;
             case "top":
@@ -87,7 +98,7 @@ class DialogEntity extends GuiEntity {
             case "center":
             case "right":
                 left = Razor.CANVAS.width;
-                if(position.horizontal == "right") left -= width;
+                if (position.horizontal == "right") left -= width;
                 if (position.horizontal == "center") left = left / 2 - width / 2;
                 break;
             case "left":
@@ -104,11 +115,12 @@ class DialogEntity extends GuiEntity {
 
     }
 
-    public animateText(name: string, wordPerSeconds = 1, position: DialogPosition) {
+    public animateText(name: string, wordPerSeconds = 1, position: DialogPosition, callback?: Function) {
         let i = 1;
         const length = name.length;
         const intervalText = setInterval(() => {
             if (i == length) {
+                if(callback) callback.apply(this);
                 clearInterval(intervalText)
             }
             this.updateText(name.slice(0, i++), position);

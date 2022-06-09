@@ -2,10 +2,12 @@ import { Matrix4, toRadians, Vector3 } from '@math.gl/core';
 import Camera from '@razor/core/Camera';
 import DynamicEntity from '@razor/core/entities/DynamicEntity';
 import InputManager, { Keys } from '@razor/core/InputManager';
+import Razor from '@razor/core/Razor';
 import ResourceManager from '@razor/core/ResourceManager';
 import Orientation from '@razor/math/Orientation';
 import Transform from '@razor/math/Transform';
 import Hitbox from '@razor/physics/hitboxes/HitBox';
+import GameController from 'src/game/GameController';
 import Material from "../../../engine/appearance/material/Material";
 import VAO from "../../../engine/buffer/VAO";
 import Renderer from "../../../engine/renderer/Renderer";
@@ -106,9 +108,13 @@ class Player extends DynamicEntity implements IEntityWithLight {
       this.getTransform().setYaw(rotation.yaw + -this._impulse*2 * delta)
     }
 
-    
-
-    if(InputManager.isMouseLeft()) {
+    if(InputManager.isKeyPressed(Keys.KEY_ESCAPE)){// ESC
+      Razor.IS_MOUSE_INSIDE = false;
+    }
+    if(InputManager.isMouseLeft()){
+      GameController.update("life",-1); // Tem q ver isso melhor
+    }
+    if(Razor.IS_MOUSE_INSIDE) {
         const dx = InputManager.getMouseDX() 
         const dy = InputManager.getMouseDY() 
 

@@ -38,10 +38,12 @@ import MainScene from "./scenes/MainScene";
 import DoorPanelMaterial from "./materials/DoorPanelMaterial";
 import PlayerRenderer from "./renderers/PlayerRenderer";
 import Gun from "./entities/player/Gun";
+import GameController from "./GameController";
 
 class GameTest extends GameCore {
 
     private _camera: CanvasCamera
+    private _gameController: GameController;
     private static instance: GameTest;
 
     public constructor() {
@@ -56,7 +58,6 @@ class GameTest extends GameCore {
     public start() {
 
         this._camera = new CanvasCamera('main', new Vector3(51.1, 0, -88), new Orientation(0, -32));
-
         // ========= SHADER ==========
 
         /* Shader com Iluminação */
@@ -287,22 +288,26 @@ class GameTest extends GameCore {
         const bottom = -Razor.CANVAS.height + 100;
         this.getSceneManager().getActive().add(guiAmmunition);
         guiAmmunition.getTransform().setTranslation(new Vector3(0, bottom, 0));
-        guiAmmunition.setText("123", new Vector3(0.2, 0.9, 0.9));
+        GameController.setDisplay("ammunition",guiAmmunition,new Vector3(0.2, 0.9, 0.9));
+        //guiAmmunition.setText("123", new Vector3(0.2, 0.9, 0.9));
         //// https://www.pngwing.com/pt/free-png-stupy/download
         guiAmmunition.setImage(new ImageEntity("ammunition", "/resources/images/ammunition.png", guiRenderer));
 
         const guiLife = new DisplayEntity('guiLife', guiRenderer);
         this.getSceneManager().getActive().add(guiLife);
         guiLife.getTransform().setTranslation(new Vector3(0, bottom - 50, 0));
-        guiLife.setText("123", new Vector3(1, 0.2, 0.2));
+        GameController.setDisplay("life",guiLife,new Vector3(1, 0.2, 0.2));
+        //guiLife.setText("123", new Vector3(1, 0.2, 0.2));
         //https://www.onlinewebfonts.com/icon/146242
         guiLife.setImage(new ImageEntity("life", "/resources/images/life.png", guiRenderer));
 
-        const dialog = new DialogEntity("dialog", guiRenderer);
+        const dialog = new DialogEntity("display", guiRenderer);
         this.getSceneManager().getActive().add(dialog);
         dialog.getTransform().setTranslation(new Vector3(100,100,-1).negate())
         dialog.init();
-        dialog.animateText("salve salve familia",50,{vertical:'10%',horizontal:'center'});
+        dialog.animateText("bem vindo ao inferno",50,{vertical:'10%',horizontal:'center'},function(){
+            setTimeout(() => this.remove(),5000);
+        });
         /*
                 const pauseContainer = new GuiEntity("pause_container",guiRenderer);
                 this.getSceneManager().getActive().add(pauseContainer);

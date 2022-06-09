@@ -3,6 +3,8 @@ import Shader from '@razor/appearance/Shader'
 import Texture from '@razor/appearance/Texture'
 import ResourceManager from '@razor/core/ResourceManager'
 import { gl } from '@razor/gl/GLUtils'
+import DialogEntity from '../entities/gui/DialogEntity'
+import GameController from '../GameController'
 
 class DoorPanelMaterial extends Material {
 
@@ -54,6 +56,9 @@ class DoorPanelMaterial extends Material {
 
   public setLocked(locked: boolean): void {
     this._locked = locked
+    DialogEntity.getDialog("display").animateText(locked ? "portao fechado" : "portao aberto",30,{vertical:'10%',horizontal:'center'},function(){
+      setTimeout(() => this.remove(),2000);
+    });
   }
 
 }
