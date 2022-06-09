@@ -51,6 +51,10 @@ abstract class Renderer {
         this._scene = scene;
     }
 
+    public getScene(): Scene {
+        return this._scene
+    }
+
     public getCamera(): Camera { 
         return this._camera
     }

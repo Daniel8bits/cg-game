@@ -2,6 +2,7 @@ import { Vector3 } from "@math.gl/core";
 import Orientation from "@razor/math/Orientation";
 import React, { useEffect, useState } from "react"
 import Lamp from "./components/lamp";
+import Player from "./components/player";
 import styles from './style.css';
 
 const Properties = ({entity}) => {
@@ -10,14 +11,14 @@ const Properties = ({entity}) => {
     const [translation,setTranslation] = useState(new Vector3);
     const [scale,setScale] = useState(new Vector3);
     const [rotation,setRotation] = useState(new Orientation);
-    const [parent,setParent] = useState("");
+    //const [parent,setParent] = useState("");
 
     useEffect(() => {
         const transform = entity.getTransform();
         setTranslation(transform.getTranslation());
         setRotation(transform.getRotation());
         setScale(transform.getScale());
-        setParent(transform.parent?.getName())
+        //setParent(transform.parent?.getName())
     },[entity])
 
     const updated = (only = false) => {
@@ -72,8 +73,9 @@ const Properties = ({entity}) => {
                 <input type='number' step="0.01" onChange={changeValue('scale')} name='1' value={scale[1]} />
                 <input type='number' step="0.01" onChange={changeValue('scale')} name='2' value={scale[2]} />
             </div>
-            <p><b>Parent</b> {parent ?? "-x-"}</p>
+            {/* <p><b>Parent</b> {parent ?? "-x-"}</p> */}
             {className == "Lamp" && <Lamp entity={entity} updated={updated} />}
+            {className == "Player" && <Player entity={entity} updated={updated} />}
         </div>
     )
 }

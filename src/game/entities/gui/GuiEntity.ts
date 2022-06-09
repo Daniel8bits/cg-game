@@ -19,7 +19,7 @@ class GuiEntity extends Entity {
 
     public addRectangle(name: string): RectangleEntity {
         const entity = new RectangleEntity(name, ResourceManager.getVAO("rectangle"), ResourceManager.getMaterial("rectangle"), this.getRenderer())
-        entity.getTransform().parent = this;
+        entity.getTransform().parent = this.getTransform();
         const scene = this.getScene();
         entity.setScene(scene)
         scene.add(entity);
@@ -28,7 +28,7 @@ class GuiEntity extends Entity {
 
     public addText(name: string): TextEntity {
         const entity = new TextEntity(name, ResourceManager.getMaterial("text"), this.getRenderer());
-        entity.getTransform().parent = this;
+        entity.getTransform().parent = this.getTransform();
         this.getScene().add(entity);
         return entity;
     }

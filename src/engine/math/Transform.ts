@@ -11,7 +11,7 @@ class Transform {
     private _rotation: Orientation;
     private _scale: Vector3;
     private _children : Scene;
-    private _parent : Entity;
+    private _parent : Transform;
 
     public constructor(translation?: Vector3, rotation?: Orientation, scale?: Vector3) {
         this._translation = translation ?? new Vector3()
@@ -29,9 +29,9 @@ class Transform {
         return this._children;
     }
 
-    public set parent(entity : Entity) {
+    public set parent(parent : Transform) {
         //entity.getTransform().children.add(this._entity);
-        this._parent = entity;
+        this._parent = parent;
     }
 
     public get parent(){
@@ -158,12 +158,33 @@ class Transform {
     public worldMatrix() : Matrix4{
         const localMatrix = this.toMatrix();
         let worldMatrix = localMatrix.clone();
-        if(this.parent){
-            worldMatrix = this.parent.getTransform().worldMatrix().multiplyRight(localMatrix);
+        if(this._parent){
+            worldMatrix = this._parent.worldMatrix().multiplyRight(localMatrix);
         }
         return worldMatrix;
     }
+
+    public worldMatrixFrom(transform: Transform): Matrix4 {
+        const translation = new Matrix4().translate(transform.getTranslation());
+
+        const rotationX = new Matrix4().rotateX(toRadians(transform.getPitch()))
+        const rotationY = new Matrix4().rotateY(toRadians(transform.getYaw()))
+        const rotationZ = new Matrix4().rotateZ(toRadians(transform.getRoll()))
+
+        const rotation = rotationX.multiplyRight(rotationY.multiplyRight(rotationZ))
+
+        const scale = new Matrix4().scale(transform.getScale());
+
+        return translation.multiplyRight(rotation.multiplyRight(scale))
+    }
     
+    public worldTranslation(): Vector3 {
+        let worldTranslation = this._translation.clone()
+        if(this._parent){
+            worldTranslation = this._parent.worldTranslation().add(worldTranslation);
+        }
+        return worldTranslation;
+    }
 
 }
 

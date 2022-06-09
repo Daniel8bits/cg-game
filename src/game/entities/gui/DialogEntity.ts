@@ -36,7 +36,7 @@ class DialogEntity extends GuiEntity {
     public init(color: Vector3 = new Vector3(0.9, 0.9, 0.9)): void {
         this._rectangle = this.addRectangle(this.getName() + "_rectangle_left");
         this._rectangle.color = color;
-        this._rectangle.getTransform().parent = this;
+        this._rectangle.getTransform().parent = this.getTransform();
         this._text = this.addText(this.getName() + "_text_rectangle_left");
         this._text.setText("")
         this._text.getTransform().setTranslation(new Vector3(this.paddingLeft, this.paddingTop, 1).negate())
@@ -47,7 +47,7 @@ class DialogEntity extends GuiEntity {
         image.getTransform().setTranslation(new Vector3(0, 0, 1).negate());
         image.getTransform().setScale(new Vector3(0.09, 0.09, 1));
         this.getScene().add(image);
-        image.getTransform().parent = this;
+        image.getTransform().parent = this.getTransform();
     }
 
     public updateText(name: string, position: DialogPosition) {

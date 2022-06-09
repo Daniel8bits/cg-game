@@ -1,4 +1,5 @@
 import { Vector3 } from "@math.gl/core";
+import Entity from "@razor/core/entities/Entity";
 import ResourceManager from "@razor/core/ResourceManager";
 import Renderer from "@razor/renderer/Renderer";
 import GuiEntity from "./gui/GuiEntity";
@@ -17,18 +18,18 @@ class DisplayEntity extends GuiEntity {
         const rectangle = this.addRectangle(this.getName()+"_rectangle_left");
         rectangle.color = color;
         rectangle.setSize(120, 50);
-        rectangle.getTransform().parent = this;
+        rectangle.getTransform().parent = this.getTransform();
         const text = this.addText(this.getName()+"_text_rectangle_left");
         text.setText(name)
         text.getTransform().setTranslation(new Vector3(50, 15, 1).negate())
         text.getTransform().setScale(new Vector3(2, 2, 2))
     }
 
-    public setImage(image ){
+    public setImage(image: Entity){
         image.getTransform().setTranslation(new Vector3(0,0, 1).negate());
         image.getTransform().setScale(new Vector3(0.09,0.09, 1));
         this.getScene().add(image);
-        image.getTransform().parent = this;
+        image.getTransform().parent = this.getTransform();
     }
 
     public updateText(text : number){

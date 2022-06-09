@@ -3,37 +3,52 @@ import RenderStrategy from "@razor/renderer/RenderStrategy";
 import EntityFactory from "../entities/EntityFactory";
 import DoorPanelEntity from "../entities/DoorPanelEntity";
 import HallDoorEntity from "../entities/HallDoorEntity";
-import Player from "../entities/Player";
+import Player from "../entities/player/Player";
 import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import { Vector3 } from "@math.gl/core";
 import Orientation from "@razor/math/Orientation";
 import Camera from "@razor/core/Camera";
+import Lamp from "../entities/Lamp";
+import Entity from "@razor/core/entities/Entity";
+import Gun from "../entities/player/Gun";
 
 class MainScene extends PhysicsScene {
 
   private _renderStrategy: RenderStrategy
   private _camera: Camera
+  private _entityFactory: EntityFactory
+  private _player: Player
+  private _gun: Gun
+  private _lamps: Lamp[]
 
   public constructor(renderStrategy: RenderStrategy, camera: Camera) {
     super('main')
     this._renderStrategy = renderStrategy
     this._camera = camera
+    this._entityFactory = new EntityFactory(this, this._renderStrategy)
+    this._player = new Player(
+      'player', 
+      new CircleHitbox(2), 
+      this._camera,
+      this._renderStrategy.get('player-renderer')
+    )
+    this._gun = new Gun(this._renderStrategy.get('player-renderer'))
+    this._lamps = []
     this._init()
   }
 
   private _init() {
-    
-    const player = new Player('player', new CircleHitbox(2), this._camera)
 
-    player.getTransform().setTranslation(new Vector3(51.1, 0, -88))
-    player.getTransform().setRotation(new Orientation(0, -32))
+    this._player.getTransform().setTranslation(new Vector3(51.1, 0, -88))
+    this._player.getTransform().setRotation(new Orientation(0, -32))
 
-    this.add(player)
 
-    new EntityFactory(
-      this,
-      this._renderStrategy
-    ).load()
+    this._gun.getTransform().parent = this._player.getHandTransform()
+
+    this.add(this._player)
+    this.add(this._gun)
+
+    this._entityFactory.load()
 
     const doorPanelMapping = {
       "door-panel_3": "hall-door_0",
@@ -55,13 +70,23 @@ class MainScene extends PhysicsScene {
         const hallDoor = this.get(doorPanelMapping[entity.getName()]) as HallDoorEntity;
         hallDoor.getHitbox().disableCollision(false);
         (entity as DoorPanelEntity).setHallDoor(hallDoor);
-        (entity as DoorPanelEntity).setPlayer(player)
+        (entity as DoorPanelEntity).setPlayer(this._player)
       })
+
+    this.forEach((entity: Entity) => {
+      if(entity instanceof Lamp) {
+        this._lamps.push(entity)
+      }
+    })
 
   }
 
   public update(time: number, delta: number) {
-    super.update(time, delta)
+    super.update(time, delta);
+
+    this._player.setLampList(this._entityFactory.get5ClosestLamps(this._player, this._lamps))
+    this._gun.setLampList(this._entityFactory.get5ClosestLamps(this._gun, this._lamps, this._gun.getTransform().worldTranslation()))
+
   }
 
 }
