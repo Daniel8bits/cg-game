@@ -1,15 +1,17 @@
 import { gl } from "../gl/GLUtils";
 import GameCore from "./GameCore";
 import InputManager from "./InputManager";
-
+import Framebuffer from "./FrameBuffer";
 class GameLoop {
 
     private _gameCore: GameCore;
     private _then: number
+    private _frameBuffer : Framebuffer;
 
     public constructor(gameCore: GameCore) {
         this._gameCore = gameCore;
         this._then = 0
+        this._frameBuffer = new Framebuffer;
     }
 
     private loop = (time: number) : void => {
@@ -23,6 +25,7 @@ class GameLoop {
         InputManager.update()
         this._gameCore.update(time, delta);
         this._gameCore.render();
+        this._frameBuffer.update();
         requestAnimationFrame(this.loop);
     }
 
@@ -34,6 +37,7 @@ class GameLoop {
         gl.enable(gl.CULL_FACE)
         // gl.frontFace(gl.CW)
         gl.depthFunc(gl.LESS)
+       // this._frameBuffer.start();
         this.loop(0);
     }
 

@@ -36,6 +36,7 @@ import DialogEntity from "./entities/gui/DialogEntity";
 
 import MainScene from "./scenes/MainScene";
 import DoorPanelMaterial from "./materials/DoorPanelMaterial";
+import FrameRenderer from "./renderers/FrameRenderer";
 
 class GameTest extends GameCore {
 
@@ -90,6 +91,13 @@ class GameTest extends GameCore {
             name: 'image',
             vertexShaderPathname: '/resources/shader/image/vert.glsl',
             fragmentShaderPathname: '/resources/shader/image/frag.glsl'
+        }])
+
+        /* Shader do Effect */
+        ResourceManager.loadShader([{
+            name: 'effect',
+            vertexShaderPathname: '/resources/shader/effect/vert.glsl',
+            fragmentShaderPathname: '/resources/shader/effect/frag.glsl'
         }])
 
         ResourceManager.loadTextures([
@@ -231,6 +239,8 @@ class GameTest extends GameCore {
         this.getRenderStrategy().add(simpleRenderer)
         const mapRenderer = new MapRenderer(this._camera);
         this.getRenderStrategy().add(mapRenderer)
+       // const frameRenderer = new FrameRenderer(this._camera,this.getSceneManager());
+      //  this.getRenderStrategy().add(frameRenderer)
 
         const scene1 = new MainScene(this.getRenderStrategy(), this._camera)
         //scene1.getProperties().gravity = 0
