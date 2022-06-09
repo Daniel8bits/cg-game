@@ -5,7 +5,7 @@ import Renderer from "../../engine/renderer/Renderer";
 import DoorPanelMaterial from "../materials/DoorPanelMaterial";
 import HallDoorEntity, { HallDoorState } from "./HallDoorEntity";
 import MapEntity from "./MapEntity";
-import Player from "./Player";
+import Player from "./player/Player";
 
 class DoorPanelEntity extends MapEntity {
 
