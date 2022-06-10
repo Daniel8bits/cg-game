@@ -15,7 +15,7 @@ import FileUtils from "@razor/utils/FileUtils";
 import Text from "./utils/Text";
 import VAO from "@razor/buffer/VAO";
 import VBO from "@razor/buffer/VBO";
-import { gl } from "@razor/gl/GLUtils";
+import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Razor from "@razor/core/Razor";
 import EntityFactory from "./entities/EntityFactory";
 import TextEntity from "./entities/gui/TextEntity";
@@ -300,17 +300,17 @@ class GameTest extends GameCore {
             .forEachVAO((vao) => {
                 vao.create();
             })
-        this._frameBuffer = [new FrameRenderer(this._camera)];
+        this._frameBuffer.push(new FrameRenderer(this._camera,gl.COLOR_ATTACHMENT0));
 
-        const guiRenderer = new GuiRenderer(this._camera);
-        this.getRenderStrategy().add(guiRenderer)
         const simpleRenderer = new SimpleRenderer(this._camera);
         this.getRenderStrategy().add(simpleRenderer)
         const mapRenderer = new MapRenderer(this._camera);
         this.getRenderStrategy().add(mapRenderer)
         const playerRenderer = new PlayerRenderer(this._camera);
         this.getRenderStrategy().add(playerRenderer)
-
+        const guiRenderer = new GuiRenderer(this._camera);
+        this.getRenderStrategy().add(guiRenderer)
+        
         const scene1 = new MainScene(this.getRenderStrategy(), this._camera)
         //scene1.getProperties().gravity = 0
 
@@ -371,7 +371,8 @@ class GameTest extends GameCore {
         })
 
         this.getSceneManager().setActive("main");
-
+        const attachemnts = this._frameBuffer.map((item) => item.attachemnt)
+        GLUtils.drawBuffer(attachemnts);
     }
 
     public update(time: number, delta: number) {

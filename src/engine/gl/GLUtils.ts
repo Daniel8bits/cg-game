@@ -25,6 +25,10 @@ class GLUtils {
         gl.drawArrays(gl.TRIANGLES, 0, vaoLength);
     }
 
+    public static drawBuffer(attachments : number[]){
+        
+       // gl.drawBuffers(attachments); Só funicona no WebGL2
+    }
 }
 
 export default GLUtils;

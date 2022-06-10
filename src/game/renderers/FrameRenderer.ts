@@ -22,9 +22,9 @@ class FrameRenderer extends Renderer {
     private _shader : Shader;
     private _vao : VAO;
 
-    constructor(cameraManager: Camera) {
+    constructor(cameraManager: Camera,attachemnt: number) {
         super('frameRenderer', cameraManager)
-        this._frameBuffer = new Framebuffer();
+        this._frameBuffer = new Framebuffer(attachemnt);
         this._frameBuffer.create();
         this._shader = ResourceManager.getShader("effect");
         this._shader.create();
@@ -35,11 +35,17 @@ class FrameRenderer extends Renderer {
         return this._frameBuffer.getTexture();
     }
 
+    public get attachemnt() : number{
+        return this._frameBuffer.getAttachemnt();
+    }
+
     public bind(){
         this._frameBuffer.bind();
     }
 
     public render(): void {
+        gl.clearColor(0, 0, 0, 1);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         this._shader.bind();
         gl.activeTexture(gl.TEXTURE0);
         this._texture.bind();
@@ -47,6 +53,8 @@ class FrameRenderer extends Renderer {
         this._vao.bind();
         GLUtils.draw(this._vao.getLength())
         this._vao.unbind();
+        this._texture.unbind();
+        this._shader.unbind();
     }
     
     public unbind(){
