@@ -39,8 +39,6 @@ uniform Light pointLights[MAX_LIGHTS];
 uniform Light lightCamera;
 uniform int applyLight;
 
-uniform vec3 u_lightColor;
-
 LightProperties CalcDirLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
 {
     LightProperties properties;
@@ -83,25 +81,21 @@ bool isVisible(vec3 camera,vec3 light){
 
 void main() {
 
-  vec3 texturevec3 = vec3(texture2D(u_texture, v_uvCoord));
+  vec4 texturePixel = texture2D(u_texture, v_uvCoord);
+  vec3 texture = vec3(texturePixel);
 
   vec3 norm = normalize(v_normal);
   vec3 viewDir = normalize(u_camera_position - v_FragPos);
   vec3 result = vec3(0.0);
-  //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);// Luz da Camera
-  if(applyLight == 1) {
-    for(int i = 0; i < MAX_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
-  }
-  else {
-    result = texturevec3 * u_lightColor;
-  }
+  if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texture);// Luz da Camera
+  for(int i = 0; i < MAX_LIGHTS; i++)
+      result += CalcPointLight(pointLights[i], norm, viewDir,texture);
       
-  gl_FragColor = vec4(result, 1.0);
+  gl_FragColor = vec4(result, texturePixel.a);
 
   //float gamma = 2.2;
   //gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma))*0.3;
 
-  //gl_FragColor = vec4(texturevec3, 1.0);
+  //gl_FragColor = vec4(texture, texturePixel.a);
 
 }

@@ -3,7 +3,7 @@ import { gl } from "@razor/gl/GLUtils";
 class Framebuffer {
 
     private fbo : WebGLFramebuffer;
-    private rbo : WebGLFramebuffer;
+    private rbo : WebGLRenderbuffer;
     private program: WebGLProgram;
     //private texture : any;
 

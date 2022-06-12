@@ -3,9 +3,10 @@ import Hitbox from '@razor/physics/hitboxes/HitBox';
 import Material from "../../engine/appearance/material/Material";
 import VAO from "../../engine/buffer/VAO";
 import Renderer from "../../engine/renderer/Renderer";
+import { IEntityWithLight } from './IEntityWithLight';
 import Lamp from "./Lamp";
 
-class MapEntity extends StaticEntity {
+class MapEntity extends StaticEntity implements IEntityWithLight {
 
     private _lampList: Lamp[]
 

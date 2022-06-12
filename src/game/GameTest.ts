@@ -2,7 +2,7 @@ import { Vector3, Quaternion, Matrix4, Vector2 } from "@math.gl/core"
 import GameCore from '@razor/core/GameCore'
 import ResourceManager from '@razor/core/ResourceManager'
 import Scene from '@razor/core/scenes/Scene';
-import SimpleRenderer from './renderers/SimpleRenderer'
+import MapRenderer from './renderers/MapRenderer'
 import SimpleEntity from './entities/SimpleEntity'
 import CanvasCamera from './CanvasCamera'
 import DefaultMaterial from '../engine/appearance/material/DefaultMaterial';
@@ -26,7 +26,7 @@ import EmptyMaterial from "@razor/appearance/material/EmptyMaterial";
 import DoorPanelEntity from "./entities/DoorPanelEntity";
 import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import PhysicsScene from "@razor/core/scenes/PhysicsScene";
-import MapRenderer from "./renderers/MapRenderer";
+import MonsterRenderer from "./renderers/MonsterRenderer";
 import Player from "./entities/player/Player";
 import Texture from "@razor/appearance/Texture";
 import TextureLoader from "@razor/loader/TextureLoader";
@@ -65,6 +65,13 @@ class GameTest extends GameCore {
             name: 'map',
             vertexShaderPathname: '/resources/shader/map/vert.glsl',
             fragmentShaderPathname: '/resources/shader/map/frag.glsl'
+        }])
+
+        /* Shader do monstro */
+        ResourceManager.loadShader([{
+            name: 'monster',
+            vertexShaderPathname: '/resources/shader/monster/vert.glsl',
+            fragmentShaderPathname: '/resources/shader/monster/frag.glsl'
         }])
 
         /* Shader com Iluminação para o DoorPanelEntity */
@@ -144,6 +151,10 @@ class GameTest extends GameCore {
                 pathname: '/resources/objects/gun/gun-texture.png'
             },
             {
+                name: 'monster',
+                pathname: '/resources/objects/monster/monster-texture.png'
+            },
+            {
                 name: 'text',
                 pathname: '/resources/objects/8x8-font.png'
             }
@@ -190,6 +201,11 @@ class GameTest extends GameCore {
                 'gun',
                 ResourceManager.getShader('map'),
                 ResourceManager.getTexture('gun'),
+            ),
+            new DefaultMaterial(
+                'monster',
+                ResourceManager.getShader('monster'),
+                ResourceManager.getTexture('monster'),
             ),
             new DefaultMaterial(
                 'rectangle',
@@ -252,6 +268,10 @@ class GameTest extends GameCore {
                 objectData: '/resources/objects/gun/slider.obj'
             },
             {
+                name: 'monster',
+                objectData: '/resources/objects/monster/monster.obj'
+            },
+            {
                 name: 'rectangle',
                 objectData: () => {
                     const vao = new VAO([], 2);
@@ -267,10 +287,10 @@ class GameTest extends GameCore {
 
         const guiRenderer = new GuiRenderer(this._camera);
         this.getRenderStrategy().add(guiRenderer)
-        const simpleRenderer = new SimpleRenderer(this._camera);
-        this.getRenderStrategy().add(simpleRenderer)
         const mapRenderer = new MapRenderer(this._camera);
         this.getRenderStrategy().add(mapRenderer)
+        const monsterRenderer = new MonsterRenderer(this._camera);
+        this.getRenderStrategy().add(monsterRenderer)
         const playerRenderer = new PlayerRenderer(this._camera);
         this.getRenderStrategy().add(playerRenderer)
 

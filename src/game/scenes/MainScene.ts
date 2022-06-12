@@ -11,6 +11,8 @@ import Camera from "@razor/core/Camera";
 import Lamp from "../entities/Lamp";
 import Entity from "@razor/core/entities/Entity";
 import Gun from "../entities/player/Gun";
+import Monster from "../entities/monster/Monster";
+import MonsterRenderer from "../renderers/MonsterRenderer";
 
 class MainScene extends PhysicsScene {
 
@@ -78,6 +80,18 @@ class MainScene extends PhysicsScene {
         this._lamps.push(entity)
       }
     })
+
+    const monsterRenderer = this._renderStrategy.get('monster-renderer') as MonsterRenderer;
+    monsterRenderer.setPlayer(this._player)
+
+    const monster = new Monster('m1', monsterRenderer)
+    monster.getTransform().setTranslation(new Vector3(36, 0, -65));
+    monster.getTransform().setRotation(new Orientation(0, -30, 0));
+    monster.getTransform().setScale(new Vector3(1, 2, 1));
+
+    monster.setLampList(this._entityFactory.get5ClosestLamps(monster, this._lamps))
+
+    this.add(monster)
 
   }
 
