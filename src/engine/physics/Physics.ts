@@ -80,19 +80,17 @@ class Physics {
     this._intersections = []
 
     this._dynamicEntities.forEach((dynamicEntity) => {
-      this._solidEntities.forEach((entity) => {
 
-        if(dynamicEntity.getName() === entity.getName()) {
-          return;
-        }
+      if(dynamicEntity.getHitbox().isCollisionDisabled()) {
+        return;
+      }
 
-        if(
-          dynamicEntity.getHitbox().isCollisionDisabled() || 
-          entity.getHitbox().isCollisionDisabled()
-        ) {
-          return;
-        }
-        
+      this._solidEntities
+        .filter((entity) => !entity.getHitbox().isCollisionDisabled() &&
+          dynamicEntity.getName() !== entity.getName() &&
+          dynamicEntity.getTransform().getTranslation().distanceTo(
+            entity.getTransform().getTranslation()) < 50) 
+        .forEach((entity) => {
         
         const intersection = this._test(dynamicEntity, entity)
 

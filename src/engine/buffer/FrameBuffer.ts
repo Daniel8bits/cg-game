@@ -79,20 +79,6 @@ class Framebuffer {
     }
 
     public unbind() {
-
-        const data = new Uint8Array(this._texture.getWidth() * this._texture.getHeight() * 4)
-
-        gl.readPixels(
-            0,
-            0,
-            this._texture.getWidth(),
-            this._texture.getHeight(),
-            gl.RGBA,
-            gl.UNSIGNED_BYTE,
-            data
-        )
-        this._texture.setData(data);
-
         this._texture.unbind()
         gl.viewport(0, 0, Razor.CANVAS.width, Razor.CANVAS.height);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -105,6 +91,21 @@ class Framebuffer {
     public destroy() {
         gl.deleteFramebuffer(this._fbo);
         gl.deleteRenderbuffer(this._rbo);
+    }
+
+    public storeBuffer(): void {
+        const data = new Uint8Array(this._texture.getWidth() * this._texture.getHeight() * 4)
+
+        gl.readPixels(
+            0,
+            0,
+            this._texture.getWidth(),
+            this._texture.getHeight(),
+            gl.RGBA,
+            gl.UNSIGNED_BYTE,
+            data
+        )
+        this._texture.setData(data);
     }
 
     public getTexture(): Texture {
