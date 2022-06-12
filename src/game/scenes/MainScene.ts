@@ -34,7 +34,7 @@ class MainScene extends PhysicsScene {
       this._camera,
       this._renderStrategy.get('player-renderer')
     )
-    this._gun = new Gun(this._renderStrategy.get('player-renderer'))
+    this._gun = new Gun(this._renderStrategy.get('player-renderer'), this)
     this._lamps = []
     this._init()
   }
@@ -43,7 +43,7 @@ class MainScene extends PhysicsScene {
 
     this._player.getTransform().setTranslation(new Vector3(51.1, 0, -88))
     this._player.getTransform().setRotation(new Orientation(0, -32))
-
+    this._player.setGun(this._gun)
 
     this._gun.getTransform().parent = this._player.getHandTransform()
 
@@ -92,6 +92,15 @@ class MainScene extends PhysicsScene {
     monster.setLampList(this._entityFactory.get5ClosestLamps(monster, this._lamps))
 
     this.add(monster)
+
+    const monster2 = new Monster('m2', monsterRenderer)
+    monster2.getTransform().setTranslation(new Vector3(25, 0, -47));
+    monster2.getTransform().setRotation(new Orientation(0, -30, 0));
+    monster2.getTransform().setScale(new Vector3(1, 2, 1));
+
+    monster2.setLampList(this._entityFactory.get5ClosestLamps(monster2, this._lamps))
+
+    this.add(monster2)
 
   }
 

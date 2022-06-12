@@ -11,15 +11,12 @@ class DoorPanelMaterial extends Material {
   private _lockedTexture: Texture
   private _unlockedTexture: Texture
   private _displayMap: Texture
-
-  private _locked: boolean
   
   public constructor () {
     super('door-panel', ResourceManager.getShader('door-panel'))
     this._lockedTexture = ResourceManager.getTexture('door-panel-locked')
     this._unlockedTexture = ResourceManager.getTexture('door-panel-unlocked')
     this._displayMap = ResourceManager.getTexture('door-panel-display-map')
-    this._locked = true;
   }
 
   public create(): void {
@@ -39,7 +36,6 @@ class DoorPanelMaterial extends Material {
     gl.activeTexture(gl.TEXTURE2);
     this._displayMap.bind()
     this.getShader().setInt('u_displayMap', 2)
-    this.getShader().setInt('u_locked', Number(this._locked))
   }
   public unbind(): void {
     this._displayMap.unbind()
@@ -52,13 +48,6 @@ class DoorPanelMaterial extends Material {
     this._unlockedTexture.destroy()
     this._lockedTexture.destroy()
     this.getShader().destroy()
-  }
-
-  public setLocked(locked: boolean): void {
-    this._locked = locked
-    DialogEntity.getDialog("display").animateText(locked ? "portao fechado" : "portao aberto",30,{vertical:'10%',horizontal:'center'},function(){
-      setTimeout(() => this.remove(),2000);
-    });
   }
 
 }

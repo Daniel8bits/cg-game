@@ -3,6 +3,7 @@ import ResourceManager from "@razor/core/ResourceManager";
 import Hitbox from "@razor/physics/hitboxes/HitBox";
 import Renderer from "../../engine/renderer/Renderer";
 import DoorPanelMaterial from "../materials/DoorPanelMaterial";
+import DialogEntity from "./gui/DialogEntity";
 import HallDoorEntity, { HallDoorState } from "./HallDoorEntity";
 import MapEntity from "./MapEntity";
 import Player from "./player/Player";
@@ -11,6 +12,8 @@ class DoorPanelEntity extends MapEntity {
 
   private _hallDoor: HallDoorEntity
   private _player: Player
+
+  private _locked: boolean
 
   public constructor(
       name: string, 
@@ -27,6 +30,7 @@ class DoorPanelEntity extends MapEntity {
     );
     this._hallDoor = null
     this._player = null
+    this._locked = true
   }
   
   public update(time: number, delta: number): void {
@@ -38,9 +42,9 @@ class DoorPanelEntity extends MapEntity {
       this._hallDoor.interact()
 
       if(this._hallDoor.getState() === HallDoorState.CLOSING) {
-        (this.getMaterial() as DoorPanelMaterial).setLocked(true);
+        this.setLocked(true);
       } else if(this._hallDoor.getState() === HallDoorState.OPENING) {
-        (this.getMaterial() as DoorPanelMaterial).setLocked(false);
+        this.setLocked(false);
       }
     }
 
@@ -62,6 +66,17 @@ class DoorPanelEntity extends MapEntity {
 
   public getPlayer(): Player {
     return this._player
+  }
+
+  public setLocked(locked: boolean): void {
+    this._locked = locked
+    DialogEntity.getDialog("display").animateText(locked ? "portao fechado" : "portao aberto",30,{vertical:'10%',horizontal:'center'},function(){
+      setTimeout(() => this.remove(),2000);
+    });
+  }
+
+  public isLocked(): boolean {
+    return this._locked
   }
 
 }

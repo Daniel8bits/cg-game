@@ -8,6 +8,7 @@ import CanvasCamera from '../CanvasCamera'
 import { toRadians } from "@razor/math/math";
 import Lamp from "../entities/Lamp";
 import MapEntity from "../entities/MapEntity";
+import DoorPanelEntity from "../entities/DoorPanelEntity";
 
 class MapRenderer extends Renderer {
 
@@ -81,6 +82,10 @@ class MapRenderer extends Renderer {
                     shader.setVector3(path+".position",lamp.getTransform().getTranslation().negate());
                     
                 })
+
+                if(entity instanceof DoorPanelEntity) {
+                    shader.setInt('u_locked', Number((entity as DoorPanelEntity).isLocked()))
+                }
                 
                 if(entity instanceof Lamp) {
                     shader.setInt("applyLight", 0);
