@@ -8,6 +8,7 @@ import CanvasCamera from '../CanvasCamera'
 import { toRadians } from "@razor/math/math";
 import Lamp from "../entities/Lamp";
 import MapEntity from "../entities/MapEntity";
+import FrameRenderer from "./FrameRenderer";
 
 class MapRenderer extends Renderer {
 
@@ -61,7 +62,7 @@ class MapRenderer extends Renderer {
             shader.setFloat("lightCamera.distance.linear", distance[1])
             shader.setFloat("lightCamera.distance.quadratic",distance[2]);
             shader.setFloat("lightCamera.shininess",32)
-            
+            shader.setInt('onlyLights',FrameRenderer.mode == "mascara" ? 1 : 0);
 
             this.getEntitiesByMaterial(material).forEach((entity: Entity,index : number) => {
                 if(!(entity instanceof MapEntity || entity instanceof Lamp)) {

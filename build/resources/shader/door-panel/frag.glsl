@@ -41,6 +41,7 @@ struct Light{
 uniform Light pointLights[MAX_LIGHTS];
 uniform Light lightCamera;
 uniform int applyLight;
+uniform int onlyLights;
 
 LightProperties CalcDirLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
 {
@@ -96,8 +97,18 @@ void main() {
   } else {
     result = texture;
   }
-      
-  gl_FragColor = vec4(result, 1.0);
+
+  if(onlyLights == 1){
+
+    float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        gl_FragColor = vec4(result.rgb, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+  } else{
+
+    gl_FragColor = vec4(result, 1.0);
+  }  
 
   //float gamma = 1.0;
   //gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma));

@@ -20,11 +20,11 @@ class Framebuffer {
         gl.texImage2D(
             gl.TEXTURE_2D,
             0,
-            gl.RGB,
+            gl.RGBA,
             this._texture.getWidth(),
             this._texture.getHeight(),
             0,
-            gl.RGB,
+            gl.RGBA,
             gl.UNSIGNED_BYTE,
             null
         );
@@ -79,6 +79,7 @@ class Framebuffer {
     }
 
     public unbind() {
+        //this.storeBuffer();
         this._texture.unbind()
         gl.viewport(0, 0, Razor.CANVAS.width, Razor.CANVAS.height);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);

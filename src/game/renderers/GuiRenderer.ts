@@ -9,6 +9,7 @@ import { toRadians } from "@razor/math/math";
 import Lamp from "../entities/Lamp";
 import Razor from "@razor/core/Razor";
 import ImageEntity from "../entities/gui/ImageEntity";
+import FrameRenderer from "./FrameRenderer";
 
 class GuiRenderer extends Renderer {
 
@@ -32,6 +33,7 @@ class GuiRenderer extends Renderer {
         ResourceManager.forEachMaterial((material) => {
             material.bind()
             const shader = material.getShader();
+            shader.setInt('onlyLights',FrameRenderer.mode == "mascara" ? 1 : 0);
             shader.setMatrix4x4('u_projection', this._projection);
             this.getEntitiesByMaterial(material).forEach((entity: Entity, index: number) => {
                 if('color' in entity){

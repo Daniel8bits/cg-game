@@ -320,7 +320,8 @@ class GameTest extends GameCore {
             .forEachVAO((vao) => {
                 vao.create();
             })
-        this._frameBuffer.push(new FrameRenderer(this._camera,gl.COLOR_ATTACHMENT0));
+        this._frameBuffer.push(new FrameRenderer(this._camera,'albedo'));
+        this._frameBuffer.push(new FrameRenderer(this._camera,'mascara'));
 
         const mapRenderer = new MapRenderer(this._camera);
         this.getRenderStrategy().add(mapRenderer)
@@ -406,6 +407,11 @@ class GameTest extends GameCore {
         super.render();
         this._frameBuffer[0].unbind();
         this._frameBuffer[0].render();
+        
+        this._frameBuffer[1].bind();
+        super.render();
+        this._frameBuffer[1].unbind();
+        this._frameBuffer[1].render();
     }
 
 }

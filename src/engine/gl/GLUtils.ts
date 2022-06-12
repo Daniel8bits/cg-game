@@ -27,7 +27,7 @@ class GLUtils {
 
     public static drawBuffer(attachments : number[]){
         
-       // gl.drawBuffers(attachments); Só funicona no WebGL2
+    //   gl.drawBuffers(attachments); //Só funicona no WebGL2
     }
 }
 

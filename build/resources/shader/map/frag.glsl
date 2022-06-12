@@ -38,20 +38,21 @@ struct Light{
 uniform Light pointLights[MAX_LIGHTS];
 uniform Light lightCamera;
 uniform int applyLight;
-
+uniform int onlyLights;
 uniform vec3 u_lightColor;
+
 
 LightProperties CalcDirLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
 {
     LightProperties properties;
     
     vec3 lightDir = normalize(-light.position - v_FragPos);
-    float diff = max(dot(normal, lightDir), 0.0);
+    float diff = dot(normal, lightDir);
     
     vec3 reflectDir = reflect(-lightDir, normal);
     vec3 halfwayDir = normalize(lightDir + viewDir);
 
-    float spec = pow(max(dot(viewDir, halfwayDir), 0.0), light.shininess);
+    float spec = pow(dot(viewDir, halfwayDir), light.shininess);
 
     properties.ambient = light.color.ambient  * texturevec3;
     properties.diffuse = light.color.diffuse * pow(texturevec3, vec3(2.2)) * texturevec3;
@@ -92,13 +93,21 @@ void main() {
   if(applyLight == 1) {
     for(int i = 0; i < MAX_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
-  }
+    }
   else {
-    result = texturevec3 * u_lightColor;
+    result = texturevec3 * u_lightColor * 10.0;
   }
-      
-  gl_FragColor = vec4(result, 1.0);
+  if(onlyLights == 1){
 
+    float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        gl_FragColor = vec4(result.rgb, 1.0);
+    else
+        gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+  } else{
+
+    gl_FragColor = vec4(result, 1.0);
+  }   
   //float gamma = 2.2;
   //gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma))*0.3;
 
