@@ -14,7 +14,7 @@ class RectangleEntity extends Entity {
     public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
         super(name, vao, material, renderer);
         this.size = new Vector2(1,1);
-        this.DrawRectangle();
+        //this.DrawRectangle();
     }
     private DrawRectangle(){
         const positions = [

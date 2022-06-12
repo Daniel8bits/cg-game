@@ -3,7 +3,6 @@ import {Matrix4, Vector3} from "@math.gl/core"
 import IResource from './IResource';
 import { gl } from "../gl/GLUtils";
 import FileUtils from '../utils/FileUtils';
-import Mat4 from '../math/Mat4';
 
 export interface ShaderType {
     name: string

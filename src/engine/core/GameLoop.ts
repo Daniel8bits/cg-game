@@ -1,7 +1,7 @@
 import { gl } from "../gl/GLUtils";
 import GameCore from "./GameCore";
 import InputManager from "./InputManager";
-import Framebuffer from "./FrameBuffer";
+import Framebuffer from "../buffer/FrameBuffer";
 class GameLoop {
 
     private _gameCore: GameCore;
@@ -25,7 +25,7 @@ class GameLoop {
         InputManager.update()
         this._gameCore.update(time, delta);
         this._gameCore.render();
-        this._frameBuffer.update();
+        //this._frameBuffer.render();
         requestAnimationFrame(this.loop);
     }
 

@@ -15,7 +15,7 @@ import FileUtils from "@razor/utils/FileUtils";
 import Text from "./utils/Text";
 import VAO from "@razor/buffer/VAO";
 import VBO from "@razor/buffer/VBO";
-import { gl } from "@razor/gl/GLUtils";
+import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Razor from "@razor/core/Razor";
 import EntityFactory from "./entities/EntityFactory";
 import TextEntity from "./entities/gui/TextEntity";
@@ -39,12 +39,15 @@ import DoorPanelMaterial from "./materials/DoorPanelMaterial";
 import PlayerRenderer from "./renderers/PlayerRenderer";
 import Gun from "./entities/player/Gun";
 import GameController from "./GameController";
+import Framebuffer from "@razor/buffer/FrameBuffer";
+import FrameRenderer from "./renderers/FrameRenderer";
 
 class GameTest extends GameCore {
 
     private _camera: CanvasCamera
     private _gameController: GameController;
     private static instance: GameTest;
+    private _frameBuffer: FrameRenderer[] = [];
 
     public constructor() {
         super()
@@ -56,7 +59,6 @@ class GameTest extends GameCore {
     }
 
     public start() {
-
         this._camera = new CanvasCamera('main', new Vector3(51.1, 0, -88), new Orientation(0, -32));
         // ========= SHADER ==========
 
@@ -274,8 +276,43 @@ class GameTest extends GameCore {
             {
                 name: 'rectangle',
                 objectData: () => {
-                    const vao = new VAO([], 2);
-                    vao.addEmpty(1);
+                    const positions = [
+                        0, 0,
+                        1, 0,
+                        0, 1,
+                        0, 1,
+                        1, 0,
+                        1, 1,
+                    ];
+                    const vao = new VAO([new VBO(new Float32Array(positions), 2, true)], 2);
+                    //   vao.addEmpty(1);
+                    return vao;
+                }
+            },
+            {
+                name: 'effect',
+                objectData: () => {
+                    const positions = [
+                        -1, -1,
+                        1, -1,
+                        -1, 1,
+                        -1, 1,
+                        1, -1,
+                        1, 1,
+                    ];
+                    const vp = [
+                        0, 0,
+                        1, 0,
+                        0, 1,
+                        0, 1,
+                        1, 0,
+                        1, 1,
+                    ];
+                    const vbo = [] as VBO[];
+                    vbo.push(new VBO(new Float32Array(positions), 2, true));
+                    vbo.push(new VBO(new Float32Array(vp), 2, true));
+                    const vao = new VAO(vbo, 2);
+                    //   vao.addEmpty(1);
                     return vao;
                 }
             }
@@ -283,17 +320,17 @@ class GameTest extends GameCore {
             .forEachVAO((vao) => {
                 vao.create();
             })
+        this._frameBuffer.push(new FrameRenderer(this._camera,gl.COLOR_ATTACHMENT0));
 
-
-        const guiRenderer = new GuiRenderer(this._camera);
-        this.getRenderStrategy().add(guiRenderer)
         const mapRenderer = new MapRenderer(this._camera);
         this.getRenderStrategy().add(mapRenderer)
         const monsterRenderer = new MonsterRenderer(this._camera);
         this.getRenderStrategy().add(monsterRenderer)
         const playerRenderer = new PlayerRenderer(this._camera);
         this.getRenderStrategy().add(playerRenderer)
-
+        const guiRenderer = new GuiRenderer(this._camera);
+        this.getRenderStrategy().add(guiRenderer)
+        
         const scene1 = new MainScene(this.getRenderStrategy(), this._camera)
         //scene1.getProperties().gravity = 0
 
@@ -308,7 +345,7 @@ class GameTest extends GameCore {
         const bottom = -Razor.CANVAS.height + 100;
         this.getSceneManager().getActive().add(guiAmmunition);
         guiAmmunition.getTransform().setTranslation(new Vector3(0, bottom, 0));
-        GameController.setDisplay("ammunition",guiAmmunition,new Vector3(0.2, 0.9, 0.9));
+        GameController.setDisplay("ammunition", guiAmmunition, new Vector3(0.2, 0.9, 0.9));
         //guiAmmunition.setText("123", new Vector3(0.2, 0.9, 0.9));
         //// https://www.pngwing.com/pt/free-png-stupy/download
         guiAmmunition.setImage(new ImageEntity("ammunition", "/resources/images/ammunition.png", guiRenderer));
@@ -316,17 +353,17 @@ class GameTest extends GameCore {
         const guiLife = new DisplayEntity('guiLife', guiRenderer);
         this.getSceneManager().getActive().add(guiLife);
         guiLife.getTransform().setTranslation(new Vector3(0, bottom - 50, 0));
-        GameController.setDisplay("life",guiLife,new Vector3(1, 0.2, 0.2));
+        GameController.setDisplay("life", guiLife, new Vector3(1, 0.2, 0.2));
         //guiLife.setText("123", new Vector3(1, 0.2, 0.2));
         //https://www.onlinewebfonts.com/icon/146242
         guiLife.setImage(new ImageEntity("life", "/resources/images/life.png", guiRenderer));
 
         const dialog = new DialogEntity("display", guiRenderer);
         this.getSceneManager().getActive().add(dialog);
-        dialog.getTransform().setTranslation(new Vector3(100,100,-1).negate())
+        dialog.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
         dialog.init();
-        dialog.animateText("bem vindo ao inferno",50,{vertical:'10%',horizontal:'center'},function(){
-            setTimeout(() => this.remove(),5000);
+        dialog.animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
+            setTimeout(() => this.remove(), 5000);
         });
         /*
                 const pauseContainer = new GuiEntity("pause_container",guiRenderer);
@@ -337,9 +374,10 @@ class GameTest extends GameCore {
                 const textPause = pauseContainer.addText("pause_text").setText("Pause");
         */
 
+        this.getSceneManager().add(new Scene('credits'), true)
 
 
-        
+
         this.getSceneManager().add(new Scene('menu'), true)
 
         const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
@@ -348,10 +386,13 @@ class GameTest extends GameCore {
             this.getSceneManager().setActive("main")
         })
         select1.addOption("opcao 2")
-        select1.addOption("opcao 3")
+        select1.addOption("creditos").setExecute(() => {
+            this.getSceneManager().setActive("credits");
+        })
 
         this.getSceneManager().setActive("main");
-        
+        const attachemnts = this._frameBuffer.map((item) => item.attachemnt)
+        GLUtils.drawBuffer(attachemnts);
     }
 
     public update(time: number, delta: number) {
@@ -361,7 +402,10 @@ class GameTest extends GameCore {
     }
 
     public render() {
+        this._frameBuffer[0].bind();
         super.render();
+        this._frameBuffer[0].unbind();
+        this._frameBuffer[0].render();
     }
 
 }
