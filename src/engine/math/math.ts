@@ -30,63 +30,8 @@ export const toDegrees = (radian: number): number => (radian * 180) / Math.PI
 
 export const distanceBetweenPointAndLine = (point: Vector2, line: LineEquation): number => 
   Math.abs(line.a*point.x + line.b*point.y + line.c)/Math.sqrt(line.a**2 + line.b**2)
-/*
+
 export const intersectionPointsBetweenLineAndCircunference = 
-  (line: LineEquation, circunference: CircunferenceEquation): PairPoints => {
-
-    const k = (-line.c - line.a)/line.b
-
-    const a = 1 + k**2
-    const b = -2*circunference.a - 2*circunference.b*k
-    const c = circunference.a**2 + circunference.b**2 - circunference.r**2
-
-    const intersectionX = bhaskara({a, b, c})
-
-    if(!intersectionX) {
-      console.log('no intersection');
-      
-      return null;
-    }
-
-    const y1 = functionOfXFromLineEquation(line, intersectionX.x1)
-
-    return {
-      p1: new Vector2(intersectionX.x1, y1),
-      p2: new Vector2(intersectionX.x2, intersectionX.x1 === intersectionX.x2 ? y1 : functionOfXFromLineEquation(line, intersectionX.x2)),
-    }
-
-  }
-
-  export const intersectionPointsBetweenLineAndCircunference2 = 
-  (line: PairPoints, circunference: CircunferenceEquation): PairPoints => {
-
-    //const k = (-line.c - line.a)/line.b
-
-    const d = new Vector2(line.p2).subtract(line.p1)
-    const f = new Vector2(line.p1).subtract(new Vector2(circunference.a, circunference.b))
-
-    const a = new Vector2(d).dot(d)
-    const b = new Vector2(f).dot(d)*2
-    const c = new Vector2(f).dot(f) - circunference.r**2
-
-    const intersectionX = bhaskara({a, b, c})
-
-    if(!intersectionX) {
-      console.log('no intersection');
-      
-      return null;
-    }
-
-    const y1 = functionOfXFromLineEquation(lineEquationOf(line.p1, line.p2), intersectionX.x1)
-
-    return {
-      p1: new Vector2(intersectionX.x1, y1),
-      p2: new Vector2(intersectionX.x2, intersectionX.x1 === intersectionX.x2 ? y1 : functionOfXFromLineEquation(lineEquationOf(line.p1, line.p2), intersectionX.x2)),
-    }
-
-  }
-*/
-  export const intersectionPointsBetweenLineAndCircunference = 
   (line: LineEquation, circunference: CircunferenceEquation): PairPoints => {
 
     if(line.a === line.b) {
@@ -104,8 +49,6 @@ export const intersectionPointsBetweenLineAndCircunference =
       const intersectionX = bhaskara({a, b, c})
   
       if(!intersectionX) {
-        console.log('no intersection');
-        
         return null;
       }
   
@@ -127,8 +70,6 @@ export const intersectionPointsBetweenLineAndCircunference =
       const intersectionX = bhaskara({a, b, c})
   
       if(!intersectionX) {
-        console.log('no intersection');
-        
         return null;
       }
   
@@ -150,8 +91,6 @@ export const intersectionPointsBetweenLineAndCircunference =
     const intersectionY = bhaskara({a, b, c})
 
     if(!intersectionY) {
-      console.log('no intersection');
-      
       return null;
     }
 

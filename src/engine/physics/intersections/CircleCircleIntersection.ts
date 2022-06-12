@@ -21,8 +21,6 @@ class CircleCircleIntersection extends Intersection {
       (solid2.getHitbox() as CircleHitbox).getRadius()
 
     if(q.distanceTo(p) < totalRadius) {
-      console.log(q.distanceTo(p));
-      
       return new CircleCircleIntersection(solid1, solid2)
     }
 

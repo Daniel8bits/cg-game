@@ -1,9 +1,11 @@
-import { Matrix4, toRadians, Vector3 } from '@math.gl/core';
+import { Matrix4, toRadians, Vector2, Vector3 } from '@math.gl/core';
+import Vector from '@math.gl/core/src/classes/base/vector';
 import Camera from '@razor/core/Camera';
 import DynamicEntity from '@razor/core/entities/DynamicEntity';
 import InputManager, { Keys } from '@razor/core/InputManager';
 import Razor from '@razor/core/Razor';
 import ResourceManager from '@razor/core/ResourceManager';
+import { gl } from '@razor/gl/GLUtils';
 import Orientation from '@razor/math/Orientation';
 import Transform from '@razor/math/Transform';
 import Hitbox from '@razor/physics/hitboxes/HitBox';
@@ -13,6 +15,7 @@ import VAO from "../../../engine/buffer/VAO";
 import Renderer from "../../../engine/renderer/Renderer";
 import { IEntityWithLight } from '../IEntityWithLight';
 import Lamp from '../Lamp';
+import Gun, { GunState } from './Gun';
 
 class Player extends DynamicEntity implements IEntityWithLight {
 
@@ -21,6 +24,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
   private _impulse: number
 
   private _handTransform: Transform
+  private _gun: Gun
 
   private _lampList: Lamp[]
 
@@ -48,6 +52,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
     )
     this._handTransform.parent = this.getTransform()
     this._lampList = []
+    this._gun = null
   }
 
 
@@ -98,6 +103,24 @@ class Player extends DynamicEntity implements IEntityWithLight {
       this.getTransform().setPitch(0)
     }
 
+
+    if(InputManager.isKeyPressed(Keys.KEY_E) && this._gun.getState() === GunState.CHARGED){ // RIGHT
+      const position = this.getTransform().getTranslation()
+      const ray = new Vector3(0, 0, 20).transform(
+        this.getTransform().toInversePositionMatrix()
+      )
+      this._gun.shoot(
+        new Vector2(
+          position.x,
+          position.z
+        ),
+        new Vector2(
+          ray.x,
+          ray.z
+        )
+      )
+    }
+
     if(InputManager.isKeyPressed(Keys.KEY_LEFT)){ // RIGHT
       const rotation = this.getTransform().getRotation()
       this.getTransform().setYaw(rotation.yaw + this._impulse*2 * delta)
@@ -111,9 +134,11 @@ class Player extends DynamicEntity implements IEntityWithLight {
     if(InputManager.isKeyPressed(Keys.KEY_ESCAPE)){// ESC
       Razor.IS_MOUSE_INSIDE = false;
     }
+
     if(InputManager.isMouseLeft()){
       GameController.update("life",-1); // Tem q ver isso melhor
     }
+
     if(Razor.IS_MOUSE_INSIDE) {
         const dx = InputManager.getMouseDX() 
         const dy = InputManager.getMouseDY() 
@@ -161,6 +186,14 @@ class Player extends DynamicEntity implements IEntityWithLight {
 
   public getHandTransform(): Transform {
     return this._handTransform
+  }
+
+  public setGun(gun: Gun) {
+    this._gun = gun
+  }
+
+  public getGun(): Gun {
+    return this._gun
   }
 
 
