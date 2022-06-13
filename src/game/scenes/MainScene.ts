@@ -26,6 +26,13 @@ class MainScene extends PhysicsScene {
     super('main')
     this._camera = camera
     this._entityFactory = new EntityFactory(this, this.getRenderStrategy())
+    this._player = null
+    this._gun = null
+    this._lamps = []
+  }
+
+  public init() {
+
     this._player = new Player(
       'player', 
       new CircleHitbox(2), 
@@ -33,11 +40,6 @@ class MainScene extends PhysicsScene {
       this.getRenderStrategy().get('player-renderer')
     )
     this._gun = new Gun(this.getRenderStrategy().get('player-renderer'), this)
-    this._lamps = []
-    this._init()
-  }
-
-  private _init() {
 
     this._player.getTransform().setTranslation(new Vector3(51.1, 0, -88))
     this._player.getTransform().setRotation(new Orientation(0, -32))

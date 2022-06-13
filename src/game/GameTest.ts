@@ -347,6 +347,8 @@ class GameTest extends GameCore {
         scene1.getRenderStrategy().add(playerRenderer)
         const guiRenderer = this._guiRenderer = new GuiRenderer(this._camera);
         scene1.getRenderStrategy().add(guiRenderer)
+
+        scene1.init()
         
         //scene1.getProperties().gravity = 0
 
