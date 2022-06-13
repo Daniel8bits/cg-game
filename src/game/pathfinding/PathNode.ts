@@ -69,6 +69,10 @@ class PathNode {
     return this._marked
   }
 
+  public setPosition(position: Vector2): void {
+    this._position = position
+  }
+
   public getPosition(): Vector2 {
     return this._position
   }

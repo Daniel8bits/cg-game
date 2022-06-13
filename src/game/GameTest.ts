@@ -41,6 +41,7 @@ import Gun from "./entities/player/Gun";
 import GameController from "./GameController";
 import Framebuffer from "@razor/buffer/FrameBuffer";
 import FrameRenderer from "./renderers/FrameRenderer";
+import PathFinding from "./pathfinding/PathFinding";
 
 class GameTest extends GameCore {
 
@@ -394,6 +395,19 @@ class GameTest extends GameCore {
         this.getSceneManager().setActive("main");
         const attachemnts = this._frameBuffer.map((item) => item.attachemnt)
         GLUtils.drawBuffer(attachemnts);
+/*
+        const pathFinding = new PathFinding()
+        
+        pathFinding.loadNodes()
+        const destiny = pathFinding.getNodes().get('node_21')
+        pathFinding.find(pathFinding.getNodes().get('node_0'), destiny)
+
+        let current = destiny
+        do {
+            console.log('n: ', current.getName());
+            current = current.getPath()
+        } while(current)
+*/
     }
 
     public update(time: number, delta: number) {
