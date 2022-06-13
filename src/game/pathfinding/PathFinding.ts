@@ -1,6 +1,9 @@
 import { Vector2 } from "@math.gl/core"
+import DynamicEntity from "@razor/core/entities/DynamicEntity"
 import Scene from "@razor/core/scenes/Scene"
 import FileUtils from "@razor/utils/FileUtils"
+import Player from "../entities/player/Player"
+import EntityNode from "./EntityNode"
 import PathNode from "./PathNode"
 
 
@@ -12,12 +15,19 @@ class PathFinding {
   private _closedNodes: Map<string, PathNode>
 
   private _scene: Scene
+  private _player: Player
 
-  public constructor(scene: Scene) {
+  private _playerNode: EntityNode
+  private _monsterNode: EntityNode
+
+  public constructor(scene: Scene, player: Player) {
     this._nodes = new Map<string, PathNode>()
     this._openNodes = new Map<string, PathNode>()
     this._closedNodes = new Map<string, PathNode>()
     this._scene = scene
+    this._player = player
+    this._playerNode = new EntityNode(player)
+    this._monsterNode = new EntityNode(scene.get('m2') as DynamicEntity)
   }
 
   public find(origin: PathNode, destiny: PathNode): void {
@@ -57,6 +67,8 @@ class PathFinding {
     }
 
   }
+
+  //private _
 
   private _popLowestCostNode(nodeList: Map<string, PathNode>): PathNode {
     let smaller: PathNode
