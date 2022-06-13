@@ -95,7 +95,7 @@ void main() {
     for(int i = 0; i < MAX_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, viewDir,texture);
   } else {
-    result = texture;
+    result = texture * 1.75;
   }
 
   if(onlyLights == 1){

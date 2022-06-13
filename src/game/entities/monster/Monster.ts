@@ -11,6 +11,8 @@ class Monster extends DynamicEntity implements IEntityWithLight {
 
   private _lampList: Lamp[]
 
+  private _health: number
+
   public constructor(name: string, renderer: Renderer) {
     super(
       name,
@@ -21,12 +23,17 @@ class Monster extends DynamicEntity implements IEntityWithLight {
       renderer
     )
     this._lampList = []
+    this._health = 5
   }
 
   public update(time: number, delta: number): void {
     
   }
 
+  public takeDamage(): boolean {
+    this._health--
+    return this._health === 0
+  }
 
   public setLampList(lampList: Lamp[]): void {
     this._lampList = lampList
@@ -34,6 +41,14 @@ class Monster extends DynamicEntity implements IEntityWithLight {
 
   public getLampList(): Lamp[] {
     return this._lampList
+  }
+
+  public setHealth(health: number): void {
+    this._health = health
+  }
+
+  public getHealth(): number {
+    return this._health
   }
 
 }

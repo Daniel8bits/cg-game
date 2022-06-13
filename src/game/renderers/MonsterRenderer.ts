@@ -80,10 +80,18 @@ class MonsterRenderer extends Renderer {
         shader.setFloat("lightCamera.shininess",32)
         
         this._vao.bind()
-        this.getEntitiesByMaterial(this._material).forEach((entity: Entity,index : number) => {
-            if(!(entity instanceof Monster)) {
-                return;
-            }
+
+        const position = this._player.getTransform().getTranslation()
+        this.getEntitiesByMaterial(this._material)
+            .filter(entity => entity instanceof Monster)
+            .sort((entity1, entity2) => {
+                const distanceA = position.distanceTo(entity1.getTransform().getTranslation())
+                const distanceB = position.distanceTo(entity2.getTransform().getTranslation())
+                if(distanceA < distanceB) return 1;
+                if(distanceA > distanceB) return -1;
+                return 0;
+            })
+            .forEach((entity: Entity,index : number) => {
             (entity as Monster).getLampList().forEach((lamp, i) => {
                 
                 const path = `pointLights[${i}]`;
@@ -100,7 +108,7 @@ class MonsterRenderer extends Renderer {
             })
             
             shader.setInt("applyLight", 1);
-            this._material.getShader().setMatrix4x4('u_transform', this._getTransformMatrix(entity));
+            this._material.getShader().setMatrix4x4('u_transform', this._getTransformMatrix(entity as Monster));
             this._material.getShader().setMatrix4x4('u_worldInverseTranspose',entity.getTransform().toMatrix().invert().transpose());
             
             GLUtils.draw(this._vao.getLength())

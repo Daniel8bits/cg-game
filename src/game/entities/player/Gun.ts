@@ -117,11 +117,15 @@ class Gun extends Entity implements IEntityWithLight {
           return true
         }
         return false
-      })
+      }) as Monster[]
 
     for(let i = 0; i < monstersInTheSight.length; i++) {
       const intersection = intersectionMap.get(monstersInTheSight[i].getName())
       if(this._isInsideLine({p1: playerPosition, p2: rayCasting}, intersection)) {
+
+        if(monstersInTheSight[i].takeDamage()) {
+          this.getScene().remove(monstersInTheSight[i])
+        }
 
         return;
       }

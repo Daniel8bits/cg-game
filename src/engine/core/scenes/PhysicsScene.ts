@@ -35,10 +35,10 @@ class PhysicsScene extends Scene {
   }
 
   public remove(entity: Entity|string): Scene {
-    super.remove(entity)
     if(entity instanceof SolidEntity && this.hasInVisible(entity)) {
       this._physics.remove(entity)
     }
+    super.remove(entity)
     return this
   }
 

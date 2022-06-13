@@ -1,4 +1,3 @@
-import RenderStrategy from "../../renderer/RenderStrategy";
 import Entity from "../entities/Entity";
 
 class Scene {
