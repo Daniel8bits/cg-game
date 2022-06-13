@@ -396,6 +396,8 @@ class GameTest extends GameCore {
 
         this.getSceneManager().add(new Scene('menu'), true)
 
+        this.getSceneManager().get('menu').getRenderStrategy().add(guiRenderer)
+
         const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
         select1.addOption("comecar").setExecute(() => {
