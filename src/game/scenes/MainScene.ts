@@ -17,31 +17,31 @@ import FrameRenderer from "../renderers/FrameRenderer";
 
 class MainScene extends PhysicsScene {
 
-  private _renderStrategy: RenderStrategy
   private _camera: Camera
   private _entityFactory: EntityFactory
   private _player: Player
   private _gun: Gun
   private _lamps: Lamp[]
 
-  public constructor(renderStrategy: RenderStrategy, camera: Camera) {
+  public constructor(camera: Camera) {
     super('main')
-    this._renderStrategy = renderStrategy
     this._camera = camera
-    this._entityFactory = new EntityFactory(this, this._renderStrategy)
+    this._entityFactory = new EntityFactory(this, this.getRenderStrategy())
+    this._player = null
+    this._gun = null
+    this._lamps = []
+  }
+
+  public init() {
+
     this._player = new Player(
       'player', 
       new CircleHitbox(2), 
       this._camera,
-      this._renderStrategy.get('player-renderer')
+      this.getRenderStrategy().get('player-renderer')
     )
-    this._gun = new Gun(this._renderStrategy.get('player-renderer'), this)
-    this._lamps = []
-    this._init()
-    
-  }
+    this._gun = new Gun(this.getRenderStrategy().get('player-renderer'), this)
 
-  private _init() {
     this._player.getTransform().setTranslation(new Vector3(51.1, 0, -88))
     this._player.getTransform().setRotation(new Orientation(0, -32))
     this._player.setGun(this._gun)
@@ -82,7 +82,7 @@ class MainScene extends PhysicsScene {
       }
     })
 
-    const monsterRenderer = this._renderStrategy.get('monster-renderer') as MonsterRenderer;
+    const monsterRenderer = this.getRenderStrategy().get('monster-renderer') as MonsterRenderer;
     monsterRenderer.setPlayer(this._player)
 
     const monster = new Monster('m1', monsterRenderer)
@@ -112,6 +112,11 @@ class MainScene extends PhysicsScene {
     this._gun.setLampList(this._entityFactory.get5ClosestLamps(this._gun, this._lamps, this._gun.getTransform().worldTranslation()))
 
   }
+
+  public render(): void {
+    super.render()
+  }
+
 }
 
 export default MainScene
