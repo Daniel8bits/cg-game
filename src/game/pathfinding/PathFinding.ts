@@ -1,4 +1,5 @@
 import { Vector2 } from "@math.gl/core"
+import FileUtils from "@razor/utils/FileUtils"
 import PathNode from "./PathNode"
 
 
@@ -65,6 +66,33 @@ class PathFinding {
     })
     nodeList.delete(key)
     return smaller
+  }
+
+  public loadNodes(): void {
+
+    interface NodesImportJSON {
+      [name: string]: {
+        translation: {
+          x: number
+          y: number
+          z: number
+        }
+      }
+    }
+
+    FileUtils.load(
+      '/resources/nodes.json', 
+      function onSuccess(file) {
+        const data: NodesImportJSON = JSON.parse(file)
+
+        
+
+      },
+      function onError(err) {
+        throw new Error(`Error trying to load nodes.\n ${err}`);
+      },
+    )
+
   }
 
 
