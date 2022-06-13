@@ -5,6 +5,7 @@ import Razor from "@razor/core/Razor";
 import Scene from "@razor/core/scenes/Scene";
 import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Transform from "@razor/math/Transform";
+import Sound from "src/game/Sound";
 import Material from "../../../engine/appearance/material/Material";
 import VAO from "../../../engine/buffer/VAO";
 import Entity from "../../../engine/core/entities/Entity";
@@ -60,6 +61,7 @@ class SelectEntity extends GuiEntity {
                     next = prev + 1;
                     if(next >= this.options.length) next = 0;
                 }
+                Sound.Find("menu").play();
                 this.options[prev].selected(false);
                 this.options[next].selected(true);
                 this.selected = next;

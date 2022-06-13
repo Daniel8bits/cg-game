@@ -3,6 +3,7 @@ import ResourceManager from "@razor/core/ResourceManager";
 import Hitbox from "@razor/physics/hitboxes/HitBox";
 import Renderer from "../../engine/renderer/Renderer";
 import DoorPanelMaterial from "../materials/DoorPanelMaterial";
+import Sound from "../Sound";
 import DialogEntity from "./gui/DialogEntity";
 import HallDoorEntity, { HallDoorState } from "./HallDoorEntity";
 import MapEntity from "./MapEntity";
@@ -70,9 +71,11 @@ class DoorPanelEntity extends MapEntity {
 
   public setLocked(locked: boolean): void {
     this._locked = locked
+    /*
+    Sound.Find("door").play();
     DialogEntity.getDialog("display").animateText(locked ? "portao fechado" : "portao aberto",30,{vertical:'10%',horizontal:'center'},function(){
       setTimeout(() => this.remove(),2000);
-    });
+    });*/
   }
 
   public isLocked(): boolean {

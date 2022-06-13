@@ -11,7 +11,7 @@ class GameLoop {
     public constructor(gameCore: GameCore) {
         this._gameCore = gameCore;
         this._then = 0
-        this._frameBuffer = new Framebuffer;
+     //   this._frameBuffer = new Framebuffer;
     }
 
     private loop = (time: number) : void => {

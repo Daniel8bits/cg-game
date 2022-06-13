@@ -42,6 +42,8 @@ import GameController from "./GameController";
 import Framebuffer from "@razor/buffer/FrameBuffer";
 import FrameRenderer from "./renderers/FrameRenderer";
 import PathFinding from "./pathfinding/PathFinding";
+import Sound from './Sound';
+import RectangleEntity from "./entities/gui/RectangleEntity";
 
 class GameTest extends GameCore {
 
@@ -49,7 +51,7 @@ class GameTest extends GameCore {
     private _gameController: GameController;
     private static instance: GameTest;
     private _frameBuffer: FrameRenderer[] = [];
-
+    private _guiRenderer : GuiRenderer;
     public constructor() {
         super()
         GameTest.instance = this;
@@ -60,6 +62,17 @@ class GameTest extends GameCore {
     }
 
     public start() {
+        //https://freesound.org/people/michorvath/sounds/427598/
+        new Sound("gun","/resources/sound/gun.wav");
+        //https://freesound.org/people/thencamenow/sounds/31236/
+        new Sound("door","/resources/sound/door.mp3")
+        //https://freesound.org/people/julius_galla/sounds/193692/
+        new Sound("music","/resources/sound/music.wav",{volume:50});
+        //https://freesound.org/people/dkiller2204/sounds/366111/
+        new Sound("step","/resources/sound/footstep.wav");
+        //https://freesound.org/people/victorium183/sounds/476816/
+        new Sound("menu","/resources/sound/menu.wav",{volume:20});
+        
         this._camera = new CanvasCamera('main', new Vector3(51.1, 0, -88), new Orientation(0, -32));
         // ========= SHADER ==========
 
@@ -330,7 +343,7 @@ class GameTest extends GameCore {
         this.getRenderStrategy().add(monsterRenderer)
         const playerRenderer = new PlayerRenderer(this._camera);
         this.getRenderStrategy().add(playerRenderer)
-        const guiRenderer = new GuiRenderer(this._camera);
+        const guiRenderer = this._guiRenderer = new GuiRenderer(this._camera);
         this.getRenderStrategy().add(guiRenderer)
         
         const scene1 = new MainScene(this.getRenderStrategy(), this._camera)
@@ -386,13 +399,25 @@ class GameTest extends GameCore {
         this.getSceneManager().getActive().add(select1)
         select1.addOption("comecar").setExecute(() => {
             this.getSceneManager().setActive("main")
+            Sound.Find("music").play(true);
         })
         select1.addOption("opcao 2")
         select1.addOption("creditos").setExecute(() => {
             this.getSceneManager().setActive("credits");
         })
+        /*
+        const credits =     new RectangleEntity("credits_rect", ResourceManager.getVAO("rectangle"), ResourceManager.getMaterial("rectangle"), guiRenderer)
+        credits.updatePosition({horizontal:"center",vertical:"center"});
+        */
+        const credits = new GuiEntity("credits", guiRenderer);
+        credits.setScene(this.getSceneManager().getActive());
+        const rect = credits.addRectangle("rect");
+        rect.color = new Vector3(1,0,0)
+        rect.setSize(120, 50);
+        rect.updatePosition({horizontal:"center",vertical:"bottom"})
+        this.getSceneManager().getActive().add(credits)
 
-        this.getSceneManager().setActive("main");
+        this.getSceneManager().setActive("menu");
         const attachemnts = this._frameBuffer.map((item) => item.attachemnt)
         GLUtils.drawBuffer(attachemnts);
 /*
@@ -426,6 +451,9 @@ class GameTest extends GameCore {
         super.render();
         this._frameBuffer[1].unbind();
         this._frameBuffer[1].render();
+        
+        //this._guiRenderer.setScene(this.getSceneManager().getActive())
+        //this._guiRenderer.render();
     }
 
 }

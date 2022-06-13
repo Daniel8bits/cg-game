@@ -10,6 +10,7 @@ import Orientation from '@razor/math/Orientation';
 import Transform from '@razor/math/Transform';
 import Hitbox from '@razor/physics/hitboxes/HitBox';
 import GameController from 'src/game/GameController';
+import Sound from 'src/game/Sound';
 import Material from "../../../engine/appearance/material/Material";
 import VAO from "../../../engine/buffer/VAO";
 import Renderer from "../../../engine/renderer/Renderer";
@@ -74,21 +75,33 @@ class Player extends DynamicEntity implements IEntityWithLight {
     const x = Math.sin(toRadians(this.getTransform().getRotation().y)) * this._impulse * delta;
     const z = Math.cos(toRadians(this.getTransform().getRotation().y)) * this._impulse * delta;
 
+    let isStep = false;
+
     if(InputManager.isKeyPressed(Keys.KEY_W)){ // FRONT
+      isStep = true;
+      Sound.Find("step").play(true);
       this.getForce().add(new Vector3(x, 0, z))
     }
 
     if(InputManager.isKeyPressed(Keys.KEY_S)){ // BACK
+      isStep = true;
+      Sound.Find("step").play(true);
       this.getForce().add(new Vector3(-x, 0, -z))
     }
 
     if(InputManager.isKeyPressed(Keys.KEY_A)){ // LEFT
+      isStep = true;
+      Sound.Find("step").play(true);
       this.getForce().add(new Vector3(z, 0, -x))
     }
 
     if(InputManager.isKeyPressed(Keys.KEY_D)){ // RIGHT
+      isStep = true;
+      Sound.Find("step").play(true);
       this.getForce().add(new Vector3(-z, 0, x))
     }
+
+    if(!isStep) Sound.Find("step").pause();
 /*
     if(InputManager.isKeyPressed(Keys.KEY_SPACE) && this.getTransform().getY() > -1 && this.getSpeed().y > -1){ // UP
       this.getForce().add(new Vector3(0, -this._impulse*10 * delta, 0))
@@ -136,7 +149,8 @@ class Player extends DynamicEntity implements IEntityWithLight {
     }
 
     if(InputManager.isMouseLeft()){
-      GameController.update("life",-1); // Tem q ver isso melhor
+      Sound.Find("gun").play();
+      // GameController.update("life",-1); // Tem q ver isso melhor
     }
 
     if(Razor.IS_MOUSE_INSIDE) {
@@ -144,7 +158,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
         const dy = InputManager.getMouseDY() 
 
         const rotation = this.getTransform().getRotation()
-        this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
+      //  this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
         this.getTransform().setYaw(rotation.yaw + dx * this._sensitivity * delta)
     }
     
