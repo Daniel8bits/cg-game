@@ -9,15 +9,10 @@ class RenderStrategy {
         this._renderers = new Map<string, Renderer>()
     }
 
-    public render() {
-        this._renderers.forEach((renderer) => {
-            renderer.render();
-        })
-    }
-
-    public setScene(scene: Scene) {
+    public render(scene: Scene) {
         this._renderers.forEach((renderer) => {
             renderer.setScene(scene);
+            renderer.render();
         })
     }
 

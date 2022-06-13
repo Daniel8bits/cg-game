@@ -337,16 +337,17 @@ class GameTest extends GameCore {
         this._frameBuffer.push(new FrameRenderer(this._camera,'albedo'));
         this._frameBuffer.push(new FrameRenderer(this._camera,'mascara'));
 
+        const scene1 = new MainScene(this._camera)
+
         const mapRenderer = new MapRenderer(this._camera);
-        this.getRenderStrategy().add(mapRenderer)
+        scene1.getRenderStrategy().add(mapRenderer)
         const monsterRenderer = new MonsterRenderer(this._camera);
-        this.getRenderStrategy().add(monsterRenderer)
+        scene1.getRenderStrategy().add(monsterRenderer)
         const playerRenderer = new PlayerRenderer(this._camera);
-        this.getRenderStrategy().add(playerRenderer)
+        scene1.getRenderStrategy().add(playerRenderer)
         const guiRenderer = this._guiRenderer = new GuiRenderer(this._camera);
-        this.getRenderStrategy().add(guiRenderer)
+        scene1.getRenderStrategy().add(guiRenderer)
         
-        const scene1 = new MainScene(this.getRenderStrategy(), this._camera)
         //scene1.getProperties().gravity = 0
 
         this.getSceneManager().add(scene1, true)

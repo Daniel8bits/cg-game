@@ -1,3 +1,4 @@
+import RenderStrategy from "@razor/renderer/RenderStrategy";
 import Entity from "../entities/Entity";
 
 class Scene {
@@ -11,17 +12,24 @@ class Scene {
     /* Only hidden entities */
     private _hidden: Map<string, Entity>;
 
+    private _renderStrategy: RenderStrategy
+
     public constructor(name: string) {
         this._name = name;
         this._entities = new Map<string, Entity>();
         this._visible = new Map<string, Entity>();
         this._hidden = new Map<string, Entity>();
+        this._renderStrategy = new RenderStrategy()
     }
 
     public update(time: number, delta: number): void {
         this.forEachVisible((entity) => {
             entity.update(time, delta);
         })
+    }
+
+    public render(): void {
+        this._renderStrategy.render(this);
     }
 
     /**
@@ -223,6 +231,10 @@ class Scene {
 
     public get entities() : Map<string, Entity> {
         return this._entities;
+    }
+
+    public getRenderStrategy(): RenderStrategy {
+        return this._renderStrategy
     }
 
 }

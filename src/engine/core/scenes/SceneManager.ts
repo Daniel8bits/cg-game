@@ -9,17 +9,13 @@ class SceneManager {
     /* Active scene: the scene that is being rendered currently */
     private _active: Scene;
 
-    private _renderStrategy: RenderStrategy;
-
-    public constructor(renderStrategy: RenderStrategy) {
+    public constructor() {
         this._scenes = new Map<string, Scene>();
         this._active = null;
-        this._renderStrategy = renderStrategy;
     }
 
     public render(): void {
-        this._renderStrategy.setScene(this._active)
-        this._renderStrategy.render();
+        this._active.render()
     }
 
     public update(time: number, delta: number): void {

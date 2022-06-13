@@ -3,12 +3,10 @@ import RenderStrategy from '../renderer/RenderStrategy'
 
 abstract class GameCore {
 
-    private _renderStrategy: RenderStrategy;
     private _sceneManager: SceneManager;
     
     protected constructor() {
-        this._renderStrategy = new RenderStrategy();
-        this._sceneManager = new SceneManager(this._renderStrategy);
+        this._sceneManager = new SceneManager();
     }
 
     public abstract start(): void;
@@ -23,10 +21,6 @@ abstract class GameCore {
 
     public getSceneManager(): SceneManager {
         return this._sceneManager;
-    }
-
-    public getRenderStrategy(): RenderStrategy {
-        return this._renderStrategy;
     }
 
 }
