@@ -8,13 +8,7 @@ import Entity from "../../../engine/core/entities/Entity";
 import Renderer from "../../../engine/renderer/Renderer";
 import Text from "../../utils/Text";
 
-type metric = "px" | "%";
-type LengthMetric = `${number}${metric}`;
-
-interface RectanglePosition {
-    vertical: 'top' | 'center' | 'bottom' | LengthMetric
-    horizontal: 'left' | 'center' | 'right' | LengthMetric
-}
+import {PositionOptions,PositionRelative} from './gui';
 
 class RectangleEntity extends Entity {
     private size: Vector2;
@@ -47,13 +41,17 @@ class RectangleEntity extends Entity {
         return {width: scale[0],height: scale[1]}
     }
 
-    public updatePosition(position: RectanglePosition) {
+    public updatePosition(position: PositionOptions,relativeTo: PositionRelative = "Razor") {
         const { width, height } = this.getSize();
+        const relative = {
+            width: relativeTo == "Razor" ? Razor.CANVAS.width : relativeTo.getScale()[0],
+            height: relativeTo == "Razor" ? Razor.CANVAS.height : relativeTo.getScale()[1]
+        }
         let top = 0, left = 0;
         switch (position.vertical) {
             case "center":
             case "bottom":
-                top = Razor.CANVAS.height;
+                top = relative.height;
                 if (position.vertical == "bottom") top = - height;
                 if (position.vertical == "center") top = top / 2 - height / 2;
                 break;
@@ -64,14 +62,14 @@ class RectangleEntity extends Entity {
                 if (metric == "px") {
                     top = Number(x);
                 } else {
-                    top = Razor.CANVAS.height * Number(x) / 100;
+                    top = relative.height * Number(x) / 100;
                 }
 
         }
         switch (position.horizontal) {
             case "center":
             case "right":
-                left = Razor.CANVAS.width;
+                left = relative.width;
                 if (position.horizontal == "right") left -= width;
                 if (position.horizontal == "center") left = left / 2 - width / 2;
                 break;
@@ -82,12 +80,10 @@ class RectangleEntity extends Entity {
                 if (metric == "px") {
                     left = Number(x);
                 } else {
-                    left = Razor.CANVAS.width * Number(x) / 100;
+                    left = relative.width * Number(x) / 100;
                 }
         }
-        console.log(left,top)
         this.getTransform().setTranslation(new Vector3(left, top, 0).negate())
-
     }
 
     

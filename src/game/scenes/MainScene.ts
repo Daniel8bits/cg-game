@@ -13,6 +13,7 @@ import Entity from "@razor/core/entities/Entity";
 import Gun from "../entities/player/Gun";
 import Monster from "../entities/monster/Monster";
 import MonsterRenderer from "../renderers/MonsterRenderer";
+import FrameRenderer from "../renderers/FrameRenderer";
 
 class MainScene extends PhysicsScene {
 
@@ -37,10 +38,10 @@ class MainScene extends PhysicsScene {
     this._gun = new Gun(this._renderStrategy.get('player-renderer'), this)
     this._lamps = []
     this._init()
+    
   }
 
   private _init() {
-
     this._player.getTransform().setTranslation(new Vector3(51.1, 0, -88))
     this._player.getTransform().setRotation(new Orientation(0, -32))
     this._player.setGun(this._gun)
@@ -111,7 +112,6 @@ class MainScene extends PhysicsScene {
     this._gun.setLampList(this._entityFactory.get5ClosestLamps(this._gun, this._lamps, this._gun.getTransform().worldTranslation()))
 
   }
-
 }
 
 export default MainScene

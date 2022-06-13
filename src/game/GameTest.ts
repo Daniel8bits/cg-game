@@ -411,16 +411,22 @@ class GameTest extends GameCore {
         */
         const credits = new GuiEntity("credits", guiRenderer);
         credits.setScene(this.getSceneManager().getActive());
-        const rect = credits.addRectangle("rect");
+        const rect = credits.addRectangle("credits_rect");
         rect.color = new Vector3(1,0,0)
-        rect.setSize(120, 50);
-        rect.updatePosition({horizontal:"center",vertical:"bottom"})
+        rect.setSize(500, 100);
+        rect.updatePosition({horizontal:"center",vertical:"50%"})
+        const text = credits.addText("credits_text");
+        text.setText("ola")
+        text.updatePosition({horizontal:"center",vertical:"top"},rect.getTransform());
+        const v = text.getTransform().getTranslation();
+        v.z = 200;
+        text.getTransform().setTranslation(v);
         this.getSceneManager().getActive().add(credits)
 
         this.getSceneManager().setActive("menu");
+        /*
         const attachemnts = this._frameBuffer.map((item) => item.attachemnt)
         GLUtils.drawBuffer(attachemnts);
-/*
         const pathFinding = new PathFinding()
         
         pathFinding.loadNodes()
@@ -442,8 +448,9 @@ class GameTest extends GameCore {
     }
 
     public render() {
-        this._frameBuffer[0].bind();
         super.render();
+        return;
+        this._frameBuffer[0].bind();
         this._frameBuffer[0].unbind();
         this._frameBuffer[0].render();
         
