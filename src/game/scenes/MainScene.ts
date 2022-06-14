@@ -14,6 +14,7 @@ import Gun from "../entities/player/Gun";
 import Monster from "../entities/monster/Monster";
 import MonsterRenderer from "../renderers/MonsterRenderer";
 import PathFinding from "../pathfinding/PathFinding";
+import FrameRenderer from "../renderers/FrameRenderer";
 
 class MainScene extends PhysicsScene {
 
@@ -26,6 +27,7 @@ class MainScene extends PhysicsScene {
   private _lampSortingTimer: number
   private _pathFindingCalculationTimer: number
 
+  private _frameBuffer: FrameRenderer[] = [];
   public constructor(camera: Camera) {
     super('main')
     this._camera = camera
@@ -39,6 +41,9 @@ class MainScene extends PhysicsScene {
   }
 
   public init() {
+
+    this._frameBuffer.push(new FrameRenderer(this._camera,'albedo'));
+    this._frameBuffer.push(new FrameRenderer(this._camera,'mascara'));
 
     this._player = new Player(
       'player', 
@@ -139,7 +144,16 @@ class MainScene extends PhysicsScene {
   }
 
   public render(): void {
-    super.render()
+    this._frameBuffer[0].bind();
+    super.render();
+    this._frameBuffer[0].unbind();
+    this._frameBuffer[0].render();
+    
+    this._frameBuffer[1].bind();
+    super.render();
+    this._frameBuffer[1].unbind();
+    this._frameBuffer[1].render();
+//    super.render()
   }
 
 }

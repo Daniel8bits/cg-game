@@ -61,7 +61,7 @@ class PlayerRenderer extends Renderer {
     }
 
     public render() {
-        
+        if(this._player.getStop()) return;
         this._bindMaterial(this._player)
         this._renderHand()
         this._player.getMaterial().unbind()

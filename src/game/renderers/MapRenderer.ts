@@ -43,7 +43,6 @@ class MapRenderer extends Renderer {
     };
 
     public render() {
-
         ResourceManager.forEachMaterial((material) => {
             material.bind()
             const shader = material.getShader();

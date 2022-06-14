@@ -40,18 +40,18 @@ import PlayerRenderer from "./renderers/PlayerRenderer";
 import Gun from "./entities/player/Gun";
 import GameController from "./GameController";
 import Framebuffer from "@razor/buffer/FrameBuffer";
-import FrameRenderer from "./renderers/FrameRenderer";
 import PathFinding from "./pathfinding/PathFinding";
 import Sound from './Sound';
 import RectangleEntity from "./entities/gui/RectangleEntity";
+import Camera from "@razor/core/Camera";
+import Entity from "@razor/core/entities/Entity";
 
 class GameTest extends GameCore {
 
     private _camera: CanvasCamera
     private _gameController: GameController;
     private static instance: GameTest;
-    private _frameBuffer: FrameRenderer[] = [];
-    private _guiRenderer : GuiRenderer;
+    private _guiRenderer: GuiRenderer;
     public constructor() {
         super()
         GameTest.instance = this;
@@ -63,17 +63,19 @@ class GameTest extends GameCore {
 
     public start() {
         //https://freesound.org/people/michorvath/sounds/427598/
-        new Sound("gun","/resources/sound/gun.wav");
+        new Sound("gun", "/resources/sound/gun.wav");
         //https://freesound.org/people/thencamenow/sounds/31236/
-        new Sound("door","/resources/sound/door.mp3")
+        new Sound("door", "/resources/sound/door.mp3")
         //https://freesound.org/people/julius_galla/sounds/193692/
-        new Sound("music","/resources/sound/music.wav",{volume:50});
+        new Sound("music", "/resources/sound/music.wav", { volume: 50 });
         //https://freesound.org/people/dkiller2204/sounds/366111/
-        new Sound("step","/resources/sound/footstep.wav");
+        new Sound("step", "/resources/sound/footstep.wav");
         //https://freesound.org/people/victorium183/sounds/476816/
-        new Sound("menu","/resources/sound/menu.wav",{volume:20});
-        
+        new Sound("menu", "/resources/sound/menu.wav", { volume: 20 });
+        //https://freesound.org/people/joedeshon/sounds/368738/
+        new Sound("elevator","/resources/sound/elevator.wav")
         this._camera = new CanvasCamera('main', new Vector3(51.1, 0, -88), new Orientation(0, -32));
+        CanvasCamera.setMainCamera(this._camera);
         // ========= SHADER ==========
 
         /* Shader com Iluminação */
@@ -334,8 +336,6 @@ class GameTest extends GameCore {
             .forEachVAO((vao) => {
                 vao.create();
             })
-        this._frameBuffer.push(new FrameRenderer(this._camera,'albedo'));
-        this._frameBuffer.push(new FrameRenderer(this._camera,'mascara'));
 
         const scene1 = new MainScene(this._camera)
 
@@ -349,7 +349,7 @@ class GameTest extends GameCore {
         scene1.getRenderStrategy().add(guiRenderer)
 
         scene1.init()
-        
+
         //scene1.getProperties().gravity = 0
 
         this.getSceneManager().add(scene1, true)
@@ -358,7 +358,6 @@ class GameTest extends GameCore {
             scene1.get('player') as Player,
             scene1.get('gun') as Gun
         )
-
         const guiAmmunition = new DisplayEntity('guiAmmunition', guiRenderer);
         const bottom = -Razor.CANVAS.height + 100;
         this.getSceneManager().getActive().add(guiAmmunition);
@@ -380,21 +379,43 @@ class GameTest extends GameCore {
         this.getSceneManager().getActive().add(dialog);
         dialog.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
         dialog.init();
+        /*
         dialog.animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
             setTimeout(() => this.remove(), 5000);
-        });
-        /*
+        });*/
+//elevator
+/*
                 const pauseContainer = new GuiEntity("pause_container",guiRenderer);
+                pauseContainer.getTransform().setTranslation(new Vector3(0,0,-1));
                 this.getSceneManager().getActive().add(pauseContainer);
                 const rectanglePause = pauseContainer.addRectangle("pause_rectangle");
+                rectanglePause.setAlpha(1);
                 rectanglePause.getTransform().setScale(new Vector3(Razor.CANVAS.width,Razor.CANVAS.height,1));
                 rectanglePause.color = new Vector3(0.1,0.1,0.1);
-                const textPause = pauseContainer.addText("pause_text").setText("Pause");
+                const textPause = pauseContainer.addText("pause_text");
+                textPause.setText("Pause");
+                textPause.updatePosition({horizontal:"left",vertical:"top"})
+                textPause.getTransform().setTranslation(new Vector3(0,0,-1));
         */
 
-        this.getSceneManager().add(new Scene('credits'), true)
+        const sceneScredits = new Scene('credits');
+        sceneScredits.getRenderStrategy().add(guiRenderer)
+        this.getSceneManager().add(sceneScredits, true)
+        const credits = new GuiEntity("credits", guiRenderer);
+        credits.setScene(this.getSceneManager().getActive());
+        const rect = credits.addRectangle("credits_rect");
+        rect.color = new Vector3(1, 0, 0)
+        rect.setSize(500, 100);
+        rect.updatePosition({ horizontal: "center", vertical: "10%" })
+        this.getSceneManager().getActive().add(credits)
 
-
+        const sceneLoading = new Scene('loading');
+        sceneLoading.getRenderStrategy().add(guiRenderer)
+        this.getSceneManager().add(sceneLoading,true);
+        const loadingDisplay = new DialogEntity("loadingDisplay", guiRenderer);
+        this.getSceneManager().getActive().add(loadingDisplay);
+        loadingDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
+        loadingDisplay.init();
 
         this.getSceneManager().add(new Scene('menu'), true)
 
@@ -403,48 +424,80 @@ class GameTest extends GameCore {
         const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
         select1.addOption("comecar").setExecute(() => {
-            this.getSceneManager().setActive("main")
+            this.setScene("loading")
             Sound.Find("music").play(true);
         })
         select1.addOption("opcao 2")
         select1.addOption("creditos").setExecute(() => {
-            this.getSceneManager().setActive("credits");
+            this.setScene("credits");
         })
         /*
         const credits =     new RectangleEntity("credits_rect", ResourceManager.getVAO("rectangle"), ResourceManager.getMaterial("rectangle"), guiRenderer)
         credits.updatePosition({horizontal:"center",vertical:"center"});
         */
-        const credits = new GuiEntity("credits", guiRenderer);
-        credits.setScene(this.getSceneManager().getActive());
-        const rect = credits.addRectangle("rect");
-        rect.color = new Vector3(1,0,0)
-        rect.setSize(120, 50);
-        rect.updatePosition({horizontal:"center",vertical:"bottom"})
-        this.getSceneManager().getActive().add(credits)
+    
 
-        this.getSceneManager().setActive("menu");
+        this.setScene("menu");
+        /*
         const attachemnts = this._frameBuffer.map((item) => item.attachemnt)
         GLUtils.drawBuffer(attachemnts);
+        const pathFinding = new PathFinding()
+        
+        pathFinding.loadNodes()
+        const destiny = pathFinding.getNodes().get('node_21')
+        pathFinding.find(pathFinding.getNodes().get('node_0'), destiny)
 
+        let current = destiny
+        do {
+            console.log('n: ', current.getName());
+            current = current.getPath()
+        } while(current)
+*/
+    }
+
+    public changeScene(scene: Scene): void {
+        switch(scene.getName()){
+            case "main":
+                DialogEntity.Find("display").animateText("chegue ate o elevador", 50, { vertical: '10%', horizontal: 'center' }, function () {
+                    setTimeout(() => this.remove(), 5000);
+                });
+            break;
+            case "loading":
+                
+                Sound.Find("elevator").play(false);
+                const gameTest = this;
+                DialogEntity.Find("loadingDisplay").animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
+                    setTimeout(() => {
+                        this.remove()
+                        gameTest.setScene("main");
+                    }, 5000);
+                });
+            break;
+        }
     }
 
     public update(time: number, delta: number) {
         super.update(time, delta);
 
         this._camera.update(delta)
+        const translation = this._camera.getTransform().getTranslation();
+        const rotation = this._camera.getTransform().getRotation();
+        document.querySelector("#log").innerHTML = `
+            <p><b>Translation</b></p>
+            <p><b>x</b> ${translation.x}</p>
+            <p><b>y</b> ${translation.y}</p>
+            <p><b>z</b> ${translation.z}</p>
+            <hr>
+            <p><b>Rotation</b></p>
+            <p><b>x</b> ${rotation.x}</p>
+            <p><b>y</b> ${rotation.y}</p>
+            <p><b>z</b> ${rotation.z}</p>
+        `;
     }
 
     public render() {
-        this._frameBuffer[0].bind();
         super.render();
-        this._frameBuffer[0].unbind();
-        this._frameBuffer[0].render();
-        
-        this._frameBuffer[1].bind();
-        super.render();
-        this._frameBuffer[1].unbind();
-        this._frameBuffer[1].render();
-        
+
         //this._guiRenderer.setScene(this.getSceneManager().getActive())
         //this._guiRenderer.render();
     }

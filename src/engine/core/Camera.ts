@@ -2,14 +2,24 @@ import {Vector3, Matrix4} from "@math.gl/core"
 import Orientation from "@razor/math/Orientation"
 import { toRadians } from "@razor/math/math"
 import Transform from "../math/Transform"
-import Vec3 from "../math/Vec3"
 
 class Camera {
 
     private _transform: Transform
+    
+    private static _mainCamera : Camera;
 
     public constructor(translation: Vector3, rotation: Orientation) {
         this._transform = new Transform(translation, rotation)
+        Camera._mainCamera = this;
+    }
+
+    public static get Main() : Camera{
+        return this._mainCamera;
+    }
+
+    public static setMainCamera(camera: Camera){
+        this._mainCamera = camera;
     }
 
     public getTransform() : Transform {

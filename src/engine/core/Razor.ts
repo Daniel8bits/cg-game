@@ -51,7 +51,7 @@ class Razor {
     }
 
     private configs() {
-        window.addEventListener('click', (e) => {
+        Razor.CANVAS.addEventListener('click', (e) => {
             if(!Razor.IS_MOUSE_INSIDE){
 
                 Razor.FOCUSED = Razor.isInsideCanvas(e.clientX, e.clientY)
