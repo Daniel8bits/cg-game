@@ -2,10 +2,20 @@ import { Vector2 } from "@math.gl/core"
 import DynamicEntity from "@razor/core/entities/DynamicEntity"
 import Scene from "@razor/core/scenes/Scene"
 import FileUtils from "@razor/utils/FileUtils"
+import Monster from "../entities/monster/Monster"
 import Player from "../entities/player/Player"
 import EntityNode from "./EntityNode"
 import PathNode from "./PathNode"
 
+interface NearestNodes {
+  firstClosestNode: PathNode
+  //secondClosestNode: PathNode
+  //thirdClosestNode: PathNode
+
+  firstClosestNodeDistance: number
+  //secondClosestNodeDistance: number
+  //thirdClosestNodeDistance: number
+}
 
 class PathFinding {
 
@@ -18,7 +28,7 @@ class PathFinding {
   private _player: Player
 
   private _playerNode: EntityNode
-  private _monsterNode: EntityNode
+  private _monsterNodes: Map<string, EntityNode>
 
   public constructor(scene: Scene, player: Player) {
     this._nodes = new Map<string, PathNode>()
@@ -27,10 +37,34 @@ class PathFinding {
     this._scene = scene
     this._player = player
     this._playerNode = new EntityNode(player)
-    this._monsterNode = new EntityNode(scene.get('m2') as DynamicEntity)
-  }
 
-  public find(origin: PathNode, destiny: PathNode): void {
+    // for a while
+    this._nodes.set(this._playerNode.getName(), this._playerNode)
+    this._monsterNodes = new Map<string, EntityNode>()//new EntityNode(scene.get('m2') as DynamicEntity)
+    
+    scene
+      .filterVisible(entity => entity instanceof Monster)
+      .forEach(monster => {
+        const monsterNode = new EntityNode(monster as DynamicEntity)
+        this._monsterNodes.set(monster.getName(), monsterNode)
+        //this._nodes.set(monster.getName(), monsterNode)
+      })
+    
+    
+  }
+  
+
+  public find(monster: Monster): PathNode[] {
+
+    const origin = this._monsterNodes.get(monster.getName())//monster
+    const destiny = this._playerNode
+
+    this._nodes.set(origin.getName(), origin)
+
+    this._clearOldPath()
+    this._connectNearestNodesToMonster(origin)
+    this._openNodes.clear()
+    this._closedNodes.clear()
 
     let current: PathNode
 
@@ -66,9 +100,76 @@ class PathFinding {
 
     }
 
+    this._nodes.delete(origin.getName())
+
+    return this._getPath()
+
   }
 
-  //private _
+  private _getPath(): PathNode[] {
+    const path: PathNode[] = []
+    let current: PathNode = this._playerNode
+    do {
+      path.push(current)
+      current = current.getPath()
+    } while(current)
+    path.pop()
+    return path.reverse()
+  }
+
+  private _clearOldPath(): void {
+    this._nodes.forEach(node => {
+      node.setPath(null)
+    })
+  }
+
+  public connectNearestNodesToPlayer(): void {
+    this._clearOldNearestNodes(this._playerNode)
+    const nearest = this._findNearest(this._playerNode)
+    this._playerNode.getNeighbours().set(nearest.firstClosestNode.getName(), nearest.firstClosestNode)
+    nearest.firstClosestNode.getNeighbours().set(this._playerNode.getName(), this._playerNode)
+  }
+
+  private _connectNearestNodesToMonster(monsterNode: EntityNode): void {
+    this._clearOldNearestNodes(monsterNode)
+    const nearest = this._findNearest(monsterNode)
+    monsterNode.getNeighbours().set(nearest.firstClosestNode.getName(), nearest.firstClosestNode)
+  }
+
+  private _findNearest(entityNode: EntityNode): NearestNodes {
+
+    let firstClosestNode: PathNode
+
+    let firstClosestNodeDistance: number
+
+    const updateFirst = (node: PathNode, distance: number) => {
+      firstClosestNode = node
+      firstClosestNodeDistance = distance
+    }
+
+    this._nodes.forEach(node => {
+      if(node.getName() === entityNode.getName()) {
+        return;
+      }
+      const distance = entityNode.distanceTo(node)
+      if(!firstClosestNode || distance < firstClosestNodeDistance) {
+        updateFirst(node, distance)
+      }
+    })
+
+    return {
+      firstClosestNode,
+      firstClosestNodeDistance,
+    }
+
+  }
+
+  private _clearOldNearestNodes(entityNode: EntityNode): void {
+    entityNode.getNeighbours().forEach(neighbour => {
+      neighbour.getNeighbours().delete(entityNode.getName())
+    })
+    entityNode.getNeighbours().clear()
+  }
 
   private _popLowestCostNode(nodeList: Map<string, PathNode>): PathNode {
     let smaller: PathNode
@@ -180,7 +281,8 @@ class PathFinding {
     Object.keys(nodeMapping).forEach((nodeId => {
       const node = this._nodes.get('node_'+nodeId)
       nodeMapping[nodeId].forEach((neighbourId: number) => {
-        node.getNeighbours().push(this._nodes.get('node_'+neighbourId))
+        const neighbourName = 'node_'+neighbourId
+        node.getNeighbours().set(neighbourName, this._nodes.get(neighbourName))
       })
     }))
 
@@ -189,8 +291,6 @@ class PathFinding {
   public getNodes(): Map<string, PathNode> {
     return this._nodes
   }
-
-
 
 }
 

@@ -9,17 +9,24 @@ class EntityNode extends PathNode {
   public constructor(entity: DynamicEntity) {
     super(
       entity.getName(), 
-      new Vector2(
-        entity.getTransform().getTranslation().x,
-        entity.getTransform().getTranslation().z,
-      )
+      null
     );
     this._entity = entity  
   }
 
-  public update(): void {
-    this.getPosition().x = this._entity.getTransform().getTranslation().x
-    this.getPosition().y = this._entity.getTransform().getTranslation().z
+  public getEntity(): DynamicEntity {
+    return this._entity
+  }
+
+  public distanceTo(node: PathNode): number {
+    return this.getPosition().distanceTo(node.getPosition())
+  }
+
+  public getPosition(): Vector2 {
+    return new Vector2(
+      this._entity.getTransform().getTranslation().x,
+      this._entity.getTransform().getTranslation().z,
+    )
   }
 
 

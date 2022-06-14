@@ -425,19 +425,7 @@ class GameTest extends GameCore {
         this.getSceneManager().setActive("menu");
         const attachemnts = this._frameBuffer.map((item) => item.attachemnt)
         GLUtils.drawBuffer(attachemnts);
-/*
-        const pathFinding = new PathFinding()
-        
-        pathFinding.loadNodes()
-        const destiny = pathFinding.getNodes().get('node_21')
-        pathFinding.find(pathFinding.getNodes().get('node_0'), destiny)
 
-        let current = destiny
-        do {
-            console.log('n: ', current.getName());
-            current = current.getPath()
-        } while(current)
-*/
     }
 
     public update(time: number, delta: number) {

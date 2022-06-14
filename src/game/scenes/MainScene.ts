@@ -13,6 +13,7 @@ import Entity from "@razor/core/entities/Entity";
 import Gun from "../entities/player/Gun";
 import Monster from "../entities/monster/Monster";
 import MonsterRenderer from "../renderers/MonsterRenderer";
+import PathFinding from "../pathfinding/PathFinding";
 
 class MainScene extends PhysicsScene {
 
@@ -21,6 +22,9 @@ class MainScene extends PhysicsScene {
   private _player: Player
   private _gun: Gun
   private _lamps: Lamp[]
+  private _pathFinding: PathFinding
+  private _lampSortingTimer: number
+  private _pathFindingCalculationTimer: number
 
   public constructor(camera: Camera) {
     super('main')
@@ -29,6 +33,9 @@ class MainScene extends PhysicsScene {
     this._player = null
     this._gun = null
     this._lamps = []
+    this._pathFinding = null
+    this._lampSortingTimer = 3
+    this._pathFindingCalculationTimer = 5
   }
 
   public init() {
@@ -84,7 +91,7 @@ class MainScene extends PhysicsScene {
     const monsterRenderer = this.getRenderStrategy().get('monster-renderer') as MonsterRenderer;
     monsterRenderer.setPlayer(this._player)
 
-    const monster = new Monster('m1', monsterRenderer)
+    const monster = new Monster('m1', monsterRenderer, this._player)
     monster.getTransform().setTranslation(new Vector3(36, 0, -65));
     monster.getTransform().setRotation(new Orientation(0, -30, 0));
     monster.getTransform().setScale(new Vector3(1, 2, 1));
@@ -93,8 +100,8 @@ class MainScene extends PhysicsScene {
 
     this.add(monster)
 
-    const monster2 = new Monster('m2', monsterRenderer)
-    monster2.getTransform().setTranslation(new Vector3(25, 0, -47));
+    const monster2 = new Monster('m2', monsterRenderer, this._player)
+    monster2.getTransform().setTranslation(new Vector3(-16, 0, -30));
     monster2.getTransform().setRotation(new Orientation(0, -30, 0));
     monster2.getTransform().setScale(new Vector3(1, 2, 1));
 
@@ -102,13 +109,32 @@ class MainScene extends PhysicsScene {
 
     this.add(monster2)
 
+    this._pathFinding = new PathFinding(this, this._player)
+        
+    this._pathFinding.loadNodes()
+
   }
 
   public update(time: number, delta: number) {
     super.update(time, delta);
 
-    this._player.setLampList(this._entityFactory.get5ClosestLamps(this._player, this._lamps))
-    this._gun.setLampList(this._entityFactory.get5ClosestLamps(this._gun, this._lamps, this._gun.getTransform().worldTranslation()))
+    if(this._lampSortingTimer > 3) {
+      this._player.setLampList(this._entityFactory.get5ClosestLamps(this._player, this._lamps))
+      this._gun.setLampList(this._entityFactory.get5ClosestLamps(this._gun, this._lamps, this._gun.getTransform().worldTranslation()))
+      this._lampSortingTimer = 0
+    }
+    this._lampSortingTimer += delta
+
+    if(this._pathFindingCalculationTimer > 5) {
+      this.filterVisible(entity => entity instanceof Monster)
+      .forEach(monster => {
+          this._pathFinding.connectNearestNodesToPlayer()
+          const path = this._pathFinding.find(monster as Monster);
+          (monster as Monster).setPath(path)
+        })
+      this._pathFindingCalculationTimer = 0
+    }
+    this._pathFindingCalculationTimer += delta
 
   }
 

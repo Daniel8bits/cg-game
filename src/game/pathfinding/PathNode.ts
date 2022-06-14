@@ -10,7 +10,7 @@ class PathNode {
   // distance from destiny
   private _h: number
 
-  private _neighbours: PathNode[]
+  private _neighbours: Map<string, PathNode>
   private _marked: boolean
   private _position: Vector2
   private _path: PathNode
@@ -20,7 +20,7 @@ class PathNode {
     this._position = position
     this._g = 0
     this._h = 0
-    this._neighbours = []
+    this._neighbours = new Map<string, PathNode>()
     this._marked = false
     this._path = null
   }
@@ -57,7 +57,7 @@ class PathNode {
     return this._g + this._h
   }
 
-  public getNeighbours(): PathNode[] {
+  public getNeighbours(): Map<string, PathNode> {
     return this._neighbours
   }
 
