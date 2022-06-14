@@ -84,12 +84,14 @@ class InputManager {
     private static _currentMousePosition: [number, number]
     private static _previousMousePosition: [number, number]
     private static _mouseMovement: [number, number]
+    private static _bufferKeys: string[]
 
     private static _keys: Map<string, boolean>
 
     private static _shouldDebug: boolean
 
     public static init() {
+        InputManager._bufferKeys = [];
         InputManager._keys = new Map<string, boolean>()
         Object.keys(Keys).forEach((key: string) => {
             InputManager._keys.set(key, false)
@@ -109,12 +111,21 @@ class InputManager {
 
     // KEYBOARD EVENTS
 
+    public static isKeyPressedDown(key: string): boolean {
+        if (InputManager._bufferKeys.includes(key)) return false;
+        if (InputManager._keys.get(key) == true) {
+            InputManager._bufferKeys.push(key);
+            return true;
+        }
+        return false;
+    }
+
     public static isKeyPressed(key: string): boolean {
         return InputManager._keys.get(key)
     }
 
     private static onKeyDown(event: KeyboardEvent): void {
-        if(Razor.IS_MOUSE_INSIDE){
+        if (Razor.IS_MOUSE_INSIDE) {
             event.stopPropagation()
             event.preventDefault()
             InputManager._keys.set(event.code, true)
@@ -122,10 +133,11 @@ class InputManager {
     }
 
     private static onKeyUp(event: KeyboardEvent): void {
-        if(Razor.IS_MOUSE_INSIDE){
+        if (Razor.IS_MOUSE_INSIDE) {
             event.stopPropagation()
             event.preventDefault()
             InputManager._keys.set(event.code, false)
+            InputManager._bufferKeys = InputManager._bufferKeys.filter((name) => name != event.code)
         }
     }
 
@@ -140,15 +152,15 @@ class InputManager {
 
     // MOUSE EVENTS
 
-    public static isMouseLeft(): boolean { 
+    public static isMouseLeft(): boolean {
         return InputManager._mouseButtons[0]
     }
 
-    public static isMouseMiddle(): boolean { 
+    public static isMouseMiddle(): boolean {
         return InputManager._mouseButtons[1]
     }
 
-    public static isMouseRight(): boolean { 
+    public static isMouseRight(): boolean {
         return InputManager._mouseButtons[2]
     }
 
@@ -175,7 +187,7 @@ class InputManager {
     }
 
     private static onMouseUp(event: MouseEvent): void {
-        if(Razor.IS_MOUSE_INSIDE){
+        if (Razor.IS_MOUSE_INSIDE) {
             event.stopPropagation()
             event.preventDefault()
             InputManager._mouseButtons[event.button] = false
@@ -183,7 +195,7 @@ class InputManager {
     }
 
     private static onMouseMove(event: MouseEvent): void {
-        if(Razor.IS_MOUSE_INSIDE){
+        if (Razor.IS_MOUSE_INSIDE) {
             event.stopPropagation()
             event.preventDefault()
 
@@ -191,8 +203,8 @@ class InputManager {
             InputManager._currentMousePosition[1] -= event.movementY//offsetY
             //InputManager._currentMousePosition[0] = event.offsetX
             //InputManager._currentMousePosition[1] = event.offsetY
-    
-            if(InputManager._shouldDebug) {
+
+            if (InputManager._shouldDebug) {
                 console.log(`offset:  ${event.offsetX}X ${event.offsetY}Y`);
                 console.log(`client:  ${event.clientX}X ${event.clientY}Y`);
                 console.log(`screen:  ${event.screenX}X ${event.screenY}Y`);

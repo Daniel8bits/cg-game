@@ -48,8 +48,8 @@ class SelectEntity extends GuiEntity {
 
     
     public update(time: number, delta: number): void {
-        const keyDown = InputManager.isKeyPressed(Keys.KEY_DOWN);
-        const keyUp = InputManager.isKeyPressed(Keys.KEY_UP);
+        const keyDown = InputManager.isKeyPressedDown(Keys.KEY_DOWN);
+        const keyUp = InputManager.isKeyPressedDown(Keys.KEY_UP);
         if(keyDown || keyUp){
             if(this.change){
                 let next;
@@ -68,7 +68,7 @@ class SelectEntity extends GuiEntity {
                 this.change = false;
             }
         }else 
-        if(InputManager.isKeyPressed(Keys.KEY_ENTER)){
+        if(InputManager.isKeyPressedDown(Keys.KEY_ENTER)){
             if(this.change){
                 this.options[this.selected].execute();
             }
