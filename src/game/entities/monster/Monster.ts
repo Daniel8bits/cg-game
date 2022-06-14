@@ -2,6 +2,7 @@ import DynamicEntity from "@razor/core/entities/DynamicEntity";
 import ResourceManager from "@razor/core/ResourceManager";
 import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import Renderer from "@razor/renderer/Renderer";
+import Sound from "src/game/Sound";
 import { IEntityWithLight } from "../IEntityWithLight";
 import Lamp from "../Lamp";
 
@@ -27,7 +28,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
   }
 
   public update(time: number, delta: number): void {
-    
+   // Sound.Find("gun").play(true,-1,this.getTransform().getTranslation())
   }
 
   public takeDamage(): boolean {

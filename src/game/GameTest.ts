@@ -358,14 +358,6 @@ class GameTest extends GameCore {
             scene1.get('player') as Player,
             scene1.get('gun') as Gun
         )
-        const lamp = new Lamp(
-            "lampadaDeReferencia",
-            mapRenderer,
-            new Vector3(1, 1, 0)
-        );
-        lamp.getTransform().setTranslation(new Vector3(21,-4,-21.29));
-        lamp.getTransform().setRotation(new Orientation(45));
-        this.getSceneManager().getActive().add(lamp);
         const guiAmmunition = new DisplayEntity('guiAmmunition', guiRenderer);
         const bottom = -Razor.CANVAS.height + 100;
         this.getSceneManager().getActive().add(guiAmmunition);
@@ -406,8 +398,9 @@ class GameTest extends GameCore {
                 textPause.getTransform().setTranslation(new Vector3(0,0,-1));
         */
 
-        this.getSceneManager().add(new Scene('credits'), true)
-        
+        const sceneScredits = new Scene('credits');
+        sceneScredits.getRenderStrategy().add(guiRenderer)
+        this.getSceneManager().add(sceneScredits, true)
         const credits = new GuiEntity("credits", guiRenderer);
         credits.setScene(this.getSceneManager().getActive());
         const rect = credits.addRectangle("credits_rect");
@@ -416,8 +409,9 @@ class GameTest extends GameCore {
         rect.updatePosition({ horizontal: "center", vertical: "10%" })
         this.getSceneManager().getActive().add(credits)
 
-        this.getSceneManager().add(new Scene('loading'),true);
-
+        const sceneLoading = new Scene('loading');
+        sceneLoading.getRenderStrategy().add(guiRenderer)
+        this.getSceneManager().add(sceneLoading,true);
         const loadingDisplay = new DialogEntity("loadingDisplay", guiRenderer);
         this.getSceneManager().getActive().add(loadingDisplay);
         loadingDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
@@ -431,7 +425,7 @@ class GameTest extends GameCore {
         this.getSceneManager().getActive().add(select1)
         select1.addOption("comecar").setExecute(() => {
             this.setScene("loading")
-           Sound.Find("music").play(true);
+            Sound.Find("music").play(true);
         })
         select1.addOption("opcao 2")
         select1.addOption("creditos").setExecute(() => {
@@ -464,7 +458,7 @@ class GameTest extends GameCore {
     public changeScene(scene: Scene): void {
         switch(scene.getName()){
             case "main":
-                (DialogEntity.Find("display") as DialogEntity).animateText("fuja", 50, { vertical: '10%', horizontal: 'center' }, function () {
+                DialogEntity.Find("display").animateText("chegue ate o elevador", 50, { vertical: '10%', horizontal: 'center' }, function () {
                     setTimeout(() => this.remove(), 5000);
                 });
             break;
@@ -472,7 +466,7 @@ class GameTest extends GameCore {
                 
                 Sound.Find("elevator").play(false);
                 const gameTest = this;
-                (DialogEntity.Find("loadingDisplay") as DialogEntity).animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
+                DialogEntity.Find("loadingDisplay").animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
                     setTimeout(() => {
                         this.remove()
                         gameTest.setScene("main");

@@ -35,7 +35,7 @@ class MainScene extends PhysicsScene {
   public init() {
 
     this._frameBuffer.push(new FrameRenderer(this._camera,'albedo'));
-      this._frameBuffer.push(new FrameRenderer(this._camera,'mascara'));
+    this._frameBuffer.push(new FrameRenderer(this._camera,'mascara'));
 
     this._player = new Player(
       'player', 
