@@ -89,7 +89,7 @@ class TextEntity extends Entity {
                     left = relative.width * Number(x) / 100;
                 }
         }
-        console.log(top, left)
+        console.log(this.getName(),top, left)
         this.getTransform().setTranslation(new Vector3(left, top, relative.z).negate())
     }
 

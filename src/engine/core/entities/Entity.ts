@@ -6,7 +6,6 @@ import Scene from "../scenes/Scene";
 import { Matrix4 } from "@math.gl/core";
 
 type Constructor<T> = { new (...args: any[]): T };
-
 abstract class Entity {
 
     private _name: string;
@@ -18,13 +17,20 @@ abstract class Entity {
     private _transform: Transform
     private _scene : Scene;
 
+    private static _listEntities: Map<string,Entity> = new Map();
+
     public constructor(name: string, vao?: VAO, material?: Material, renderer?: Renderer) {
+        Entity._listEntities.set(name,this);
         this._name = name;
         this._vao = vao;
         this._material = material;
         this._renderer = renderer;
         this._transform = new Transform()
         this.getTransform().setEntity(this);
+    }
+
+    public static Find(this ,name: string) : Entity{
+        return Entity._listEntities.get(name);
     }
 
     //public abstract start() : void;

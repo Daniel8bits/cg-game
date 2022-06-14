@@ -28,6 +28,9 @@ class Player extends DynamicEntity implements IEntityWithLight {
   private _gun: Gun
 
   private _lampList: Lamp[]
+  private static _instance: Player; 
+  private _stop : boolean;
+
 
   public constructor(
     name: string, 
@@ -54,11 +57,12 @@ class Player extends DynamicEntity implements IEntityWithLight {
     this._handTransform.parent = this.getTransform()
     this._lampList = []
     this._gun = null
+    this._stop = false;
+    Player._instance = this;
   }
 
-
   public update(time: number, delta: number): void {
-
+    if(this._stop) return;
     this._updateCameraPosition()
 
     this._move(delta)
@@ -118,6 +122,8 @@ class Player extends DynamicEntity implements IEntityWithLight {
 
 
     if(InputManager.isKeyPressed(Keys.KEY_E) && this._gun.getState() === GunState.CHARGED){ // RIGHT
+      GameController.update("ammunition",-1);
+      Sound.Find("gun").play();
       const position = this.getTransform().getTranslation()
       const ray = new Vector3(0, 0, 20).transform(
         this.getTransform().toInversePositionMatrix()
@@ -148,17 +154,12 @@ class Player extends DynamicEntity implements IEntityWithLight {
       Razor.IS_MOUSE_INSIDE = false;
     }
 
-    if(InputManager.isMouseLeft()){
-      Sound.Find("gun").play();
-      // GameController.update("life",-1); // Tem q ver isso melhor
-    }
-
     if(Razor.IS_MOUSE_INSIDE) {
         const dx = InputManager.getMouseDX() 
         const dy = InputManager.getMouseDY() 
 
         const rotation = this.getTransform().getRotation()
-      //  this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
+        this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
         this.getTransform().setYaw(rotation.yaw + dx * this._sensitivity * delta)
     }
     
@@ -210,6 +211,18 @@ class Player extends DynamicEntity implements IEntityWithLight {
     return this._gun
   }
 
+  
+  public static getInstance(){
+    return Player._instance;
+  }
+
+
+  public setStop(value : boolean){
+    this._stop = value; 
+  }
+  public getStop() : boolean{
+    return this._stop; 
+  }
 
 }
 

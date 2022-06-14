@@ -9,7 +9,7 @@ abstract class Hitbox {
   }
 
   public isCollisionDisabled(): boolean {
-    return this._collisionDisabled
+    return this._collisionDisabled = true
   }
 
   public disableCollision(collisionDisabled: boolean): void {

@@ -14,6 +14,7 @@ class RectangleEntity extends Entity {
     private size: Vector2;
 
     public color : Vector3 = new Vector3(0.3,0.3,0.3);
+    private alpha : number = 0.1;
     public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
         super(name, vao, material, renderer);
         this.size = new Vector2(1,1);
@@ -84,6 +85,10 @@ class RectangleEntity extends Entity {
                 }
         }
         this.getTransform().setTranslation(new Vector3(left, top, 0).negate())
+    }
+
+    public setAlpha(value : number){
+        return this.alpha = value;
     }
 
     

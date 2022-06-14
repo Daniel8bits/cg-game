@@ -1,4 +1,4 @@
-import {Matrix4, Vector3} from "@math.gl/core"
+import {Matrix4, Vector3, Vector4} from "@math.gl/core"
 
 import IResource from './IResource';
 import { gl } from "../gl/GLUtils";
@@ -144,6 +144,11 @@ class Shader implements IResource{
     public setVector3(name: string, vector: Vector3) : void{
         this._checkIfUniformExists(name, 
             (location) => gl.uniform3fv(location, vector));
+    }
+
+    public setVector4(name: string, vector: Vector4) : void{
+        this._checkIfUniformExists(name, 
+            (location) => gl.uniform4fv(location, vector));
     }
 
     public setMatrix4x4(name: string, matrix: Matrix4): void {

@@ -44,6 +44,8 @@ import FrameRenderer from "./renderers/FrameRenderer";
 import PathFinding from "./pathfinding/PathFinding";
 import Sound from './Sound';
 import RectangleEntity from "./entities/gui/RectangleEntity";
+import Camera from "@razor/core/Camera";
+import Entity from "@razor/core/entities/Entity";
 
 class GameTest extends GameCore {
 
@@ -51,7 +53,7 @@ class GameTest extends GameCore {
     private _gameController: GameController;
     private static instance: GameTest;
     private _frameBuffer: FrameRenderer[] = [];
-    private _guiRenderer : GuiRenderer;
+    private _guiRenderer: GuiRenderer;
     public constructor() {
         super()
         GameTest.instance = this;
@@ -63,17 +65,18 @@ class GameTest extends GameCore {
 
     public start() {
         //https://freesound.org/people/michorvath/sounds/427598/
-        new Sound("gun","/resources/sound/gun.wav");
+        new Sound("gun", "/resources/sound/gun.wav");
         //https://freesound.org/people/thencamenow/sounds/31236/
-        new Sound("door","/resources/sound/door.mp3")
+        new Sound("door", "/resources/sound/door.mp3")
         //https://freesound.org/people/julius_galla/sounds/193692/
-        new Sound("music","/resources/sound/music.wav",{volume:50});
+        new Sound("music", "/resources/sound/music.wav", { volume: 50 });
         //https://freesound.org/people/dkiller2204/sounds/366111/
-        new Sound("step","/resources/sound/footstep.wav");
+        new Sound("step", "/resources/sound/footstep.wav");
         //https://freesound.org/people/victorium183/sounds/476816/
-        new Sound("menu","/resources/sound/menu.wav",{volume:20});
-        
+        new Sound("menu", "/resources/sound/menu.wav", { volume: 20 });
+
         this._camera = new CanvasCamera('main', new Vector3(51.1, 0, -88), new Orientation(0, -32));
+        CanvasCamera.setMainCamera(this._camera);
         // ========= SHADER ==========
 
         /* Shader com Iluminação */
@@ -334,8 +337,8 @@ class GameTest extends GameCore {
             .forEachVAO((vao) => {
                 vao.create();
             })
-        this._frameBuffer.push(new FrameRenderer(this._camera,'albedo'));
-        this._frameBuffer.push(new FrameRenderer(this._camera,'mascara'));
+        // this._frameBuffer.push(new FrameRenderer(this._camera,'albedo'));
+        // this._frameBuffer.push(new FrameRenderer(this._camera,'mascara'));
 
         const scene1 = new MainScene(this._camera)
 
@@ -349,7 +352,7 @@ class GameTest extends GameCore {
         scene1.getRenderStrategy().add(guiRenderer)
 
         scene1.init()
-        
+
         //scene1.getProperties().gravity = 0
 
         this.getSceneManager().add(scene1, true)
@@ -358,7 +361,14 @@ class GameTest extends GameCore {
             scene1.get('player') as Player,
             scene1.get('gun') as Gun
         )
-
+        const lamp = new Lamp(
+            "lampadaDeReferencia",
+            mapRenderer,
+            new Vector3(1, 1, 0)
+        );
+        lamp.getTransform().setTranslation(new Vector3(21,-4,-21.29));
+        lamp.getTransform().setRotation(new Orientation(45));
+        this.getSceneManager().getActive().add(lamp);
         const guiAmmunition = new DisplayEntity('guiAmmunition', guiRenderer);
         const bottom = -Razor.CANVAS.height + 100;
         this.getSceneManager().getActive().add(guiAmmunition);
@@ -385,11 +395,16 @@ class GameTest extends GameCore {
         });
         /*
                 const pauseContainer = new GuiEntity("pause_container",guiRenderer);
+                pauseContainer.getTransform().setTranslation(new Vector3(0,0,-1));
                 this.getSceneManager().getActive().add(pauseContainer);
                 const rectanglePause = pauseContainer.addRectangle("pause_rectangle");
+                rectanglePause.setAlpha(1);
                 rectanglePause.getTransform().setScale(new Vector3(Razor.CANVAS.width,Razor.CANVAS.height,1));
                 rectanglePause.color = new Vector3(0.1,0.1,0.1);
-                const textPause = pauseContainer.addText("pause_text").setText("Pause");
+                const textPause = pauseContainer.addText("pause_text");
+                textPause.setText("Pause");
+                textPause.updatePosition({horizontal:"left",vertical:"top"})
+                textPause.getTransform().setTranslation(new Vector3(0,0,-1));
         */
 
         this.getSceneManager().add(new Scene('credits'), true)
@@ -403,6 +418,9 @@ class GameTest extends GameCore {
         const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
         select1.addOption("comecar").setExecute(() => {
+            const translation = Entity.Find("door-panel_8").getTransform().getTranslation();
+            Entity.Find("player").getTransform().setTranslation(translation);
+
             this.getSceneManager().setActive("main")
             Sound.Find("music").play(true);
         })
@@ -417,12 +435,12 @@ class GameTest extends GameCore {
         const credits = new GuiEntity("credits", guiRenderer);
         credits.setScene(this.getSceneManager().getActive());
         const rect = credits.addRectangle("credits_rect");
-        rect.color = new Vector3(1,0,0)
+        rect.color = new Vector3(1, 0, 0)
         rect.setSize(500, 100);
-        rect.updatePosition({horizontal:"center",vertical:"50%"})
+        rect.updatePosition({ horizontal: "center", vertical: "50%" })
         const text = credits.addText("credits_text");
         text.setText("ola")
-        text.updatePosition({horizontal:"center",vertical:"top"},rect.getTransform());
+        text.updatePosition({ horizontal: "center", vertical: "top" }, rect.getTransform());
         const v = text.getTransform().getTranslation();
         v.z = 200;
         text.getTransform().setTranslation(v);
@@ -450,6 +468,19 @@ class GameTest extends GameCore {
         super.update(time, delta);
 
         this._camera.update(delta)
+        const translation = this._camera.getTransform().getTranslation();
+        const rotation = this._camera.getTransform().getRotation();
+        document.querySelector("#log").innerHTML = `
+            <p><b>Translation</b></p>
+            <p><b>x</b> ${translation.x}</p>
+            <p><b>y</b> ${translation.y}</p>
+            <p><b>z</b> ${translation.z}</p>
+            <hr>
+            <p><b>Rotation</b></p>
+            <p><b>x</b> ${rotation.x}</p>
+            <p><b>y</b> ${rotation.y}</p>
+            <p><b>z</b> ${rotation.z}</p>
+        `;
     }
 
     public render() {
@@ -458,12 +489,12 @@ class GameTest extends GameCore {
         this._frameBuffer[0].bind();
         this._frameBuffer[0].unbind();
         this._frameBuffer[0].render();
-        
+
         this._frameBuffer[1].bind();
         super.render();
         this._frameBuffer[1].unbind();
         this._frameBuffer[1].render();
-        
+
         //this._guiRenderer.setScene(this.getSceneManager().getActive())
         //this._guiRenderer.render();
     }

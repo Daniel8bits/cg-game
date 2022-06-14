@@ -15,6 +15,7 @@ import MapEntity from './MapEntity';
 import HallDoorEntity from './HallDoorEntity';
 import SimpleEntity from './SimpleEntity';
 import DoorPanelEntity from './DoorPanelEntity';
+import Transform from '@razor/math/Transform';
 
 class EntityFactory {
 
@@ -44,6 +45,9 @@ class EntityFactory {
           y: number
           z: number
         },
+        options?: {
+          [key: string] : any
+        }
       }
     }
 
@@ -66,7 +70,7 @@ class EntityFactory {
             return '';
           })();
 
-          const entity = this._createEntity(key, vaoName, hitboxes)
+          const entity = this._createEntity(key, vaoName, hitboxes,data.options)
 
           entity.getTransform().setTranslation(new Vector3(
             data.translation.x,
@@ -99,7 +103,7 @@ class EntityFactory {
     
   } 
 
-  private _createEntity(name: string, vao: string, hitboxes: HitboxesJSON): Entity {
+  private _createEntity(name: string, vao: string, hitboxes: HitboxesJSON,options?: any): Entity {
 
     switch (vao) {
       case 'lamp':
@@ -109,10 +113,16 @@ class EntityFactory {
           new Vector3(1, 0, 0)
         )
       case 'hall-door':
+        let transform;
+        if(options?.camera){
+          transform = new Transform(options.camera.translation,new Orientation(options.camera.rotation.x,options.camera.rotation.y,options.camera.rotation.z))
+          console.log(options.camera.rotation)
+        }
         return new HallDoorEntity(
           name,
           this._getHitbox(vao, hitboxes),
-          this._renderStrategy.get('renderer1')
+          this._renderStrategy.get('renderer1'),
+          transform
         )
       case 'door-panel':
         return new DoorPanelEntity(
