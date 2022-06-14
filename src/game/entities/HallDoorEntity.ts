@@ -101,7 +101,7 @@ class HallDoorEntity extends MapEntity {
   private isOpen(finish: boolean) {
     if (finish) {
       Sound.Find("door").pause();
-      Player.getInstance().setStop(false);
+      setTimeout(() => Player.getInstance().setStop(false),300);
     } else {
       DialogEntity.getDialog("display").animateText("portao aberto", 30, { vertical: '10%', horizontal: 'center' }, function () {
         setTimeout(() => this.remove(), 2000);
@@ -116,7 +116,7 @@ class HallDoorEntity extends MapEntity {
   private isClose(finish: boolean) {
     if (finish) {
       Sound.Find("door").pause();
-      Player.getInstance().setStop(false);
+      setTimeout(() => Player.getInstance().setStop(false),300);
     } else {
 
       DialogEntity.getDialog("display").animateText("portao fechado", 30, { vertical: '10%', horizontal: 'center' }, function () {
