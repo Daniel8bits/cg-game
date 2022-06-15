@@ -428,6 +428,9 @@ class GameTest extends GameCore {
         Indoor Footsteps.wav (https://freesound.org/people/dkiller2204/sounds/366111/) CC 1.0
         menuChange.wav (https://freesound.org/people/victorium183/sounds/476816/) CC 1.0
         indsustrial_elevator_door_close.wav (https://freesound.org/people/joedeshon/sounds/368738/) CC 4.0
+
+        Map textures by Georges "TRaK" Grondin CC BY-SA 3.0
+        PS1-style Makarov Pistol by awhiskin (https://awhiskin.itch.io/ps1-style-makarov-pistol)
                 `;
         this.getSceneManager().getActive().add(new CreditsEntity("creditsEntity", text, guiRenderer))
         const select2 = new SelectEntity("select2", guiRenderer, this.getSceneManager().getActive());
