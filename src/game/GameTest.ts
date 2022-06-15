@@ -362,6 +362,8 @@ class GameTest extends GameCore {
             scene1.get('player') as Player,
             scene1.get('gun') as Gun
         )
+        monsterRenderer.setPlayer(scene1.get('player') as Player)
+
         const guiAmmunition = new DisplayEntity('guiAmmunition', guiRenderer);
         const bottom = -Razor.CANVAS.height + 100;
         this.getSceneManager().getActive().add(guiAmmunition);

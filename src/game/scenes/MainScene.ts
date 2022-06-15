@@ -92,7 +92,7 @@ class MainScene extends PhysicsScene {
         this._lamps.push(entity)
       }
     })
-
+/*
     const monsterRenderer = this.getRenderStrategy().get('monster-renderer') as MonsterRenderer;
     monsterRenderer.setPlayer(this._player)
 
@@ -113,34 +113,49 @@ class MainScene extends PhysicsScene {
     monster2.setLampList(this._entityFactory.get5ClosestLamps(monster2, this._lamps))
 
     this.add(monster2)
-
+*/
     this._pathFinding = new PathFinding(this, this._player)
         
     this._pathFinding.loadNodes()
 
-  }
-
-  public update(time: number, delta: number) {
-    super.update(time, delta);
-
-    if(this._lampSortingTimer > 3) {
+    setInterval(() => {
       this._player.setLampList(this._entityFactory.get5ClosestLamps(this._player, this._lamps))
       this._gun.setLampList(this._entityFactory.get5ClosestLamps(this._gun, this._lamps, this._gun.getTransform().worldTranslation()))
-      this._lampSortingTimer = 0
-    }
-    this._lampSortingTimer += delta
+      this.filterVisible(entity => entity instanceof Monster && 
+        (entity as Monster).isTriggered())
+      .forEach(monster => {
+        (monster as Monster)
+          .setLampList(this._entityFactory.get5ClosestLamps(monster, this._lamps))
+      })
+    }, 3000)
 
-    if(this._pathFindingCalculationTimer > 5) {
-      this.filterVisible(entity => entity instanceof Monster)
+    setInterval(() => {
+      this.filterVisible(entity => entity instanceof Monster && 
+        (entity as Monster).isTriggered())
       .forEach(monster => {
           this._pathFinding.connectNearestNodesToPlayer()
           const path = this._pathFinding.find(monster as Monster);
           (monster as Monster).setPath(path)
         })
+    }, 5000)
+
+  }
+
+  public update(time: number, delta: number) {
+    super.update(time, delta);
+/*
+    if(this._lampSortingTimer > 3) {
+      
+      this._lampSortingTimer = 0
+    }
+    this._lampSortingTimer += delta
+
+    if(this._pathFindingCalculationTimer > 5) {
+      
       this._pathFindingCalculationTimer = 0
     }
     this._pathFindingCalculationTimer += delta
-
+*/
   }
 
   public render(): void {

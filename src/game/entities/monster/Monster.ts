@@ -118,6 +118,10 @@ class Monster extends DynamicEntity implements IEntityWithLight {
     return this._path
   }
 
+  public isTriggered(): boolean {
+    return this._triggered
+  }
+
 }
 
 export default Monster
