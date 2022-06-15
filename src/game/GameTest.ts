@@ -476,7 +476,7 @@ class GameTest extends GameCore {
         const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
         select1.addOption("comecar").setExecute(() => {
-            Player.Find("player").getTransform().setTranslation(new Vector3(-173.12, 0, 164));
+            //Player.Find("player").getTransform().setTranslation(new Vector3(-173.12, 0, 164));
             this.setScene("loading")
             Sound.Find("music").play(true);
         })
