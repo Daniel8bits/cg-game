@@ -34,7 +34,7 @@ class MonsterRenderer extends Renderer {
         this._material = ResourceManager.getMaterial('monster')
         this._vao = ResourceManager.getVAO('monster')
 
-        this._maximumRenderDistance = 150
+        this._maximumRenderDistance = 75
 
     }
 
@@ -82,6 +82,7 @@ class MonsterRenderer extends Renderer {
         this._vao.bind()
 
         const position = this._player.getTransform().getTranslation()
+        
         this.getEntitiesByMaterial(this._material)
             .filter(entity => entity instanceof Monster)
             .sort((entity1, entity2) => {
@@ -90,8 +91,7 @@ class MonsterRenderer extends Renderer {
                 if(distanceA < distanceB) return 1;
                 if(distanceA > distanceB) return -1;
                 return 0;
-            })
-            .forEach((entity: Entity,index : number) => {
+            }).forEach((entity: Entity,index : number) => {
             (entity as Monster).getLampList().forEach((lamp, i) => {
                 
                 const path = `pointLights[${i}]`;

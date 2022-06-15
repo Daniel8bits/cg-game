@@ -99,13 +99,14 @@ class Gun extends Entity implements IEntityWithLight {
 
     const intersectionMap = new Map<string, PairPoints>()
 
+    const getDistanceFromPlayer = (monster: Entity) => new Vector3(playerPosition.x, 0, playerPosition.y)
+    .distanceTo(monster.getTransform().getTranslation())
+
     const monstersInTheSight = this.getScene()
-      .filterVisible((entity) => entity instanceof Monster)
+      .filterVisible((entity) => entity instanceof Monster && getDistanceFromPlayer(entity) < 50)
       .sort((entity1, entity2) => {
-        const distanceA = new Vector3(playerPosition.x, 0, playerPosition.y)
-          .distanceTo(entity1.getTransform().getTranslation())
-        const distanceB = new Vector3(playerPosition.x, 0, playerPosition.y)
-          .distanceTo(entity2.getTransform().getTranslation())
+        const distanceA = getDistanceFromPlayer(entity1)
+        const distanceB = getDistanceFromPlayer(entity2)
         if(distanceA > distanceB) return 1;
         if(distanceA < distanceB) return -1;
         return 0;

@@ -117,8 +117,21 @@ class MainScene extends PhysicsScene {
     this._pathFinding = new PathFinding(this, this._player)
         
     this._pathFinding.loadNodes()
+/*
+    setInterval(() => {
+      
+    }, 3000)
 
     setInterval(() => {
+      
+    }, 5000)
+*/
+  }
+
+  public update(time: number, delta: number) {
+    super.update(time, delta);
+
+    if(this._lampSortingTimer > 3) {
       this._player.setLampList(this._entityFactory.get5ClosestLamps(this._player, this._lamps))
       this._gun.setLampList(this._entityFactory.get5ClosestLamps(this._gun, this._lamps, this._gun.getTransform().worldTranslation()))
       this.filterVisible(entity => entity instanceof Monster && 
@@ -127,9 +140,11 @@ class MainScene extends PhysicsScene {
         (monster as Monster)
           .setLampList(this._entityFactory.get5ClosestLamps(monster, this._lamps))
       })
-    }, 3000)
+      this._lampSortingTimer = 0
+    }
+    this._lampSortingTimer += delta
 
-    setInterval(() => {
+    if(this._pathFindingCalculationTimer > 5) {
       this.filterVisible(entity => entity instanceof Monster && 
         (entity as Monster).isTriggered())
       .forEach(monster => {
@@ -137,25 +152,10 @@ class MainScene extends PhysicsScene {
           const path = this._pathFinding.find(monster as Monster);
           (monster as Monster).setPath(path)
         })
-    }, 5000)
-
-  }
-
-  public update(time: number, delta: number) {
-    super.update(time, delta);
-/*
-    if(this._lampSortingTimer > 3) {
-      
-      this._lampSortingTimer = 0
-    }
-    this._lampSortingTimer += delta
-
-    if(this._pathFindingCalculationTimer > 5) {
-      
       this._pathFindingCalculationTimer = 0
     }
     this._pathFindingCalculationTimer += delta
-*/
+
   }
 
   public render(): void {
