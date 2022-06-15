@@ -16,6 +16,9 @@ import HallDoorEntity from './HallDoorEntity';
 import SimpleEntity from './SimpleEntity';
 import DoorPanelEntity from './DoorPanelEntity';
 import Transform from '@razor/math/Transform';
+import Monster from './monster/Monster';
+import Player from './player/Player';
+import { IEntityWithLight } from './IEntityWithLight';
 
 class EntityFactory {
 
@@ -28,6 +31,56 @@ class EntityFactory {
   }
 
   public load(): void {
+    this._loadMap()
+    this._loadMonsters()
+    this._configureEntities()
+  }
+
+  private _loadMonsters(): void {
+    interface MonsterImportJSON {
+      [name: string]: {
+        translation: {
+          x: number
+          y: number
+          z: number
+        }
+      }
+    }
+
+    FileUtils.load('/resources/monsters.json',
+      (data) => {
+
+        const entities: MonsterImportJSON = JSON.parse(data)
+
+        Object.keys(entities).forEach(key => {
+          const data = entities[key]
+
+          const entity = new Monster(
+            key, 
+            this._renderStrategy.get('monster-renderer'),
+            this._scene.get('player') as Player
+          )
+
+          entity.getTransform().setTranslation(new Vector3(
+            data.translation.x,
+            data.translation.y,
+            data.translation.z,
+          ))
+          entity.getTransform().setScale(new Vector3(1, 2, 1))
+
+          this._scene.add(entity)
+
+        })
+
+
+      },
+      function onError(err) {
+        console.error('Could not import monsters from json: ', err);
+      },
+    );
+  }
+
+  private _loadMap(): void {
     interface EntityImportJSON {
       [name: string]: {
         translation: {
@@ -98,8 +151,6 @@ class EntityFactory {
         console.error('Could not import entities from json: ', err);
       },
     );
-
-    this._configureEntities()
     
   } 
 
@@ -174,8 +225,8 @@ class EntityFactory {
     })
 
     this._scene.forEach((entity: Entity) => {
-      if(entity instanceof MapEntity) {
-        (entity as MapEntity).setLampList(this.get5ClosestLamps(entity, lamps))
+      if(entity instanceof MapEntity || entity instanceof Monster) {
+        (entity as IEntityWithLight).setLampList(this.get5ClosestLamps(entity, lamps))
       }
     })
 
