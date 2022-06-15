@@ -132,7 +132,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
     }
 
 
-    if (InputManager.isKeyPressedDown(Keys.KEY_E) && this._gun.getState() === GunState.CHARGED) { // RIGHT
+    if (InputManager.isKeyPressed(Keys.KEY_E) && this._gun.getState() === GunState.CHARGED) { // RIGHT
       if (GameController.isAmmunition()) {
         GameController.update("ammunition", -1);
         setTimeout(() => Sound.Find("gun").play(false,true),100);

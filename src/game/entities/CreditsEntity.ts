@@ -24,7 +24,7 @@ class CreditsEntity extends Entity {
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.font = '20px serif';
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "white";
         const splitText = text.split("\n");
         for(let i=0;i<splitText.length;i++){
             ctx.fillText(splitText[i], 0,50 + 20 * i);
@@ -39,8 +39,8 @@ class CreditsEntity extends Entity {
         ResourceManager.addMaterials([this.getMaterial()]);
         this.getMaterial().create();
         const aspect = Razor.CANVAS.height/Razor.CANVAS.width;
-        this.getTransform().setTranslation(new Vector3(1000,310,1).negate())
-        this.getTransform().setScale(new Vector3(500,500 * aspect,1));
+        this.getTransform().setTranslation(new Vector3(800,400,1).negate())
+        this.getTransform().setScale(new Vector3(800,800 * aspect,1));
         
     }
 
