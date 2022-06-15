@@ -554,7 +554,7 @@ class GameTest extends GameCore {
     public update(time: number, delta: number) {
         super.update(time, delta);
         this._camera.update(delta)
-        
+        /*
         const translation = this._camera.getTransform().getTranslation();
         const rotation = this._camera.getTransform().getRotation();
         document.querySelector("#log").innerHTML = `
@@ -567,7 +567,7 @@ class GameTest extends GameCore {
             <p><b>x</b> ${rotation.x}</p>
             <p><b>y</b> ${rotation.y}</p>
             <p><b>z</b> ${rotation.z}</p>
-        `;
+        `;*/
     }
 
     public render() {
