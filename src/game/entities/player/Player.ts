@@ -28,22 +28,22 @@ class Player extends DynamicEntity implements IEntityWithLight {
   private _gun: Gun
 
   private _lampList: Lamp[]
-  private static _instance: Player; 
-  private _stop : boolean;
+  private static _instance: Player;
+  private _stop: boolean;
 
 
   public constructor(
-    name: string, 
+    name: string,
     hitbox: Hitbox,
     camera: Camera,
     renderer: Renderer
   ) {
     super(
-      name, 
-      hitbox, 
-      1, 
-      ResourceManager.getVAO('hand'), 
-      ResourceManager.getMaterial('hand'), 
+      name,
+      hitbox,
+      1,
+      ResourceManager.getVAO('hand'),
+      ResourceManager.getMaterial('hand'),
       renderer
     );
     this._camera = camera;
@@ -62,7 +62,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
   }
 
   public update(time: number, delta: number): void {
-    if(this._stop) return;
+    if (this._stop) return;
     this._updateCameraPosition()
 
     this._move(delta)
@@ -81,88 +81,92 @@ class Player extends DynamicEntity implements IEntityWithLight {
 
     let isStep = false;
 
-    if(InputManager.isKeyPressed(Keys.KEY_W)){ // FRONT
+    if (InputManager.isKeyPressed(Keys.KEY_W)) { // FRONT
       isStep = true;
       Sound.Find("step").play(true);
       this.getForce().add(new Vector3(x, 0, z))
     }
 
-    if(InputManager.isKeyPressed(Keys.KEY_S)){ // BACK
+    if (InputManager.isKeyPressed(Keys.KEY_S)) { // BACK
       isStep = true;
       Sound.Find("step").play(true);
       this.getForce().add(new Vector3(-x, 0, -z))
     }
 
-    if(InputManager.isKeyPressed(Keys.KEY_A)){ // LEFT
+    if (InputManager.isKeyPressed(Keys.KEY_A)) { // LEFT
       isStep = true;
       Sound.Find("step").play(true);
       this.getForce().add(new Vector3(z, 0, -x))
     }
 
-    if(InputManager.isKeyPressed(Keys.KEY_D)){ // RIGHT
+    if (InputManager.isKeyPressed(Keys.KEY_D)) { // RIGHT
       isStep = true;
       Sound.Find("step").play(true);
       this.getForce().add(new Vector3(-z, 0, x))
     }
 
-    if(!isStep) Sound.Find("step").pause();
-/*
-    if(InputManager.isKeyPressed(Keys.KEY_SPACE) && this.getTransform().getY() > -1 && this.getSpeed().y > -1){ // UP
-      this.getForce().add(new Vector3(0, -this._impulse*10 * delta, 0))
-    }
+    if (!isStep) Sound.Find("step").pause();
+    /*
+        if(InputManager.isKeyPressed(Keys.KEY_SPACE) && this.getTransform().getY() > -1 && this.getSpeed().y > -1){ // UP
+          this.getForce().add(new Vector3(0, -this._impulse*10 * delta, 0))
+        }
+    
+        if(InputManager.isKeyPressed(Keys.KEY_C)){ // DOWN
+            this.getForce().add(new Vector3(0, this._impulse*3 * delta, 0))
+        }
+    */
 
-    if(InputManager.isKeyPressed(Keys.KEY_C)){ // DOWN
-        this.getForce().add(new Vector3(0, this._impulse*3 * delta, 0))
-    }
-*/
-
-    if(InputManager.isKeyPressed(Keys.KEY_K)){ // RIGHT
+    if (InputManager.isKeyPressed(Keys.KEY_K)) { // RIGHT
       this.getTransform().setPitch(0)
     }
 
 
-    if(InputManager.isKeyPressed(Keys.KEY_E) && this._gun.getState() === GunState.CHARGED){ // RIGHT
-      GameController.update("ammunition",-1);
-      Sound.Find("gun").play();
-      const position = this.getTransform().getTranslation()
-      const ray = new Vector3(0, 0, 20).transform(
-        this.getTransform().toInversePositionMatrix()
-      )
-      this._gun.shoot(
-        new Vector2(
-          position.x,
-          position.z
-        ),
-        new Vector2(
-          ray.x,
-          ray.z
+    if (InputManager.isKeyPressedDown(Keys.KEY_E) && this._gun.getState() === GunState.CHARGED) { // RIGHT
+      if (GameController.isAmmunition()) {
+        GameController.update("ammunition", -1);
+        setTimeout(() => Sound.Find("gun").play(false,true),100);
+        const position = this.getTransform().getTranslation()
+        const ray = new Vector3(0, 0, 20).transform(
+          this.getTransform().toInversePositionMatrix()
         )
-      )
+        this._gun.shoot(
+          new Vector2(
+            position.x,
+            position.z
+          ),
+          new Vector2(
+            ray.x,
+            ray.z
+          )
+        )
+      }else{
+        Sound.Find("empty_gun").play();
+      }
     }
 
-    if(InputManager.isKeyPressed(Keys.KEY_LEFT)){ // RIGHT
+    if (InputManager.isKeyPressed(Keys.KEY_LEFT)) { // RIGHT
       const rotation = this.getTransform().getRotation()
-      this.getTransform().setYaw(rotation.yaw + this._impulse*2 * delta)
+      this.getTransform().setYaw(rotation.yaw + this._impulse * 2 * delta)
     }
 
-    if(InputManager.isKeyPressed(Keys.KEY_RIGHT)){ // RIGHT
+    if (InputManager.isKeyPressed(Keys.KEY_RIGHT)) { // RIGHT
       const rotation = this.getTransform().getRotation()
-      this.getTransform().setYaw(rotation.yaw + -this._impulse*2 * delta)
+      this.getTransform().setYaw(rotation.yaw + -this._impulse * 2 * delta)
     }
 
-    if(InputManager.isKeyPressed(Keys.KEY_ESCAPE)){// ESC
+    if (InputManager.isKeyPressed(Keys.KEY_ESCAPE)) {// ESC
       Razor.IS_MOUSE_INSIDE = false;
     }
 
-    if(Razor.IS_MOUSE_INSIDE) {
-        const dx = InputManager.getMouseDX() 
-        const dy = InputManager.getMouseDY() 
+    if (Razor.IS_MOUSE_INSIDE) {
+      const dx = InputManager.getMouseDX()
+      const dy = InputManager.getMouseDY()
 
-        const rotation = this.getTransform().getRotation()
-        this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
-        this.getTransform().setYaw(rotation.yaw + dx * this._sensitivity * delta)
+      const rotation = this.getTransform().getRotation()
+      this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
+      this.getTransform().setYaw(rotation.yaw + dx * this._sensitivity * delta)
     }
-    
+
 
   }
 
@@ -211,17 +215,17 @@ class Player extends DynamicEntity implements IEntityWithLight {
     return this._gun
   }
 
-  
-  public static getInstance(){
+
+  public static getInstance() {
     return Player._instance;
   }
 
 
-  public setStop(value : boolean){
-    this._stop = value; 
+  public setStop(value: boolean) {
+    this._stop = value;
   }
-  public getStop() : boolean{
-    return this._stop; 
+  public getStop(): boolean {
+    return this._stop;
   }
 
 }

@@ -66,6 +66,8 @@ class GameTest extends GameCore {
     public start() {
         //https://freesound.org/people/michorvath/sounds/427598/
         new Sound("gun", "/resources/sound/gun.wav");
+        //https://freesound.org/people/KlawyKogut/sounds/154934/#
+        new Sound("empty_gun","/resources/sound/empty_gun.wav")
         //https://freesound.org/people/thencamenow/sounds/31236/
         new Sound("door", "/resources/sound/door.mp3")
         //https://freesound.org/people/julius_galla/sounds/193692/
