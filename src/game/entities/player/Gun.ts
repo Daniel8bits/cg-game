@@ -88,11 +88,9 @@ class Gun extends Entity implements IEntityWithLight {
   public shoot(playerPosition: Vector2, rayCasting: Vector2) {
 
     this._state = GunState.RECHARGING
-/*
-    setTimeout(() => {
-     // if(this._state == GunState.READY){
+
+    /*setTimeout(() => {
         this._state = GunState.CHARGED
-     // }
     },500);
 */
     const bulletPath = lineEquationOf(playerPosition, rayCasting)

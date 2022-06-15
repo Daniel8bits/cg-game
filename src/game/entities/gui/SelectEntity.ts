@@ -40,9 +40,9 @@ class SelectEntity extends GuiEntity {
         return entity;
     }
 
-    private updateTranslation(){
-        const top = Razor.CANVAS.height/2 - 50/2 - (70 * this.padding)/2;
-        const left = Razor.CANVAS.width/2 - 180/2;
+    public updateTranslation(width : number = Razor.CANVAS.width,height : number = Razor.CANVAS.height){
+        const top = height/2 - 50/2 - (70 * this.padding)/2;
+        const left = width/2 - 180/2;
         this.getTransform().setTranslation(new Vector3(left,top,0).negate())
     }
 

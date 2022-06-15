@@ -45,6 +45,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
   }
 
   public update(time: number, delta: number): void {
+    if(Player.getInstance().getStop()) return;
     if(!this._triggered && this._shouldTrigger()) {
       this._triggered = true
       this.getHitbox().disableCollision(false)

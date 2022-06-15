@@ -102,6 +102,7 @@ class FrameRenderer extends Renderer {
             this._buffers[Number(!horizontal)].getTexture().bind();
             this._shader.setInt('u_mascara', 1)
             this.draw();
+            FrameRenderer._modeStatic = "albedo";
         }
         this._vao.unbind();
         this._texture.unbind();

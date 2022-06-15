@@ -8,6 +8,7 @@ import DialogEntity from "./gui/DialogEntity";
 import Player from "./player/Player";
 import Camera from "@razor/core/Camera";
 import Transform from "@razor/math/Transform";
+import GameController from "../GameController";
 
 export enum HallDoorState {
   OPENED = 0,
@@ -22,7 +23,7 @@ class HallDoorEntity extends MapEntity {
   private _counter: number
   private _camera: Camera;
   private _cameraTransform: Transform;
-
+  private _giveAmmunition : boolean;
   public constructor(
     name: string,
     hitbox: Hitbox,
@@ -41,6 +42,7 @@ class HallDoorEntity extends MapEntity {
     this._counter = 0
     this._camera = Camera.Main;
     this._cameraTransform = cameraTransform;
+    this._giveAmmunition = false;
   }
 
   public update(time: number, delta: number): void {
@@ -100,6 +102,13 @@ class HallDoorEntity extends MapEntity {
 
   private isOpen(finish: boolean) {
     if (finish) {
+      if(!this._giveAmmunition){
+        this._giveAmmunition = true;
+        GameController.update("ammunition", 10);
+        DialogEntity.getDialog("display").animateText("municao coletada", 30, { vertical: '10%', horizontal: 'center' }, function () {
+          setTimeout(() => this.remove(), 2000);
+        });
+      }
       Sound.Find("door").pause();
       setTimeout(() => Player.getInstance().setStop(false),300);
     } else {

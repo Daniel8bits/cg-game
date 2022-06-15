@@ -410,14 +410,6 @@ class GameTest extends GameCore {
         const sceneScredits = new Scene('credits');
         sceneScredits.getRenderStrategy().add(guiRenderer)
         this.getSceneManager().add(sceneScredits, true)
-        /*
-        const credits = new GuiEntity("credits", guiRenderer);
-        credits.setScene(this.getSceneManager().getActive());
-        const rect = credits.addRectangle("credits_rect");
-        rect.color = new Vector3(1, 0, 0)
-        rect.setSize(500, 100);
-        rect.updatePosition({ horizontal: "center", vertical: "10%" })
-        this.getSceneManager().getActive().add(credits)*/
 
         const text = `
         "Hand (low poly)" (https://skfb.ly/Dr9p) by scribbletoad is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
@@ -440,6 +432,7 @@ class GameTest extends GameCore {
         select2.addOption("voltar").setExecute(() => {
             this.setScene("menu")
         })
+        select2.updateTranslation(Razor.CANVAS.width,Razor.CANVAS.height * 2 - 50);
         /* Loading Scene */
         const gameover = new Scene('gameover');
         gameover.getRenderStrategy().add(guiRenderer)
@@ -529,6 +522,8 @@ class GameTest extends GameCore {
                 });
                 break;
             case "end":
+                this._camera.getTransform().setTranslation(new Vector3(51.1, 0, -88))
+                this._camera.getTransform().setRotation( new Orientation(0, -32));
                 Sound.pauseAll();
 
                 Sound.Find("elevator").play(false);
