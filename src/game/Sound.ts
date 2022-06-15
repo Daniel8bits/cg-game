@@ -35,28 +35,40 @@ class Sound {
         return this._translation;
     }
 
-    public play(loop = false, resetTime = -1,translation? : Vector3) {
-        if(!this._audio.paused) return;
-        //this._audio.pause();
-        //this._audio.currentTime = 0;
+    public play(loop = false,force: boolean = false, translation? : Vector3) : Promise<void>{
+        if(!force && !this._audio.paused) return;
+        if(force){
+            this._audio.pause();
+            this._audio.currentTime = 0;
+        }
         this._audio.loop = loop;
-        this._audio.play();
+        //console.time(this.name);
+        const play = this._audio.play();
         if(translation){
             const clear = setInterval(() => {
                 if(this._audio.paused) clearInterval(clear);
                 const vectorDistance = translation.subtract(Camera.Main.getTransform().getTranslation());
                 const distanceLength = Math.sqrt(Math.pow(vectorDistance[0],2) + Math.pow(vectorDistance[1],2) + Math.pow(vectorDistance[2],2))
                 this._audio.volume = 1.0 / (1.0 + 0.022 * distanceLength + 0.0019 * (distanceLength * distanceLength));
-
+                
             },1000)
         }
+        const clear2 = setInterval(() => {
+            if(this._audio.paused){
+               // console.timeEnd(this.name);
+                this._audio.currentTime = 0;
+                clearInterval(clear2);
+            }
+        },1000);
+        /*
         if (resetTime != -1) {
             while (!this._audio.paused) {
                 if (this._audio.currentTime >= resetTime) {
                     this._audio.currentTime = 0;
                 }
             }
-        }
+        }*/
+        return play;
     }
 
     public pause() {

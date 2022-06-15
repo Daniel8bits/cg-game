@@ -18,19 +18,19 @@ class GameController {
     }
 
     static isAmmunition() : boolean{
-        return this.ammunition.value != 0;
+        return this.ammunition != 0;
     }
 
     static isLife() : boolean{
-        return this.life.value != 0;
+        return this.life != 0;
     }
 
     static get life(){
-        return this.life.value;
+        return this._life.value;
     } 
     
     static get ammunition(){
-        return this.ammunition.value;
+        return this._ammunition.value;
     } 
 
     static update(name : GameControllerDisplay, value : number) {

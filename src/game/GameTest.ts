@@ -45,6 +45,8 @@ import Sound from './Sound';
 import RectangleEntity from "./entities/gui/RectangleEntity";
 import Camera from "@razor/core/Camera";
 import Entity from "@razor/core/entities/Entity";
+import CreditsEntity from "./entities/CreditsEntity";
+import InputManager, { Keys } from "@razor/core/InputManager";
 
 class GameTest extends GameCore {
 
@@ -64,6 +66,8 @@ class GameTest extends GameCore {
     public start() {
         //https://freesound.org/people/michorvath/sounds/427598/
         new Sound("gun", "/resources/sound/gun.wav");
+        //https://freesound.org/people/KlawyKogut/sounds/154934/#
+        new Sound("empty_gun","/resources/sound/empty_gun.wav")
         //https://freesound.org/people/thencamenow/sounds/31236/
         new Sound("door", "/resources/sound/door.mp3")
         //https://freesound.org/people/julius_galla/sounds/193692/
@@ -411,6 +415,23 @@ class GameTest extends GameCore {
         rect.updatePosition({ horizontal: "center", vertical: "10%" })
         this.getSceneManager().getActive().add(credits)
 
+        const text = `
+        "Hand (low poly)" (https://skfb.ly/Dr9p) by scribbletoad is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
+        Life Icon (https://www.onlinewebfonts.com/icon/146242) CC ??
+        AmmunitionIcon (https://www.pngwing.com/pt/free-png-stupy/download) CC ??
+        AR15 pistol shot (https://freesound.org/people/michorvath/sounds/427598/) CC 1.0
+        metal gate 07.aif (https://freesound.org/people/thencamenow/sounds/31236/) CC 4.0
+        Atmosphere - Horror 1 (Loop) (https://freesound.org/people/julius_galla/sounds/193692/) CC 3.0
+        Indoor Footsteps.wav (https://freesound.org/people/dkiller2204/sounds/366111/) CC 1.0
+        menuChange.wav (https://freesound.org/people/victorium183/sounds/476816/) CC 1.0
+        indsustrial_elevator_door_close.wav (https://freesound.org/people/joedeshon/sounds/368738/) CC 4.0
+                `;
+        this.getSceneManager().getActive().add(new CreditsEntity("creditsEntity",text,guiRenderer))
+        const select2 = new SelectEntity("select2", guiRenderer, this.getSceneManager().getActive());
+        this.getSceneManager().getActive().add(select2)
+        select2.addOption("voltar").setExecute(() => {
+            this.setScene("menu")
+        })
         const sceneLoading = new Scene('loading');
         sceneLoading.getRenderStrategy().add(guiRenderer)
         this.getSceneManager().add(sceneLoading,true);
@@ -418,10 +439,11 @@ class GameTest extends GameCore {
         this.getSceneManager().getActive().add(loadingDisplay);
         loadingDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
         loadingDisplay.init();
-
-        this.getSceneManager().add(new Scene('menu'), true)
-
-        this.getSceneManager().get('menu').getRenderStrategy().add(guiRenderer)
+        
+        const sceneMenu = new Scene('menu');
+        this.getSceneManager().add(sceneMenu, true)
+        
+        sceneMenu.getRenderStrategy().add(guiRenderer)
 
         const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)

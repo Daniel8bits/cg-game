@@ -13,6 +13,7 @@ import Lamp from "../Lamp";
 import Monster from "../monster/Monster";
 
 export enum GunState {
+  READY,
   CHARGED,
   RECHARGING,
   EMPTY,
@@ -78,7 +79,7 @@ class Gun extends Entity implements IEntityWithLight {
       if(this._counter >= 1) {
         this._step = 1
         this._counter = 0
-        this._state = GunState.CHARGED
+        this._state = GunState.READY
       }
     }
     
@@ -87,6 +88,12 @@ class Gun extends Entity implements IEntityWithLight {
   public shoot(playerPosition: Vector2, rayCasting: Vector2) {
 
     this._state = GunState.RECHARGING
+
+    setTimeout(() => {
+     // if(this._state == GunState.READY){
+        this._state = GunState.CHARGED
+     // }
+    },900);
 
     const bulletPath = lineEquationOf(playerPosition, rayCasting)
 
