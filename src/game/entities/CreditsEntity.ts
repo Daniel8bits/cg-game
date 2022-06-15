@@ -35,7 +35,6 @@ class CreditsEntity extends Entity {
         this._texture.create();
         this._texture.setData(data);
         this.setVAO(ResourceManager.getVAO("effect"));
-        console.log(this._texture)
         this.setMaterial(new DefaultMaterial(name,ResourceManager.getShader('text'),this._texture))
         ResourceManager.addMaterials([this.getMaterial()]);
         this.getMaterial().create();

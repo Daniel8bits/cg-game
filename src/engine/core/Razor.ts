@@ -60,7 +60,6 @@ class Razor {
             //Razor.IS_MOUSE_INSIDE = true;
         })
         document.addEventListener('pointerlockchange', event => { 
-            console.log(event);
             Razor.IS_MOUSE_INSIDE = !Razor.IS_MOUSE_INSIDE;
         });
 

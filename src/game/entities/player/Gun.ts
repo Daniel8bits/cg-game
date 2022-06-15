@@ -93,7 +93,7 @@ class Gun extends Entity implements IEntityWithLight {
      // if(this._state == GunState.READY){
         this._state = GunState.CHARGED
      // }
-    },900);
+    },500);
 
     const bulletPath = lineEquationOf(playerPosition, rayCasting)
 

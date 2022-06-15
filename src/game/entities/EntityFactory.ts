@@ -167,7 +167,6 @@ class EntityFactory {
         let transform;
         if(options?.camera){
           transform = new Transform(options.camera.translation,new Orientation(options.camera.rotation.x,options.camera.rotation.y,options.camera.rotation.z))
-          console.log(options.camera.rotation)
         }
         return new HallDoorEntity(
           name,
