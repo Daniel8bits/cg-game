@@ -410,24 +410,27 @@ class GameTest extends GameCore {
         const sceneScredits = new Scene('credits');
         sceneScredits.getRenderStrategy().add(guiRenderer)
         this.getSceneManager().add(sceneScredits, true)
+        /*
         const credits = new GuiEntity("credits", guiRenderer);
         credits.setScene(this.getSceneManager().getActive());
         const rect = credits.addRectangle("credits_rect");
         rect.color = new Vector3(1, 0, 0)
         rect.setSize(500, 100);
         rect.updatePosition({ horizontal: "center", vertical: "10%" })
-        this.getSceneManager().getActive().add(credits)
+        this.getSceneManager().getActive().add(credits)*/
 
         const text = `
         "Hand (low poly)" (https://skfb.ly/Dr9p) by scribbletoad is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
-        Life Icon (https://www.onlinewebfonts.com/icon/146242) CC ??
-        AmmunitionIcon (https://www.pngwing.com/pt/free-png-stupy/download) CC ??
+        Life Icon (https://www.onlinewebfonts.com/icon/146242) Uso não-comercial, DMCA
+        AmmunitionIcon (https://www.pngwing.com/pt/free-png-stupy/download) Uso não-comercial, DMCA
         AR15 pistol shot (https://freesound.org/people/michorvath/sounds/427598/) CC 1.0
         metal gate 07.aif (https://freesound.org/people/thencamenow/sounds/31236/) CC 4.0
         Atmosphere - Horror 1 (Loop) (https://freesound.org/people/julius_galla/sounds/193692/) CC 3.0
         Indoor Footsteps.wav (https://freesound.org/people/dkiller2204/sounds/366111/) CC 1.0
         menuChange.wav (https://freesound.org/people/victorium183/sounds/476816/) CC 1.0
         indsustrial_elevator_door_close.wav (https://freesound.org/people/joedeshon/sounds/368738/) CC 4.0
+        Empty Gun Shot (https://freesound.org/people/KlawyKogut/sounds/154934/#) CC 1.0
+        Damage-1.wav (https://freesound.org/people/Deathscyp/sounds/404109/) CC 1.0
                 `;
         this.getSceneManager().getActive().add(new CreditsEntity("creditsEntity", text, guiRenderer))
         const select2 = new SelectEntity("select2", guiRenderer, this.getSceneManager().getActive());
