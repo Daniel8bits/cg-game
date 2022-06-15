@@ -67,7 +67,7 @@ class GameTest extends GameCore {
         //https://freesound.org/people/michorvath/sounds/427598/
         new Sound("gun", "/resources/sound/gun.wav");
         //https://freesound.org/people/KlawyKogut/sounds/154934/#
-        new Sound("empty_gun","/resources/sound/empty_gun.wav")
+        new Sound("empty_gun", "/resources/sound/empty_gun.wav")
         //https://freesound.org/people/thencamenow/sounds/31236/
         new Sound("door", "/resources/sound/door.mp3")
         //https://freesound.org/people/julius_galla/sounds/193692/
@@ -77,7 +77,9 @@ class GameTest extends GameCore {
         //https://freesound.org/people/victorium183/sounds/476816/
         new Sound("menu", "/resources/sound/menu.wav", { volume: 20 });
         //https://freesound.org/people/joedeshon/sounds/368738/
-        new Sound("elevator","/resources/sound/elevator.wav")
+        new Sound("elevator", "/resources/sound/elevator.wav")
+        //https://freesound.org/people/Deathscyp/sounds/404109/
+        new Sound("damage", "/resources/sound/damage.wav")
         this._camera = new CanvasCamera('main', new Vector3(51.1, 0, -88), new Orientation(0, -32));
         CanvasCamera.setMainCamera(this._camera);
         // ========= SHADER ==========
@@ -389,21 +391,22 @@ class GameTest extends GameCore {
         dialog.animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
             setTimeout(() => this.remove(), 5000);
         });*/
-//elevator
-/*
-                const pauseContainer = new GuiEntity("pause_container",guiRenderer);
-                pauseContainer.getTransform().setTranslation(new Vector3(0,0,-1));
-                this.getSceneManager().getActive().add(pauseContainer);
-                const rectanglePause = pauseContainer.addRectangle("pause_rectangle");
-                rectanglePause.setAlpha(1);
-                rectanglePause.getTransform().setScale(new Vector3(Razor.CANVAS.width,Razor.CANVAS.height,1));
-                rectanglePause.color = new Vector3(0.1,0.1,0.1);
-                const textPause = pauseContainer.addText("pause_text");
-                textPause.setText("Pause");
-                textPause.updatePosition({horizontal:"left",vertical:"top"})
-                textPause.getTransform().setTranslation(new Vector3(0,0,-1));
-        */
+        //elevator
+        /*
+                        const pauseContainer = new GuiEntity("pause_container",guiRenderer);
+                        pauseContainer.getTransform().setTranslation(new Vector3(0,0,-1));
+                        this.getSceneManager().getActive().add(pauseContainer);
+                        const rectanglePause = pauseContainer.addRectangle("pause_rectangle");
+                        rectanglePause.setAlpha(1);
+                        rectanglePause.getTransform().setScale(new Vector3(Razor.CANVAS.width,Razor.CANVAS.height,1));
+                        rectanglePause.color = new Vector3(0.1,0.1,0.1);
+                        const textPause = pauseContainer.addText("pause_text");
+                        textPause.setText("Pause");
+                        textPause.updatePosition({horizontal:"left",vertical:"top"})
+                        textPause.getTransform().setTranslation(new Vector3(0,0,-1));
+                */
 
+        /* Credits Scene */
         const sceneScredits = new Scene('credits');
         sceneScredits.getRenderStrategy().add(guiRenderer)
         this.getSceneManager().add(sceneScredits, true)
@@ -426,28 +429,49 @@ class GameTest extends GameCore {
         menuChange.wav (https://freesound.org/people/victorium183/sounds/476816/) CC 1.0
         indsustrial_elevator_door_close.wav (https://freesound.org/people/joedeshon/sounds/368738/) CC 4.0
                 `;
-        this.getSceneManager().getActive().add(new CreditsEntity("creditsEntity",text,guiRenderer))
+        this.getSceneManager().getActive().add(new CreditsEntity("creditsEntity", text, guiRenderer))
         const select2 = new SelectEntity("select2", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select2)
         select2.addOption("voltar").setExecute(() => {
             this.setScene("menu")
         })
+        /* Loading Scene */
+        const gameover = new Scene('gameover');
+        gameover.getRenderStrategy().add(guiRenderer)
+        this.getSceneManager().add(gameover, true);
+        const gameoverDisplay = new DialogEntity("gameoverDisplay", guiRenderer);
+        this.getSceneManager().getActive().add(gameoverDisplay);
+        gameoverDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
+       
+
+        /* Loading Scene */
         const sceneLoading = new Scene('loading');
         sceneLoading.getRenderStrategy().add(guiRenderer)
-        this.getSceneManager().add(sceneLoading,true);
+        this.getSceneManager().add(sceneLoading, true);
         const loadingDisplay = new DialogEntity("loadingDisplay", guiRenderer);
         this.getSceneManager().getActive().add(loadingDisplay);
         loadingDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
         loadingDisplay.init();
-        
+
+        /* End Scene */
+        const sceneEnd = new Scene('end');
+        sceneEnd.getRenderStrategy().add(guiRenderer)
+        this.getSceneManager().add(sceneEnd, true);
+        const endDisplay = new DialogEntity("endDisplay", guiRenderer);
+        this.getSceneManager().getActive().add(endDisplay);
+        endDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
+        //endDisplay.init();
+
+        /* Menu Scene */
         const sceneMenu = new Scene('menu');
         this.getSceneManager().add(sceneMenu, true)
-        
+
         sceneMenu.getRenderStrategy().add(guiRenderer)
 
         const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
         this.getSceneManager().getActive().add(select1)
         select1.addOption("comecar").setExecute(() => {
+            Player.Find("player").getTransform().setTranslation(new Vector3(-173.12, 0, 164));
             this.setScene("loading")
             Sound.Find("music").play(true);
         })
@@ -459,7 +483,7 @@ class GameTest extends GameCore {
         const credits =     new RectangleEntity("credits_rect", ResourceManager.getVAO("rectangle"), ResourceManager.getMaterial("rectangle"), guiRenderer)
         credits.updatePosition({horizontal:"center",vertical:"center"});
         */
-    
+
 
         this.setScene("menu");
         /*
@@ -476,34 +500,61 @@ class GameTest extends GameCore {
             console.log('n: ', current.getName());
             current = current.getPath()
         } while(current)
+        
 */
+        const playerEntity = Player.Find("player");
+        playerEntity.setEndPoint(DoorPanelEntity.Find("elevator_1").getTransform())
     }
 
     public changeScene(scene: Scene): void {
-        switch(scene.getName()){
+        const gameTest = this;
+        switch (scene.getName()) {
             case "main":
                 DialogEntity.Find("display").animateText("chegue ate o elevador", 50, { vertical: '10%', horizontal: 'center' }, function () {
                     setTimeout(() => this.remove(), 5000);
                 });
-            break;
+                break;
             case "loading":
-                
                 Sound.Find("elevator").play(false);
-                const gameTest = this;
                 DialogEntity.Find("loadingDisplay").animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
                     setTimeout(() => {
                         this.remove()
                         gameTest.setScene("main");
                     }, 5000);
                 });
-            break;
+                break;
+            case "end":
+                Sound.pauseAll();
+
+                Sound.Find("elevator").play(false);
+                const endDisplay = DialogEntity.Find("endDisplay");
+                endDisplay.init();
+                endDisplay.animateText("voce chegou no fim", 50, { vertical: '10%', horizontal: 'center' }, function () {
+                    setTimeout(() => {
+                        this.remove()
+                        window.location.reload()
+                    }, 5000);
+                });
+                break;
+            case "gameover":
+                Sound.pauseAll();
+
+                const gameoverDisplay = DialogEntity.Find("gameoverDisplay");
+                gameoverDisplay.init();
+                gameoverDisplay.animateText("game over", 50, { vertical: '10%', horizontal: 'center' }, function () {
+                    setTimeout(() => {
+                        this.remove()
+                        window.location.reload()
+                    }, 5000);
+                });
+                break;
         }
     }
 
     public update(time: number, delta: number) {
         super.update(time, delta);
-
         this._camera.update(delta)
+        /*
         const translation = this._camera.getTransform().getTranslation();
         const rotation = this._camera.getTransform().getRotation();
         document.querySelector("#log").innerHTML = `
@@ -516,14 +567,11 @@ class GameTest extends GameCore {
             <p><b>x</b> ${rotation.x}</p>
             <p><b>y</b> ${rotation.y}</p>
             <p><b>z</b> ${rotation.z}</p>
-        `;
+        `;*/
     }
 
     public render() {
         super.render();
-
-        //this._guiRenderer.setScene(this.getSceneManager().getActive())
-        //this._guiRenderer.render();
     }
 
 }

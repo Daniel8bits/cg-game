@@ -3,6 +3,8 @@ import DynamicEntity from "@razor/core/entities/DynamicEntity";
 import ResourceManager from "@razor/core/ResourceManager";
 import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import Renderer from "@razor/renderer/Renderer";
+import GameController from "src/game/GameController";
+import Sound from "src/game/Sound";
 import PathNode from "../../pathfinding/PathNode";
 import { IEntityWithLight } from "../IEntityWithLight";
 import Lamp from "../Lamp";
@@ -22,6 +24,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
   private _triggered: boolean
   private _player: Player
 
+  private _hitPlayer : boolean;
   public constructor(name: string, renderer: Renderer, player: Player) {
     super(
       name,
@@ -38,6 +41,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
     this._pathIndex = 0;
     this._triggered = false
     this._player = player
+    this._hitPlayer = false;
   }
 
   public update(time: number, delta: number): void {
@@ -47,6 +51,13 @@ class Monster extends DynamicEntity implements IEntityWithLight {
     } else if (this._path.length > 0 && this._triggered) {
       this._updatePathIndex(this._path[this._pathIndex])
       this._move(this._path[this._pathIndex], delta)
+      const value = this.getTransform().getTranslation().distanceTo(Player.getInstance().getTransform().getTranslation());
+      if(value < 5 && !this._hitPlayer){
+        this._hitPlayer = true;
+        GameController.update("life",-1);
+        Sound.Find("damage").play(false,true);
+        setTimeout(() => this._hitPlayer = false,1000);
+      }
     }
   }
 

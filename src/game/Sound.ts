@@ -79,6 +79,12 @@ class Sound {
     public static Find(name: string): Sound {
         return Sound.Sounds[name];
     }
+
+    public static pauseAll(){
+        Object.keys(Sound.Sounds).map((key) => {
+            Sound.Sounds[key].pause();
+        })
+    }
 }
 
 export default Sound;
