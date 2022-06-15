@@ -67,6 +67,7 @@ class EntityFactory {
             data.translation.z,
           ))
           entity.getTransform().setScale(new Vector3(1, 2, 1))
+          entity.getHitbox().disableCollision(true)
 
           this._scene.add(entity)
 

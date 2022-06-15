@@ -10,9 +10,10 @@ uniform vec3 u_camera_position;
 varying vec3 v_normal;
 varying vec3 v_FragPos;
 varying vec3 v_camera_view;
+varying float v_visibility;
 
 #define MAX_LIGHTS 5
-
+#define FOG_COLOR vec3(0.2, 0.0, 0.0)
 
 struct LightProperties{
   vec3 ambient;
@@ -87,11 +88,16 @@ void main() {
   vec3 norm = normalize(v_normal);
   vec3 viewDir = normalize(u_camera_position - v_FragPos);
   vec3 result = vec3(0.0);
-  if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texture);// Luz da Camera
-  for(int i = 0; i < MAX_LIGHTS; i++)
-      result += CalcPointLight(pointLights[i], norm, viewDir,texture);
+  //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texture);// Luz da Camera
+
+  if(v_visibility > 0.1) {
+    for(int i = 0; i < MAX_LIGHTS; i++)
+        result += CalcPointLight(pointLights[i], norm, viewDir,texture);
+  } else {
+    result = FOG_COLOR;
+  }
       
-  gl_FragColor = vec4(result, texturePixel.a);
+  gl_FragColor = vec4(mix(FOG_COLOR, result, v_visibility), texturePixel.a);
 
   //float gamma = 2.2;
   //gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma))*0.3;

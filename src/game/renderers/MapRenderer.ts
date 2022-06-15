@@ -24,7 +24,7 @@ class MapRenderer extends Renderer {
             far: 1000
         })
 
-        this._maximumRenderDistance = 150
+        this._maximumRenderDistance = 110
     }
 
     private distanceConfig = {
@@ -68,20 +68,22 @@ class MapRenderer extends Renderer {
                 if(!(entity instanceof MapEntity || entity instanceof Lamp)) {
                     return;
                 }
-                (entity as MapEntity).getLampList().forEach((lamp, i) => {
-                    
-                    const path = `pointLights[${i}]`;
-                    shader.setVector3(path+".color.ambient", lamp.color);
-                    shader.setVector3(path+".color.diffuse", lamp.color)
-                    shader.setVector3(path+".color.specular",lamp.color);
-                    const distance = this.distanceConfig[lamp.distance];
-                    shader.setFloat(path+".distance.constant", distance[0]);
-                    shader.setFloat(path+".distance.linear", distance[1])
-                    shader.setFloat(path+".distance.quadratic",distance[2]);
-                    shader.setFloat(path+".shininess",lamp.shininess);
-                    shader.setVector3(path+".position",lamp.getTransform().getTranslation().negate());
-                    
-                })
+                if(entity instanceof MapEntity) {
+                    (entity as MapEntity).getLampList().forEach((lamp, i) => {
+                        
+                        const path = `pointLights[${i}]`;
+                        shader.setVector3(path+".color.ambient", lamp.color);
+                        shader.setVector3(path+".color.diffuse", lamp.color)
+                        shader.setVector3(path+".color.specular",lamp.color);
+                        const distance = this.distanceConfig[lamp.distance];
+                        shader.setFloat(path+".distance.constant", distance[0]);
+                        shader.setFloat(path+".distance.linear", distance[1])
+                        shader.setFloat(path+".distance.quadratic",distance[2]);
+                        shader.setFloat(path+".shininess",lamp.shininess);
+                        shader.setVector3(path+".position",lamp.getTransform().getTranslation().negate());
+                        
+                    })
+                }
 
                 if(entity instanceof DoorPanelEntity) {
                     shader.setInt('u_locked', Number((entity as DoorPanelEntity).isLocked()))
