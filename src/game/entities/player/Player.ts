@@ -174,7 +174,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
       const dy = InputManager.getMouseDY()
 
       const rotation = this.getTransform().getRotation()
-      this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
+      //this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
       this.getTransform().setYaw(rotation.yaw + dx * this._sensitivity * delta)
     }
 

@@ -14,7 +14,7 @@ class GameController {
 
 
     static setDisplay(name: GameControllerDisplay, display: DisplayEntity, color : Vector3) {
-        this["_"+name] = { display, value: 5 };
+        this["_"+name] = { display, value: 100 };
         display.setText(String(100), color);
     }
 
