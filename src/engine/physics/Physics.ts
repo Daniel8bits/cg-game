@@ -89,7 +89,7 @@ class Physics {
         .filter((entity) => !entity.getHitbox().isCollisionDisabled() &&
           dynamicEntity.getName() !== entity.getName() &&
           dynamicEntity.getTransform().getTranslation().distanceTo(
-            entity.getTransform().getTranslation()) < 50) 
+            entity.getTransform().getTranslation()) < (entity instanceof DynamicEntity ? 5 : 50)) 
         .forEach((entity) => {
         
         const intersection = this._test(dynamicEntity, entity)

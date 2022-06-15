@@ -37,7 +37,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
     this._lampList = []
     this._path = []
     this._health = 5
-    this._impulse = 20
+    this._impulse = 40
     this._pathIndex = 0;
     this._triggered = false
     this._player = player
@@ -47,6 +47,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
   public update(time: number, delta: number): void {
     if(!this._triggered && this._shouldTrigger()) {
       this._triggered = true
+      this.getHitbox().disableCollision(false)
     } else if (this._path.length > 0 && this._triggered) {
       this._updatePathIndex(this._path[this._pathIndex])
       this._move(this._path[this._pathIndex], delta)
@@ -95,7 +96,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
   }
 
   private _shouldTrigger(): boolean {
-    return this._player.getTransform().getTranslation().distanceTo(this.getTransform().getTranslation()) <= 20
+    return this._player.getTransform().getTranslation().distanceTo(this.getTransform().getTranslation()) <= 30
   }
 
   public takeDamage(): boolean {
