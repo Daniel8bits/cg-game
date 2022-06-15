@@ -2,6 +2,7 @@ import { Matrix4, toRadians, Vector2, Vector3 } from '@math.gl/core';
 import Vector from '@math.gl/core/src/classes/base/vector';
 import Camera from '@razor/core/Camera';
 import DynamicEntity from '@razor/core/entities/DynamicEntity';
+import Entity from '@razor/core/entities/Entity';
 import InputManager, { Keys } from '@razor/core/InputManager';
 import Razor from '@razor/core/Razor';
 import ResourceManager from '@razor/core/ResourceManager';
@@ -10,10 +11,12 @@ import Orientation from '@razor/math/Orientation';
 import Transform from '@razor/math/Transform';
 import Hitbox from '@razor/physics/hitboxes/HitBox';
 import GameController from 'src/game/GameController';
+import GameTest from 'src/game/GameTest';
 import Sound from 'src/game/Sound';
 import Material from "../../../engine/appearance/material/Material";
 import VAO from "../../../engine/buffer/VAO";
 import Renderer from "../../../engine/renderer/Renderer";
+import HallDoorEntity from '../HallDoorEntity';
 import { IEntityWithLight } from '../IEntityWithLight';
 import Lamp from '../Lamp';
 import Gun, { GunState } from './Gun';
@@ -30,6 +33,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
   private _lampList: Lamp[]
   private static _instance: Player;
   private _stop: boolean;
+  private _end: Transform;
 
 
   public constructor(
@@ -66,7 +70,14 @@ class Player extends DynamicEntity implements IEntityWithLight {
     this._updateCameraPosition()
 
     this._move(delta)
+    if(this._end.getTranslation().distanceTo(this.getTransform().getTranslation()) < 10){
+      GameTest.getInstance().setScene("end");
+    }
 
+  }
+
+  public setEndPoint(transform : Transform){
+    this._end = transform;
   }
 
 
