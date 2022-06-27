@@ -89,10 +89,6 @@ class Gun extends Entity implements IEntityWithLight {
 
     this._state = GunState.RECHARGING
 
-    /*setTimeout(() => {
-        this._state = GunState.CHARGED
-    },500);
-*/
     const bulletPath = lineEquationOf(playerPosition, rayCasting)
 
     const intersectionMap = new Map<string, PairPoints>()

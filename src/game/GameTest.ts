@@ -41,7 +41,7 @@ import Gun from "./entities/player/Gun";
 import GameController from "./GameController";
 import Framebuffer from "@razor/buffer/FrameBuffer";
 import PathFinding from "./pathfinding/PathFinding";
-import Sound from './Sound';
+import Sound_old from './Sound';
 import RectangleEntity from "./entities/gui/RectangleEntity";
 import Camera from "@razor/core/Camera";
 import Entity from "@razor/core/entities/Entity";
@@ -64,24 +64,59 @@ class GameTest extends GameCore {
     }
 
     public start() {
-        //https://freesound.org/people/michorvath/sounds/427598/
-        new Sound("gun", "/resources/sound/gun.wav");
-        //https://freesound.org/people/KlawyKogut/sounds/154934/#
-        new Sound("empty_gun", "/resources/sound/empty_gun.wav")
-        //https://freesound.org/people/thencamenow/sounds/31236/
-        new Sound("door", "/resources/sound/door.mp3")
-        //https://freesound.org/people/julius_galla/sounds/193692/
-        new Sound("music", "/resources/sound/music.wav", { volume: 50 });
-        //https://freesound.org/people/dkiller2204/sounds/366111/
-        new Sound("step", "/resources/sound/footstep.wav");
-        //https://freesound.org/people/victorium183/sounds/476816/
-        new Sound("menu", "/resources/sound/menu.wav", { volume: 20 });
-        //https://freesound.org/people/joedeshon/sounds/368738/
-        new Sound("elevator", "/resources/sound/elevator.wav")
-        //https://freesound.org/people/Deathscyp/sounds/404109/
-        new Sound("damage", "/resources/sound/damage.wav")
+
+        ResourceManager.addSounds([
+            //https://freesound.org/people/michorvath/sounds/427598/
+            {
+                name: "gun",
+                pathname: "/resources/sound/gun.wav"
+            },
+            //https://freesound.org/people/KlawyKogut/sounds/154934/#
+            {
+                name: "empty_gun",
+                pathname: "/resources/sound/empty_gun.wav"
+            },
+            //https://freesound.org/people/thencamenow/sounds/31236/
+            {
+                name: "door",
+                pathname: "/resources/sound/door.mp3"
+            },
+            //https://freesound.org/people/julius_galla/sounds/193692/
+            {
+                name: "music",
+                pathname: "/resources/sound/music.wav",
+                options: {
+                    volume: 50
+                }
+            },
+            //https://freesound.org/people/dkiller2204/sounds/366111/
+            {
+                name: "step",
+                pathname: "/resources/sound/footstep.wav"
+            },
+            //https://freesound.org/people/victorium183/sounds/476816/
+            {
+                name: "menu",
+                pathname: "/resources/sound/menu.wav",
+                options: {
+                    volume: 20
+                }
+            },
+            //https://freesound.org/people/joedeshon/sounds/368738/
+            {
+                name: "elevator",
+                pathname: "/resources/sound/elevator.wav"
+            },
+            //https://freesound.org/people/Deathscyp/sounds/404109/
+            {
+                name: "damage",
+                pathname: "/resources/sound/damage.wav"
+            },
+        ])
+
         this._camera = new CanvasCamera('main', new Vector3(51.1, 0, -88), new Orientation(0, -32));
         CanvasCamera.setMainCamera(this._camera);
+
         // ========= SHADER ==========
 
         /* Shader com Iluminação */
@@ -471,7 +506,7 @@ class GameTest extends GameCore {
         select1.addOption("comecar").setExecute(() => {
             //Player.Find("player").getTransform().setTranslation(new Vector3(-173.12, 0, 164));
             this.setScene("loading")
-            Sound.Find("music").play(true);
+            ResourceManager.getSound("music").play(true);
         })
         select1.addOption("opcao 2")
         select1.addOption("creditos").setExecute(() => {
@@ -513,7 +548,7 @@ class GameTest extends GameCore {
                 });
                 break;
             case "loading":
-                Sound.Find("elevator").play(false);
+                ResourceManager.getSound("elevator").play(false)
                 DialogEntity.Find("loadingDisplay").animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
                     setTimeout(() => {
                         this.remove()
@@ -524,9 +559,8 @@ class GameTest extends GameCore {
             case "end":
                 this._camera.getTransform().setTranslation(new Vector3(51.1, 0, -88))
                 this._camera.getTransform().setRotation( new Orientation(0, -32));
-                Sound.pauseAll();
-
-                Sound.Find("elevator").play(false);
+                ResourceManager.forEachSound(sound => sound.pause())
+                ResourceManager.getSound("elevator").play(false)
                 const endDisplay = DialogEntity.Find("endDisplay");
                 endDisplay.init();
                 endDisplay.animateText("voce chegou no fim", 50, { vertical: '10%', horizontal: 'center' }, function () {
@@ -537,8 +571,7 @@ class GameTest extends GameCore {
                 });
                 break;
             case "gameover":
-                Sound.pauseAll();
-
+                ResourceManager.forEachSound(sound => sound.pause())
                 const gameoverDisplay = DialogEntity.Find("gameoverDisplay");
                 gameoverDisplay.init();
                 gameoverDisplay.animateText("game over", 50, { vertical: '10%', horizontal: 'center' }, function () {

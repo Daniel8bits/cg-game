@@ -2,6 +2,7 @@ import { Matrix4, Vector2, Vector3 } from "@math.gl/core";
 import VBO from "@razor/buffer/VBO";
 import InputManager, { Keys } from "@razor/core/InputManager";
 import Razor from "@razor/core/Razor";
+import ResourceManager from "@razor/core/ResourceManager";
 import Scene from "@razor/core/scenes/Scene";
 import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Transform from "@razor/math/Transform";
@@ -61,7 +62,7 @@ class SelectEntity extends GuiEntity {
                     next = prev + 1;
                     if(next >= this.options.length) next = 0;
                 }
-                Sound.Find("menu").play();
+                ResourceManager.getSound("menu").play();
                 this.options[prev].selected(false);
                 this.options[next].selected(true);
                 this.selected = next;

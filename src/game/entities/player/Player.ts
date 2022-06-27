@@ -94,29 +94,29 @@ class Player extends DynamicEntity implements IEntityWithLight {
 
     if (InputManager.isKeyPressed(Keys.KEY_W)) { // FRONT
       isStep = true;
-      Sound.Find("step").play(true);
+      ResourceManager.getSound("step").play(true);
       this.getForce().add(new Vector3(x, 0, z))
     }
 
     if (InputManager.isKeyPressed(Keys.KEY_S)) { // BACK
       isStep = true;
-      Sound.Find("step").play(true);
+      ResourceManager.getSound("step").play(true);
       this.getForce().add(new Vector3(-x, 0, -z))
     }
 
     if (InputManager.isKeyPressed(Keys.KEY_A)) { // LEFT
       isStep = true;
-      Sound.Find("step").play(true);
+      ResourceManager.getSound("step").play(true);
       this.getForce().add(new Vector3(z, 0, -x))
     }
 
     if (InputManager.isKeyPressed(Keys.KEY_D)) { // RIGHT
       isStep = true;
-      Sound.Find("step").play(true);
+      ResourceManager.getSound("step").play(true);
       this.getForce().add(new Vector3(-z, 0, x))
     }
 
-    if (!isStep) Sound.Find("step").pause();
+    if (!isStep) ResourceManager.getSound("step").pause();
     /*
         if(InputManager.isKeyPressed(Keys.KEY_SPACE) && this.getTransform().getY() > -1 && this.getSpeed().y > -1){ // UP
           this.getForce().add(new Vector3(0, -this._impulse*10 * delta, 0))
