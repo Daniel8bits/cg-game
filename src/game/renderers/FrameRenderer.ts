@@ -29,16 +29,19 @@ class FrameRenderer extends Renderer {
     private _buffers: Framebuffer[] = [];
     private static _texture : Texture;
 
-    constructor(cameraManager: Camera, mode: FrameRendererMode) {
+    constructor(cameraManager: Camera, mode: FrameRendererMode, resolution: number) {
         super('frameRenderer', cameraManager)
         this._mode = mode;
-        this._frameBuffer = new Framebuffer(gl.COLOR_ATTACHMENT0);
+        this._frameBuffer = new Framebuffer(gl.COLOR_ATTACHMENT0, Razor.CANVAS.width*resolution, Razor.CANVAS.height*resolution);
         this._frameBuffer.create();
         this._shader = ResourceManager.getShader("effect");
         this._shader.create();
         this._vao = ResourceManager.getVAO("effect");
-        this._buffers.push(new Framebuffer(gl.COLOR_ATTACHMENT0));
-        this._buffers.push(new Framebuffer(gl.COLOR_ATTACHMENT0));
+        this._buffers.push(new Framebuffer(gl.COLOR_ATTACHMENT0, Razor.CANVAS.width*resolution, Razor.CANVAS.height*resolution));
+        this._buffers.push(new Framebuffer(gl.COLOR_ATTACHMENT0, Razor.CANVAS.width*resolution, Razor.CANVAS.height*resolution));
+
+        //this._buffers[0].setResolution(0.25);
+        //this._buffers[1].setResolution(0.25);
 
         this._buffers[0].create();
         this._buffers[1].create();
@@ -117,6 +120,10 @@ class FrameRenderer extends Renderer {
 
     public unbind() {
         this._frameBuffer.unbind();
+    }
+
+    public getFramebuffer(): Framebuffer {
+        return this._frameBuffer
     }
 }
 

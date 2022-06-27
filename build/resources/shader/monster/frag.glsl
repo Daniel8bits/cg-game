@@ -38,7 +38,7 @@ struct Light{
 
 uniform Light pointLights[MAX_LIGHTS];
 uniform Light lightCamera;
-uniform int applyLight;
+uniform float u_applyLight;
 
 LightProperties CalcDirLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
 {
@@ -90,12 +90,23 @@ void main() {
   vec3 result = vec3(0.0);
   //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texture);// Luz da Camera
 
+  result += CalcPointLight(pointLights[0], norm, viewDir,texture);
+  result += CalcPointLight(pointLights[1], norm, viewDir,texture);
+  result += CalcPointLight(pointLights[2], norm, viewDir,texture);
+  result += CalcPointLight(pointLights[3], norm, viewDir,texture);
+  result += CalcPointLight(pointLights[4], norm, viewDir,texture);
+
+  /*
   if(v_visibility > 0.1) {
     for(int i = 0; i < MAX_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, viewDir,texture);
   } else {
     result = FOG_COLOR;
   }
+  */
+
+  float gamma = 2.2;
+  result.rgb = pow(result.rgb, vec3(1.0/gamma))*0.3;
       
   gl_FragColor = vec4(mix(FOG_COLOR, result, v_visibility), texturePixel.a);
 

@@ -38,8 +38,8 @@ struct Light{
 
 uniform Light pointLights[MAX_LIGHTS];
 uniform Light lightCamera;
-uniform int applyLight;
-uniform int onlyLights;
+uniform float u_applyLight;
+uniform float u_onlyLights;
 uniform vec3 u_lightColor;
 
 #define FOG_COLOR vec3(0.2, 0.0, 0.0)
@@ -92,8 +92,39 @@ void main() {
   vec3 norm = normalize(v_normal);
   vec3 viewDir = normalize(u_camera_position - v_FragPos);
   vec3 result = vec3(0.0);
+  vec4 fragment = vec4(0.0);
   //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);// Luz da Camera
   
+
+
+  result += CalcPointLight(pointLights[0], norm, viewDir,texturevec3);
+  result += CalcPointLight(pointLights[1], norm, viewDir,texturevec3);
+  result += CalcPointLight(pointLights[2], norm, viewDir,texturevec3);
+  result += CalcPointLight(pointLights[3], norm, viewDir,texturevec3);
+  result += CalcPointLight(pointLights[4], norm, viewDir,texturevec3);
+
+  result = mix(texturevec3*u_lightColor*10.0, result, u_applyLight);
+
+  if(u_onlyLights == 1.0) {
+    float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        fragment = vec4(result.rgb, 1.0);
+    else
+        fragment = vec4(0.0, 0.0, 0.0, 1.0);
+  } else {
+    fragment = mix(vec4(FOG_COLOR, 1.0), vec4(result, 1.0), v_visibility);
+  }
+
+  float gamma = 2.2;
+  fragment.rgb = pow(fragment.rgb, vec3(1.0/gamma))*0.3;
+
+  gl_FragColor = fragment;
+
+
+
+
+  /*
+
   if(v_visibility > 0.1 && applyLight == 1) {
     for(int i = 0; i < MAX_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, viewDir,texturevec3);
@@ -114,6 +145,8 @@ void main() {
 
     gl_FragColor = mix(vec4(FOG_COLOR, 1.0), vec4(result, 1.0), v_visibility);
   }   
+
+  */
   //float gamma = 2.2;
   //gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma))*0.3;
 

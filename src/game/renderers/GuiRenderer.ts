@@ -33,7 +33,7 @@ class GuiRenderer extends Renderer {
         ResourceManager.forEachMaterial((material) => {
             material.bind()
             const shader = material.getShader();
-            shader.setInt('onlyLights',FrameRenderer.mode == "mascara" ? 1 : 0);
+            shader.setFloat('u_onlyLights',FrameRenderer.mode == "mascara" ? 1 : 0);
             shader.setMatrix4x4('u_projection', this._projection);
             this.getEntitiesByMaterial(material).forEach((entity: Entity, index: number) => {
                 if('color' in entity){

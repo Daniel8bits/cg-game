@@ -135,7 +135,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
     if (InputManager.isKeyPressed(Keys.KEY_E) && this._gun.getState() === GunState.CHARGED) { // RIGHT
       if (GameController.isAmmunition()) {
         GameController.update("ammunition", -1);
-        setTimeout(() => Sound.Find("gun").play(false,true),100);
+        setTimeout(() => ResourceManager.getSound("gun").play(false, true), 100);
         const position = this.getTransform().getTranslation()
         const ray = new Vector3(0, 0, 20).transform(
           this.getTransform().toInversePositionMatrix()
@@ -150,8 +150,8 @@ class Player extends DynamicEntity implements IEntityWithLight {
             ray.z
           )
         )
-      }else{
-        Sound.Find("empty_gun").play();
+      } else {
+        ResourceManager.getSound("empty_gun").play()
       }
     }
 

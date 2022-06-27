@@ -5,6 +5,7 @@ import OBJLoader from '../loader/OBJLoader'
 import Texture, { TextureType } from '../appearance/Texture'
 import Material from '../appearance/material/Material'
 import TextureLoader from '../loader/TextureLoader'
+import Sound, { SoundType } from '@razor/sound/Sound'
 
 class ResourceManager {
 
@@ -14,12 +15,14 @@ class ResourceManager {
     private _vaos: Map<string, VAO>
     private _textures: Map<string, Texture>
     private _materials: Map<string, Material>
+    private _sounds: Map<string, Sound>
 
     private constructor() {
         this._shaders = new Map<string, Shader>();
         this._vaos = new Map<string, VAO>();
         this._textures = new Map<string, Texture>();
         this._materials = new Map<string, Material>();
+        this._sounds = new Map<string, Sound>();
     }
 
     private static getInstance() {
@@ -184,6 +187,41 @@ class ResourceManager {
 
     public forEachMaterial(callback: (material: Material) => void): ResourceManager {
         this._materials.forEach(callback);
+        return this
+    }
+
+    /* =====================
+            SOUNDS
+    ======================*/
+
+    public static addSounds(sounds: SoundType[]): ResourceManager {
+        return ResourceManager.getInstance().addSounds(sounds);
+    }
+
+    public addSounds(sounds: SoundType[]): ResourceManager {
+        sounds.forEach((sound) => {
+            if (this._sounds.has(sound.name)) {
+                throw new Error(`Material '${sound.name}' already exists!`)
+            }
+            this._sounds.set(sound.name, new Sound(sound.name, sound.pathname, sound.options))
+        })
+        return this
+    }
+
+    public static getSound(name: string): Sound {
+        return ResourceManager.getInstance().getSound(name);
+    }
+
+    public getSound(name: string): Sound {
+        return this._sounds.get(name);
+    }
+
+    public static forEachSound(callback: (sound: Sound) => void): ResourceManager {
+        return ResourceManager.getInstance().forEachSound(callback);
+    }
+
+    public forEachSound(callback: (sound: Sound) => void): ResourceManager {
+        this._sounds.forEach(callback);
         return this
     }
 

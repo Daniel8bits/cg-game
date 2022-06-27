@@ -24,7 +24,7 @@ class MapRenderer extends Renderer {
             far: 1000
         })
 
-        this._maximumRenderDistance = 110
+        this._maximumRenderDistance = 120
     }
 
     private distanceConfig = {
@@ -62,7 +62,7 @@ class MapRenderer extends Renderer {
             shader.setFloat("lightCamera.distance.linear", distance[1])
             shader.setFloat("lightCamera.distance.quadratic",distance[2]);
             shader.setFloat("lightCamera.shininess",32)
-            shader.setInt('onlyLights',FrameRenderer.mode == "mascara" ? 1 : 0);
+            shader.setFloat('u_onlyLights',FrameRenderer.mode == "mascara" ? 1 : 0);
 
             this.getEntitiesByMaterial(material).forEach((entity: Entity,index : number) => {
                 if(!(entity instanceof MapEntity || entity instanceof Lamp)) {
@@ -86,14 +86,14 @@ class MapRenderer extends Renderer {
                 }
 
                 if(entity instanceof DoorPanelEntity) {
-                    shader.setInt('u_locked', Number((entity as DoorPanelEntity).isLocked()))
+                    shader.setFloat('u_locked', Number((entity as DoorPanelEntity).isLocked()))
                 }
                 
                 if(entity instanceof Lamp) {
-                    shader.setInt("applyLight", 0);
+                    shader.setFloat("u_applyLight", 0);
                     shader.setVector3('u_lightColor', entity.color)
                 } else {
-                    shader.setInt("applyLight", 1);
+                    shader.setFloat("u_applyLight", 1);
                 }
 
                 material.getShader().setMatrix4x4('u_transform', entity.getTransform().worldMatrix());

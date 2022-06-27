@@ -6,7 +6,7 @@ varying vec2 v_uvCoord;
 uniform sampler2D u_lockedTexture;
 uniform sampler2D u_unlockedTexture;
 uniform sampler2D u_displayMap;
-uniform int u_locked;
+uniform float u_locked;
 uniform vec3 u_camera_position;
 
 
@@ -41,8 +41,8 @@ struct Light{
 
 uniform Light pointLights[MAX_LIGHTS];
 uniform Light lightCamera;
-uniform int applyLight;
-uniform int onlyLights;
+uniform float u_applyLight;
+uniform float u_onlyLights;
 
 LightProperties CalcDirLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
 {
@@ -78,6 +78,45 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 viewDir,vec3 texturevec3)
 
 void main() {
 
+
+  vec3 texturevec3 = mix(
+    vec3(texture2D(u_unlockedTexture, v_uvCoord)),
+    vec3(texture2D(u_lockedTexture, v_uvCoord)),
+    u_locked
+  );
+
+  float displayMap = vec3(texture2D(u_displayMap, v_uvCoord)).x;
+
+  vec3 norm = normalize(v_normal);
+  vec3 viewDir = normalize(u_camera_position - v_FragPos);
+  vec3 result = vec3(0.0);
+  vec4 fragment = vec4(0.0);
+
+  result += CalcPointLight(pointLights[0], norm, viewDir,texturevec3);
+  result += CalcPointLight(pointLights[1], norm, viewDir,texturevec3);
+  result += CalcPointLight(pointLights[2], norm, viewDir,texturevec3);
+  result += CalcPointLight(pointLights[3], norm, viewDir,texturevec3);
+  result += CalcPointLight(pointLights[4], norm, viewDir,texturevec3);
+
+  result = mix(result, texturevec3*1.75, displayMap);
+
+  if(u_onlyLights == 1.0) {
+    float brightness = dot(result.rgb, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        fragment = vec4(result.rgb, 1.0);
+    else
+        fragment = vec4(0.0, 0.0, 0.0, 1.0);
+  } else {
+    fragment = mix(vec4(FOG_COLOR, 1.0), vec4(result, 1.0), v_visibility);
+  }
+  
+  float gamma = 2.2;
+  fragment.rgb = pow(fragment.rgb, vec3(1.0/gamma))*0.3;
+
+  gl_FragColor = fragment;
+
+
+  /*
   vec3 texture;
 
   if(u_locked == 1) {
@@ -112,6 +151,7 @@ void main() {
 
     gl_FragColor = mix(vec4(FOG_COLOR, 1.0), vec4(result, 1.0), v_visibility);
   }  
+  */
 
   //float gamma = 1.0;
   //gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(1.0/gamma));

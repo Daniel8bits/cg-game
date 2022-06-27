@@ -109,13 +109,13 @@ class HallDoorEntity extends MapEntity {
           setTimeout(() => this.remove(), 2000);
         });
       }
-      Sound.Find("door").pause();
+      ResourceManager.getSound("door").pause()
       setTimeout(() => Player.getInstance().setStop(false),300);
     } else {
       DialogEntity.getDialog("display").animateText("portao aberto", 30, { vertical: '10%', horizontal: 'center' }, function () {
         setTimeout(() => this.remove(), 2000);
       });
-      Sound.Find("door").play();
+      ResourceManager.getSound("door").play()
       Player.getInstance().setStop(true);
       this._camera.getTransform().setTranslation(this._cameraTransform.getTranslation());
       this._camera.getTransform().setRotation(this._cameraTransform.getRotation());
@@ -124,14 +124,14 @@ class HallDoorEntity extends MapEntity {
 
   private isClose(finish: boolean) {
     if (finish) {
-      Sound.Find("door").pause();
+      ResourceManager.getSound("door").pause()
       setTimeout(() => Player.getInstance().setStop(false),300);
     } else {
 
       DialogEntity.getDialog("display").animateText("portao fechado", 30, { vertical: '10%', horizontal: 'center' }, function () {
         setTimeout(() => this.remove(), 2000);
       });
-      Sound.Find("door").play();
+      ResourceManager.getSound("door").play()
       Player.getInstance().setStop(true);
       this._camera.getTransform().setTranslation(this._cameraTransform.getTranslation());
       this._camera.getTransform().setRotation(this._cameraTransform.getRotation());

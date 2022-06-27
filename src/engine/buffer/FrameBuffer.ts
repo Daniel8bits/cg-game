@@ -34,6 +34,7 @@ class Framebuffer {
 
     public create() {
         gl.viewport(0, 0, this._texture.getWidth(), this._texture.getHeight());
+        //gl.viewport(0, 0, Razor.CANVAS.width, Razor.CANVAS.height);
         // Create FBO
         this._fbo = gl.createFramebuffer();
         gl.bindFramebuffer(gl.FRAMEBUFFER, this._fbo);
@@ -70,10 +71,12 @@ class Framebuffer {
             console.log("Error at Framebuffer setting.");
         }
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.viewport(0, 0, Razor.CANVAS.width, Razor.CANVAS.height);
     }
 
     public bind() {
         gl.bindFramebuffer(gl.FRAMEBUFFER, this._fbo);
+        gl.viewport(0, 0, this._texture.getWidth(), this._texture.getHeight());
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     }
@@ -81,8 +84,8 @@ class Framebuffer {
     public unbind() {
         //this.storeBuffer();
         this._texture.unbind()
-        gl.viewport(0, 0, Razor.CANVAS.width, Razor.CANVAS.height);
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.viewport(0, 0, Razor.CANVAS.width, Razor.CANVAS.height);
         gl.clearColor(0, 0, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         // debugger;

@@ -109,7 +109,7 @@ class PlayerRenderer extends Renderer {
             
         })
 
-        shader.setInt("applyLight", 1);
+        shader.setFloat("u_applyLight", 1);
     }
 
     private _renderHand(): void {

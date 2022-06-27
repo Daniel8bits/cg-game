@@ -46,19 +46,24 @@ class Monster extends DynamicEntity implements IEntityWithLight {
 
   public update(time: number, delta: number): void {
     if(Player.getInstance().getStop()) return;
+
     if(!this._triggered && this._shouldTrigger()) {
+
       this._triggered = true
       this.getHitbox().disableCollision(false)
+
     } else if (this._path.length > 0 && this._triggered) {
+
       this._updatePathIndex(this._path[this._pathIndex])
       this._move(this._path[this._pathIndex], delta)
       const value = this.getTransform().getTranslation().distanceTo(Player.getInstance().getTransform().getTranslation());
       if(value < 5 && !this._hitPlayer){
         this._hitPlayer = true;
         GameController.update("life",-1);
-        Sound.Find("damage").play(false,true);
+        ResourceManager.getSound("damage").play(false, true)
         setTimeout(() => this._hitPlayer = false,1000);
       }
+      
     }
   }
 
