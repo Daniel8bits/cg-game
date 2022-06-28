@@ -8,7 +8,7 @@ import CanvasCamera from '../CanvasCamera'
 import { toRadians } from "@razor/math/math";
 import Lamp from "../entities/Lamp";
 import Razor from "@razor/core/Razor";
-import ImageEntity from "../entities/gui/ImageEntity";
+import ImageEntity from "../entities/gui/common/ImageEntity";
 import FrameRenderer from "./FrameRenderer";
 
 class GuiRenderer extends Renderer {

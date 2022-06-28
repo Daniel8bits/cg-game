@@ -1,6 +1,7 @@
 import { Vector3 } from "@math.gl/core";
-import DisplayEntity from "./entities/DisplayEntity";
-import GameTest from "./GameTest";
+import DisplayEntity from "../DisplayEntity";
+import GameTest from "../../../GameTest";
+import GameOverScene from "src/game/scenes/GameOverScene";
 
 type GameControllerDisplay = "life" | "ammunition";
 type GameControllerAttributes = {
@@ -41,7 +42,7 @@ class GameController {
         this["_"+name] = attribute;
         attribute.display.updateText(attribute.value);
         if(name == "life" && attribute.value == 0){
-            GameTest.getInstance().setScene("gameover");
+            GameTest.getInstance().setScene(GameOverScene.GAMEOVER_SCENE);
         }
     }
 }

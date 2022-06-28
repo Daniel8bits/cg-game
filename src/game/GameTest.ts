@@ -18,10 +18,10 @@ import VBO from "@razor/buffer/VBO";
 import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Razor from "@razor/core/Razor";
 import EntityFactory from "./entities/EntityFactory";
-import TextEntity from "./entities/gui/TextEntity";
-import GuiEntity from "./entities/gui/GuiEntity";
+import TextEntity from "./entities/gui/common/TextEntity";
+import GuiEntity from "./entities/gui/common/GuiEntity";
 import OBJLoader from "@razor/loader/OBJLoader";
-import SelectEntity from "./entities/gui/SelectEntity";
+import SelectEntity from "./entities/gui/common/SelectEntity";
 import EmptyMaterial from "@razor/appearance/material/EmptyMaterial";
 import DoorPanelEntity from "./entities/DoorPanelEntity";
 import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
@@ -30,23 +30,27 @@ import MonsterRenderer from "./renderers/MonsterRenderer";
 import Player from "./entities/player/Player";
 import Texture from "@razor/appearance/Texture";
 import TextureLoader from "@razor/loader/TextureLoader";
-import DisplayEntity from "./entities/DisplayEntity";
-import ImageEntity from "./entities/gui/ImageEntity";
-import DialogEntity from "./entities/gui/DialogEntity";
+import DisplayEntity from "./entities/gui/DisplayEntity";
+import ImageEntity from "./entities/gui/common/ImageEntity";
+import DialogEntity from "./entities/gui/common/DialogEntity";
 
 import MainScene from "./scenes/MainScene";
 import DoorPanelMaterial from "./materials/DoorPanelMaterial";
 import PlayerRenderer from "./renderers/PlayerRenderer";
 import Gun from "./entities/player/Gun";
-import GameController from "./GameController";
+import GameController from "./entities/gui/hud/GameController_old";
 import Framebuffer from "@razor/buffer/FrameBuffer";
 import PathFinding from "./pathfinding/PathFinding";
 import Sound_old from './Sound';
-import RectangleEntity from "./entities/gui/RectangleEntity";
+import RectangleEntity from "./entities/gui/common/RectangleEntity";
 import Camera from "@razor/core/Camera";
 import Entity from "@razor/core/entities/Entity";
-import CreditsEntity from "./entities/CreditsEntity";
+import CreditsEntity from "./entities/gui/CreditsEntity";
 import InputManager, { Keys } from "@razor/core/InputManager";
+import MainMenu from "./scenes/menu/MainMenu";
+import LoadingScene from "./scenes/LoadingScene";
+import GameOverScene from "./scenes/GameOverScene";
+import CreditsMenu from "./scenes/menu/CreditsMenu";
 
 class GameTest extends GameCore {
 
@@ -442,49 +446,20 @@ class GameTest extends GameCore {
                 */
 
         /* Credits Scene */
-        const sceneScredits = new Scene('credits');
-        sceneScredits.getRenderStrategy().add(guiRenderer)
-        this.getSceneManager().add(sceneScredits, true)
+        this.getSceneManager().add(new CreditsMenu(guiRenderer));
+        // const sceneScredits = new Scene('credits');
+        // sceneScredits.getRenderStrategy().add(guiRenderer)
+        // this.getSceneManager().add(sceneScredits, true)
 
-        const text = `
-        "Hand (low poly)" (https://skfb.ly/Dr9p) by scribbletoad is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).
-        Life Icon (https://www.onlinewebfonts.com/icon/146242) Uso não-comercial, DMCA
-        AmmunitionIcon (https://www.pngwing.com/pt/free-png-stupy/download) Uso não-comercial, DMCA
-        AR15 pistol shot (https://freesound.org/people/michorvath/sounds/427598/) CC 1.0
-        metal gate 07.aif (https://freesound.org/people/thencamenow/sounds/31236/) CC 4.0
-        Atmosphere - Horror 1 (Loop) (https://freesound.org/people/julius_galla/sounds/193692/) CC 3.0
-        Indoor Footsteps.wav (https://freesound.org/people/dkiller2204/sounds/366111/) CC 1.0
-        menuChange.wav (https://freesound.org/people/victorium183/sounds/476816/) CC 1.0
-        indsustrial_elevator_door_close.wav (https://freesound.org/people/joedeshon/sounds/368738/) CC 4.0
-        Map textures by Georges "TRaK" Grondin CC BY-SA 3.0
-        PS1-style Makarov Pistol by awhiskin (https://awhiskin.itch.io/ps1-style-makarov-pistol)
-        Empty Gun Shot (https://freesound.org/people/KlawyKogut/sounds/154934/#) CC 1.0
-        Damage-1.wav (https://freesound.org/people/Deathscyp/sounds/404109/) CC 1.0
-                `;
-        this.getSceneManager().getActive().add(new CreditsEntity("creditsEntity", text, guiRenderer))
-        const select2 = new SelectEntity("select2", guiRenderer, this.getSceneManager().getActive());
-        this.getSceneManager().getActive().add(select2)
-        select2.addOption("voltar").setExecute(() => {
-            this.setScene("menu")
-        })
-        select2.updateTranslation(Razor.CANVAS.width,Razor.CANVAS.height * 2 - 50);
-        /* Loading Scene */
-        const gameover = new Scene('gameover');
-        gameover.getRenderStrategy().add(guiRenderer)
-        this.getSceneManager().add(gameover, true);
-        const gameoverDisplay = new DialogEntity("gameoverDisplay", guiRenderer);
-        this.getSceneManager().getActive().add(gameoverDisplay);
-        gameoverDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
+        
+        /* GameOver Scene */
+        this.getSceneManager().add(new GameOverScene(guiRenderer));
        
 
         /* Loading Scene */
-        const sceneLoading = new Scene('loading');
-        sceneLoading.getRenderStrategy().add(guiRenderer)
-        this.getSceneManager().add(sceneLoading, true);
-        const loadingDisplay = new DialogEntity("loadingDisplay", guiRenderer);
-        this.getSceneManager().getActive().add(loadingDisplay);
-        loadingDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
-        loadingDisplay.init();
+        this.getSceneManager().add(new LoadingScene(guiRenderer));
+        //const sceneLoading = new Scene('loading');
+        
 
         /* End Scene */
         const sceneEnd = new Scene('end');
@@ -496,29 +471,15 @@ class GameTest extends GameCore {
         //endDisplay.init();
 
         /* Menu Scene */
-        const sceneMenu = new Scene('menu');
-        this.getSceneManager().add(sceneMenu, true)
-
-        sceneMenu.getRenderStrategy().add(guiRenderer)
-
-        const select1 = new SelectEntity("select1", guiRenderer, this.getSceneManager().getActive());
-        this.getSceneManager().getActive().add(select1)
-        select1.addOption("comecar").setExecute(() => {
-            //Player.Find("player").getTransform().setTranslation(new Vector3(-173.12, 0, 164));
-            this.setScene("loading")
-            ResourceManager.getSound("music").play(true);
-        })
-        select1.addOption("opcao 2")
-        select1.addOption("creditos").setExecute(() => {
-            this.setScene("credits");
-        })
+        this.getSceneManager().add(new MainMenu(guiRenderer));
+        
         /*
         const credits =     new RectangleEntity("credits_rect", ResourceManager.getVAO("rectangle"), ResourceManager.getMaterial("rectangle"), guiRenderer)
         credits.updatePosition({horizontal:"center",vertical:"center"});
         */
 
 
-        this.setScene("menu");
+        this.setScene(MainMenu.MAIN_MENU);
         /*
         const attachemnts = this._frameBuffer.map((item) => item.attachemnt)
         GLUtils.drawBuffer(attachemnts);

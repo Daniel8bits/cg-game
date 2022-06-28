@@ -3,11 +3,11 @@ import VBO from "@razor/buffer/VBO";
 import Razor from "@razor/core/Razor";
 import ResourceManager from "@razor/core/ResourceManager";
 import GLUtils, { gl } from "@razor/gl/GLUtils";
-import Material from "../../../engine/appearance/material/Material";
-import VAO from "../../../engine/buffer/VAO";
-import Entity from "../../../engine/core/entities/Entity";
-import Renderer from "../../../engine/renderer/Renderer";
-import Text from "../../utils/Text";
+import Material from "../../../../engine/appearance/material/Material";
+import VAO from "../../../../engine/buffer/VAO";
+import Entity from "../../../../engine/core/entities/Entity";
+import Renderer from "../../../../engine/renderer/Renderer";
+import Text from "../../../utils/Text";
 import { PositionRelative, PositionOptions } from "./gui";
 
 class TextEntity extends Entity {

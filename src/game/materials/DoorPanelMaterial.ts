@@ -3,8 +3,8 @@ import Shader from '@razor/appearance/Shader'
 import Texture from '@razor/appearance/Texture'
 import ResourceManager from '@razor/core/ResourceManager'
 import { gl } from '@razor/gl/GLUtils'
-import DialogEntity from '../entities/gui/DialogEntity'
-import GameController from '../GameController'
+import DialogEntity from '../entities/gui/common/DialogEntity'
+import GameController from '../entities/gui/hud/GameController_old'
 
 class DoorPanelMaterial extends Material {
 

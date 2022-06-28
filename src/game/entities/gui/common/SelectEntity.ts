@@ -7,11 +7,11 @@ import Scene from "@razor/core/scenes/Scene";
 import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Transform from "@razor/math/Transform";
 import Sound from "src/game/Sound";
-import Material from "../../../engine/appearance/material/Material";
-import VAO from "../../../engine/buffer/VAO";
-import Entity from "../../../engine/core/entities/Entity";
-import Renderer from "../../../engine/renderer/Renderer";
-import Text from "../../utils/Text";
+import Material from "../../../../engine/appearance/material/Material";
+import VAO from "../../../../engine/buffer/VAO";
+import Entity from "../../../../engine/core/entities/Entity";
+import Renderer from "../../../../engine/renderer/Renderer";
+import Text from "../../../utils/Text";
 import GuiEntity from "./GuiEntity";
 import OptionEntity from "./OptionEntity";
 

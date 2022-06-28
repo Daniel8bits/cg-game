@@ -2,8 +2,8 @@ import { Vector3 } from "@math.gl/core";
 import Entity from "@razor/core/entities/Entity";
 import ResourceManager from "@razor/core/ResourceManager";
 import Renderer from "@razor/renderer/Renderer";
-import GuiEntity from "./gui/GuiEntity";
-import TextEntity from "./gui/TextEntity";
+import GuiEntity from "./common/GuiEntity";
+import TextEntity from "./common/TextEntity";
 
 
 class DisplayEntity extends GuiEntity {

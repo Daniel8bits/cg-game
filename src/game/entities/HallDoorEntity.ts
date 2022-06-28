@@ -4,11 +4,11 @@ import MapEntity from "./MapEntity";
 import ResourceManager from "@razor/core/ResourceManager";
 import { Matrix4, Vector3 } from "@math.gl/core";
 import Sound from "../Sound";
-import DialogEntity from "./gui/DialogEntity";
+import DialogEntity from "./gui/common/DialogEntity";
 import Player from "./player/Player";
 import Camera from "@razor/core/Camera";
 import Transform from "@razor/math/Transform";
-import GameController from "../GameController";
+import GameController from "./gui/hud/GameController_old";
 
 export enum HallDoorState {
   OPENED = 0,

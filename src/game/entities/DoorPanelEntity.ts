@@ -4,7 +4,7 @@ import Hitbox from "@razor/physics/hitboxes/HitBox";
 import Renderer from "../../engine/renderer/Renderer";
 import DoorPanelMaterial from "../materials/DoorPanelMaterial";
 import Sound from "../Sound";
-import DialogEntity from "./gui/DialogEntity";
+import DialogEntity from "./gui/common/DialogEntity";
 import HallDoorEntity, { HallDoorState } from "./HallDoorEntity";
 import MapEntity from "./MapEntity";
 import Player from "./player/Player";

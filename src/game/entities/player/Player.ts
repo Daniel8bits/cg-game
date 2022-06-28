@@ -10,7 +10,7 @@ import { gl } from '@razor/gl/GLUtils';
 import Orientation from '@razor/math/Orientation';
 import Transform from '@razor/math/Transform';
 import Hitbox from '@razor/physics/hitboxes/HitBox';
-import GameController from 'src/game/GameController';
+import GameController from 'src/game/entities/gui/hud/GameController_old';
 import GameTest from 'src/game/GameTest';
 import Sound from 'src/game/Sound';
 import Material from "../../../engine/appearance/material/Material";
