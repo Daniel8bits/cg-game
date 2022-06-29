@@ -62,7 +62,7 @@ class SceneManager implements IUpdatable {
         const key: string = this._validate(scene, false);
         this._active = this._scenes.get(key);
         Event.trigger("loadScene",this._active);
-
+        this._active.getOnChangeEvent()?.()
         return this
     }
 

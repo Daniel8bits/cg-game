@@ -387,7 +387,7 @@ class GameTest extends GameCore {
         guiAmmunition.getTransform().setTranslation(new Vector3(0, bottom, 0));
         GameController.setDisplay("ammunition", guiAmmunition, new Vector3(0.2, 0.9, 0.9));
         //guiAmmunition.setText("123", new Vector3(0.2, 0.9, 0.9));
-        //// https://www.pngwing.com/pt/free-png-stupy/download
+        // https://www.pngwing.com/pt/free-png-stupy/download
         guiAmmunition.setImage(new ImageEntity("ammunition", "/resources/images/ammunition.png", guiRenderer));
 
         const guiLife = new DisplayEntity('guiLife', guiRenderer);
@@ -479,6 +479,7 @@ class GameTest extends GameCore {
     public changeScene(scene: Scene): void {
         const gameTest = this;
         switch (scene.getName()) {
+            /*
             case "main":
                 DialogEntity.Find("display").animateText("chegue ate o elevador", 50, { vertical: '10%', horizontal: 'center' }, function () {
                     setTimeout(() => this.remove(), 5000);
@@ -493,6 +494,7 @@ class GameTest extends GameCore {
                     }, 5000);
                 });
                 break;
+            */
             case "end":
                 this._camera.getTransform().setTranslation(new Vector3(51.1, 0, -88))
                 this._camera.getTransform().setRotation( new Orientation(0, -32));
@@ -507,6 +509,7 @@ class GameTest extends GameCore {
                     }, 5000);
                 });
                 break;
+            /*
             case "gameover":
                 ResourceManager.forEachSound(sound => sound.pause())
                 const gameoverDisplay = DialogEntity.Find("gameoverDisplay");
@@ -518,6 +521,7 @@ class GameTest extends GameCore {
                     }, 5000);
                 });
                 break;
+            */
         }
     }
 

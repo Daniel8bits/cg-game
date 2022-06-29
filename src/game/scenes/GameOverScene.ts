@@ -1,4 +1,5 @@
 import { Vector3 } from "@math.gl/core";
+import ResourceManager from "@razor/core/ResourceManager";
 import Scene from "@razor/core/scenes/Scene";
 import DialogEntity from "../entities/gui/common/DialogEntity";
 import GuiRenderer from "../renderers/GuiRenderer";
@@ -18,6 +19,19 @@ class GameOverScene extends Scene {
     const gameoverDisplay = new DialogEntity("gameoverDisplay", renderer);
     this.add(gameoverDisplay);
     gameoverDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
+
+    this.onChange(() => {
+      ResourceManager.forEachSound(sound => sound.pause())
+      const gameoverDisplay = DialogEntity.Find("gameoverDisplay");
+      gameoverDisplay.init();
+      gameoverDisplay.animateText("game over", 50, { vertical: '10%', horizontal: 'center' }, function () {
+          setTimeout(() => {
+              this.remove()
+              window.location.reload()
+          }, 5000);
+      });
+    })
+
   }
 
 }

@@ -1,6 +1,8 @@
 import { Vector3 } from "@math.gl/core";
+import ResourceManager from "@razor/core/ResourceManager";
 import Scene from "@razor/core/scenes/Scene";
 import DialogEntity from "../entities/gui/common/DialogEntity";
+import GameTest from "../GameTest";
 import GuiRenderer from "../renderers/GuiRenderer";
 
 class LoadingScene extends Scene {
@@ -19,6 +21,16 @@ class LoadingScene extends Scene {
     this.add(loadingDisplay);
     loadingDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
     loadingDisplay.init();
+
+    this.onChange(() => {
+      ResourceManager.getSound("elevator").play(false)
+      DialogEntity.Find("loadingDisplay").animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
+          setTimeout(() => {
+              this.remove()
+              GameTest.getInstance().setScene("main");
+          }, 5000);
+      });
+    })
 
   }
 

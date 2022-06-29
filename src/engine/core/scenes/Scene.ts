@@ -16,12 +16,16 @@ class Scene implements IUpdatable {
 
     private _renderStrategy: RenderStrategy
 
+    // events
+    private _onChangeEvent: () => void
+
     public constructor(name: string) {
         this._name = name;
         this._entities = new Map<string, Entity>();
         this._visible = new Map<string, Entity>();
         this._hidden = new Map<string, Entity>();
         this._renderStrategy = new RenderStrategy()
+        this._onChangeEvent = null
     }
 
     public update(time: number, delta: number, updater: Updater): void {
@@ -239,6 +243,15 @@ class Scene implements IUpdatable {
 
     public getRenderStrategy(): RenderStrategy {
         return this._renderStrategy
+    }
+
+    // events
+    public onChange(onChangeEvent: () => void) {
+        this._onChangeEvent = onChangeEvent
+    }
+
+    public getOnChangeEvent(): () => void {
+        return this._onChangeEvent
     }
 
 }

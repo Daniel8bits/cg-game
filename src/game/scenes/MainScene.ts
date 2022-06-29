@@ -15,6 +15,7 @@ import Monster from "../entities/monster/Monster";
 import MonsterRenderer from "../renderers/MonsterRenderer";
 import PathFinding from "../pathfinding/PathFinding";
 import FrameRenderer from "../renderers/FrameRenderer";
+import DialogEntity from "../entities/gui/common/DialogEntity";
 
 class MainScene extends PhysicsScene {
 
@@ -51,7 +52,7 @@ class MainScene extends PhysicsScene {
       this._camera,
       this.getRenderStrategy().get('player-renderer')
     )
-    this._gun = new Gun(this.getRenderStrategy().get('player-renderer'), this)
+    this._gun = new Gun(this.getRenderStrategy().get('player-renderer'))
 
     this._player.getTransform().setTranslation(new Vector3(51.1, 0, -88))
     this._player.getTransform().setRotation(new Orientation(0, -32))
@@ -92,40 +93,17 @@ class MainScene extends PhysicsScene {
         this._lamps.push(entity)
       }
     })
-/*
-    const monsterRenderer = this.getRenderStrategy().get('monster-renderer') as MonsterRenderer;
-    monsterRenderer.setPlayer(this._player)
 
-    const monster = new Monster('m1', monsterRenderer, this._player)
-    monster.getTransform().setTranslation(new Vector3(36, 0, -65));
-    monster.getTransform().setRotation(new Orientation(0, -30, 0));
-    monster.getTransform().setScale(new Vector3(1, 2, 1));
-
-    monster.setLampList(this._entityFactory.get5ClosestLamps(monster, this._lamps))
-
-    this.add(monster)
-
-    const monster2 = new Monster('m2', monsterRenderer, this._player)
-    monster2.getTransform().setTranslation(new Vector3(-16, 0, -30));
-    monster2.getTransform().setRotation(new Orientation(0, -30, 0));
-    monster2.getTransform().setScale(new Vector3(1, 2, 1));
-
-    monster2.setLampList(this._entityFactory.get5ClosestLamps(monster2, this._lamps))
-
-    this.add(monster2)
-*/
     this._pathFinding = new PathFinding(this, this._player)
         
     this._pathFinding.loadNodes()
-/*
-    setInterval(() => {
-      
-    }, 3000)
 
-    setInterval(() => {
-      
-    }, 5000)
-*/
+    this.onChange(() => {
+      DialogEntity.Find("display").animateText("chegue ate o elevador", 50, { vertical: '10%', horizontal: 'center' }, function () {
+        setTimeout(() => this.remove(), 5000);
+      });
+    })
+
   }
 
   public update(time: number, delta: number) {
