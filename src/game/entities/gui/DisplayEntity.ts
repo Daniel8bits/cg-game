@@ -1,7 +1,10 @@
 import { Vector3 } from "@math.gl/core";
 import Entity from "@razor/core/entities/Entity";
 import ResourceManager from "@razor/core/ResourceManager";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import Renderer from "@razor/renderer/Renderer";
+import GameTest from "src/game/GameTest";
 import GuiEntity from "./common/GuiEntity";
 import TextEntity from "./common/TextEntity";
 
@@ -29,8 +32,8 @@ class DisplayEntity extends GuiEntity {
     public setImage(image: Entity){
         image.getTransform().setTranslation(new Vector3(0,0, 1).negate());
         image.getTransform().setScale(new Vector3(0.09,0.09, 1));
-        this.getScene().add(image);
         image.getTransform().parent = this.getTransform();
+        this.getScene().add(image)
     }
 
     public updateText(text : string | number){
@@ -38,7 +41,7 @@ class DisplayEntity extends GuiEntity {
         this._text.setText(String(text));
     }
 
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
     }
 }

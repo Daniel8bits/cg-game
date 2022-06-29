@@ -1,56 +1,32 @@
-import { Vector3, Quaternion, Matrix4, Vector2 } from "@math.gl/core"
-import GameCore from '@razor/core/GameCore'
-import ResourceManager from '@razor/core/ResourceManager'
+import { Vector3 } from "@math.gl/core";
+import GameCore from '@razor/core/GameCore';
+import ResourceManager from '@razor/core/ResourceManager';
 import Scene from '@razor/core/scenes/Scene';
-import MapRenderer from './renderers/MapRenderer'
-import SimpleEntity from './entities/SimpleEntity'
-import CanvasCamera from './CanvasCamera'
-import DefaultMaterial from '../engine/appearance/material/DefaultMaterial';
 import Orientation from "@razor/math/Orientation";
-import Lamp from "./entities/Lamp";
+import DefaultMaterial from '../engine/appearance/material/DefaultMaterial';
+import CanvasCamera from './CanvasCamera';
 import GuiRenderer from "./renderers/GuiRenderer";
+import MapRenderer from './renderers/MapRenderer';
 
-import Event from "src/event"; // @temp
-import FileUtils from "@razor/utils/FileUtils";
-import Text from "./utils/Text";
 import VAO from "@razor/buffer/VAO";
 import VBO from "@razor/buffer/VBO";
-import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Razor from "@razor/core/Razor";
-import EntityFactory from "./entities/EntityFactory";
-import TextEntity from "./entities/gui/common/TextEntity";
-import GuiEntity from "./entities/gui/common/GuiEntity";
-import OBJLoader from "@razor/loader/OBJLoader";
-import SelectEntity from "./entities/gui/common/SelectEntity";
-import EmptyMaterial from "@razor/appearance/material/EmptyMaterial";
 import DoorPanelEntity from "./entities/DoorPanelEntity";
-import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
-import PhysicsScene from "@razor/core/scenes/PhysicsScene";
-import MonsterRenderer from "./renderers/MonsterRenderer";
-import Player from "./entities/player/Player";
-import Texture from "@razor/appearance/Texture";
-import TextureLoader from "@razor/loader/TextureLoader";
-import DisplayEntity from "./entities/gui/DisplayEntity";
-import ImageEntity from "./entities/gui/common/ImageEntity";
 import DialogEntity from "./entities/gui/common/DialogEntity";
+import ImageEntity from "./entities/gui/common/ImageEntity";
+import DisplayEntity from "./entities/gui/DisplayEntity";
+import Player from "./entities/player/Player";
+import MonsterRenderer from "./renderers/MonsterRenderer";
 
-import MainScene from "./scenes/MainScene";
+import GameController from "./entities/gui/hud/GameController_old";
+import Gun from "./entities/player/Gun";
 import DoorPanelMaterial from "./materials/DoorPanelMaterial";
 import PlayerRenderer from "./renderers/PlayerRenderer";
-import Gun from "./entities/player/Gun";
-import GameController from "./entities/gui/hud/GameController_old";
-import Framebuffer from "@razor/buffer/FrameBuffer";
-import PathFinding from "./pathfinding/PathFinding";
-import Sound_old from './Sound';
-import RectangleEntity from "./entities/gui/common/RectangleEntity";
-import Camera from "@razor/core/Camera";
-import Entity from "@razor/core/entities/Entity";
-import CreditsEntity from "./entities/gui/CreditsEntity";
-import InputManager, { Keys } from "@razor/core/InputManager";
-import MainMenu from "./scenes/menu/MainMenu";
-import LoadingScene from "./scenes/LoadingScene";
 import GameOverScene from "./scenes/GameOverScene";
+import LoadingScene from "./scenes/LoadingScene";
+import MainScene from "./scenes/MainScene";
 import CreditsMenu from "./scenes/menu/CreditsMenu";
+import MainMenu from "./scenes/menu/MainMenu";
 
 class GameTest extends GameCore {
 

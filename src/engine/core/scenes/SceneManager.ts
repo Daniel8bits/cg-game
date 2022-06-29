@@ -1,8 +1,12 @@
 import RenderStrategy from "../../renderer/RenderStrategy";
 import Scene from "./Scene";
+import IUpdatable from "../updater/IUpdatable";
 import Event from "src/event";
+import Updater from "../updater/Updater";
 
-class SceneManager {
+class SceneManager implements IUpdatable {
+
+    public static readonly NAME: string = "scene-manager"
 
     /* All entities */
     private _scenes: Map<string, Scene>;
@@ -18,8 +22,8 @@ class SceneManager {
         this._active.render()
     }
 
-    public update(time: number, delta: number): void {
-        this._active.update(time, delta);
+    public update(time: number, delta: number, updater: Updater): void {
+        this._active.update(time, delta, updater);
     }
 
     /**
@@ -127,6 +131,10 @@ class SceneManager {
      */
     private _getName(scene: Scene|string): string {
         return scene instanceof Scene ? scene.getName() : scene;
+    }
+
+    public getName(): string {
+        return SceneManager.NAME
     }
 
 }

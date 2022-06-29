@@ -3,6 +3,7 @@ import VAO from "@razor/buffer/VAO";
 import Entity from "@razor/core/entities/Entity";
 import ResourceManager from "@razor/core/ResourceManager";
 import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import { circunferenceEquationOf, intersectionPointsBetweenLineAndCircunference, lineEquationOf, PairPoints } from "@razor/math/math";
 import Orientation from "@razor/math/Orientation";
 import Transform from "@razor/math/Transform";
@@ -31,7 +32,7 @@ class Gun extends Entity implements IEntityWithLight {
 
   private _lampList: Lamp[]
 
-  public constructor(renderer: Renderer, scene: Scene) {
+  public constructor(renderer: Renderer) {
     super(
       'gun',
       ResourceManager.getVAO('gun-receiver'),
@@ -44,13 +45,12 @@ class Gun extends Entity implements IEntityWithLight {
     this._lampList = []
     this.getTransform().setTranslation(new Vector3(-0.14, -0.23, -0.11))
     this.getTransform().setRotation(new Orientation(0, 0, -20))
-    this.setScene(scene)
     this._state = GunState.CHARGED
     this._counter = 0
     this._step = 1
   }
 
-  public update(time: number, delta: number): void {
+  public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
     if(this._state === GunState.RECHARGING && this._step === 1) {
       this._counter += 0.25;
@@ -85,7 +85,7 @@ class Gun extends Entity implements IEntityWithLight {
     
   }
 
-  public shoot(playerPosition: Vector2, rayCasting: Vector2) {
+  public shoot(playerPosition: Vector2, rayCasting: Vector2, currentScene: Scene) {
 
     this._state = GunState.RECHARGING
 
@@ -96,7 +96,7 @@ class Gun extends Entity implements IEntityWithLight {
     const getDistanceFromPlayer = (monster: Entity) => new Vector3(playerPosition.x, 0, playerPosition.y)
     .distanceTo(monster.getTransform().getTranslation())
 
-    const monstersInTheSight = this.getScene()
+    const monstersInTheSight = currentScene
       .filterVisible((entity) => entity instanceof Monster && getDistanceFromPlayer(entity) < 50)
       .sort((entity1, entity2) => {
         const distanceA = getDistanceFromPlayer(entity1)
@@ -126,7 +126,7 @@ class Gun extends Entity implements IEntityWithLight {
       if(this._isInsideLine({p1: playerPosition, p2: rayCasting}, intersection)) {
 
         if(monstersInTheSight[i].takeDamage()) {
-          this.getScene().remove(monstersInTheSight[i])
+          currentScene.remove(monstersInTheSight[i])
         }
 
         return;

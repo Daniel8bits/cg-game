@@ -1,7 +1,9 @@
 import RenderStrategy from "@razor/renderer/RenderStrategy";
 import Entity from "../entities/Entity";
+import IUpdatable from "../updater/IUpdatable";
+import Updater from "../updater/Updater";
 
-class Scene {
+class Scene implements IUpdatable {
 
     private _name: string;
 
@@ -22,9 +24,9 @@ class Scene {
         this._renderStrategy = new RenderStrategy()
     }
 
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, updater: Updater): void {
         this.forEachVisible((entity) => {
-            entity.update(time, delta);
+            entity.update(time, delta, this, updater);
         })
     }
 
@@ -56,7 +58,9 @@ class Scene {
      */
     public remove(entity: Entity|string): Scene {
         const key: string = this._validate(entity, this._entities, false);
+        const removingEntity = this._entities.get(key);
         this._entities.delete(key);
+        removingEntity.setScene(null)
         if(this._visible.has(key)) {
             this._visible.delete(key);
         }

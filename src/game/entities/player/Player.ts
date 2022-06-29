@@ -1,22 +1,17 @@
 import { Matrix4, toRadians, Vector2, Vector3 } from '@math.gl/core';
-import Vector from '@math.gl/core/src/classes/base/vector';
 import Camera from '@razor/core/Camera';
 import DynamicEntity from '@razor/core/entities/DynamicEntity';
-import Entity from '@razor/core/entities/Entity';
 import InputManager, { Keys } from '@razor/core/InputManager';
 import Razor from '@razor/core/Razor';
 import ResourceManager from '@razor/core/ResourceManager';
-import { gl } from '@razor/gl/GLUtils';
+import Scene from '@razor/core/scenes/Scene';
+import Updater from '@razor/core/updater/Updater';
 import Orientation from '@razor/math/Orientation';
 import Transform from '@razor/math/Transform';
 import Hitbox from '@razor/physics/hitboxes/HitBox';
 import GameController from 'src/game/entities/gui/hud/GameController_old';
 import GameTest from 'src/game/GameTest';
-import Sound from 'src/game/Sound';
-import Material from "../../../engine/appearance/material/Material";
-import VAO from "../../../engine/buffer/VAO";
 import Renderer from "../../../engine/renderer/Renderer";
-import HallDoorEntity from '../HallDoorEntity';
 import { IEntityWithLight } from '../IEntityWithLight';
 import Lamp from '../Lamp';
 import Gun, { GunState } from './Gun';
@@ -65,11 +60,11 @@ class Player extends DynamicEntity implements IEntityWithLight {
     Player._instance = this;
   }
 
-  public update(time: number, delta: number): void {
+  public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
     if (this._stop) return;
     this._updateCameraPosition()
 
-    this._move(delta)
+    this._move(delta, currentScene)
     if(this._end.getTranslation().distanceTo(this.getTransform().getTranslation()) < 10){
       GameTest.getInstance().setScene("end");
     }
@@ -80,8 +75,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
     this._end = transform;
   }
 
-
-  private _move(delta: number): void {
+  private _move(delta: number, currentScene : Scene): void {
 
     this.getForce().x = 0
     this.getForce().y = 0
@@ -117,15 +111,6 @@ class Player extends DynamicEntity implements IEntityWithLight {
     }
 
     if (!isStep) ResourceManager.getSound("step").pause();
-    /*
-        if(InputManager.isKeyPressed(Keys.KEY_SPACE) && this.getTransform().getY() > -1 && this.getSpeed().y > -1){ // UP
-          this.getForce().add(new Vector3(0, -this._impulse*10 * delta, 0))
-        }
-    
-        if(InputManager.isKeyPressed(Keys.KEY_C)){ // DOWN
-            this.getForce().add(new Vector3(0, this._impulse*3 * delta, 0))
-        }
-    */
 
     if (InputManager.isKeyPressed(Keys.KEY_K)) { // RIGHT
       this.getTransform().setPitch(0)
@@ -148,7 +133,8 @@ class Player extends DynamicEntity implements IEntityWithLight {
           new Vector2(
             ray.x,
             ray.z
-          )
+          ),
+          currentScene
         )
       } else {
         ResourceManager.getSound("empty_gun").play()
@@ -174,7 +160,6 @@ class Player extends DynamicEntity implements IEntityWithLight {
       const dy = InputManager.getMouseDY()
 
       const rotation = this.getTransform().getRotation()
-      //this.getTransform().setPitch(rotation.pitch + dy * this._sensitivity * delta)
       this.getTransform().setYaw(rotation.yaw + dx * this._sensitivity * delta)
     }
 
@@ -200,18 +185,6 @@ class Player extends DynamicEntity implements IEntityWithLight {
 
   public getHandTransformMatrix(): Matrix4 {
     return this.getTransform().toMatrix().multiplyRight(this._handTransform.toMatrix())
-    //return this._handTransform.toMatrix().multiplyRight(this.getTransform().toMatrix())
-    //return this._handTransform.worldMatrix()
-    //return this._handTransform.toMatrix()
-    /*
-    return this._handTransform.worldMatrixFrom(
-      new Transform(
-        this.getTransform().getTranslation().add(this._handTransform.getTranslation()),
-        this.getTransform().getRotation().add(this._handTransform.getRotation()),
-        this._handTransform.getScale()
-      )
-    )
-    */
   }
 
   public getHandTransform(): Transform {

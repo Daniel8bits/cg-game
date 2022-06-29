@@ -1,6 +1,8 @@
 import { Matrix4, Vector2, Vector3 } from "@math.gl/core";
 import VBO from "@razor/buffer/VBO";
 import Razor from "@razor/core/Razor";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Material from "../../../../engine/appearance/material/Material";
 import VAO from "../../../../engine/buffer/VAO";
@@ -18,19 +20,6 @@ class RectangleEntity extends Entity {
     public constructor(name: string, vao: VAO, material: Material, renderer: Renderer) {
         super(name, vao, material, renderer);
         this.size = new Vector2(1,1);
-        //this.DrawRectangle();
-    }
-    private DrawRectangle(){
-        const positions = [
-            0, 0,
-            1, 0,
-            0, 1,
-            0, 1,
-            1, 0,
-            1, 1,
-        ];
-        this.getVAO().getIbo().setBuffer(new Float32Array(positions));
-        this.getVAO().create();
     }
     
     public setSize(width: number,height : number){
@@ -92,7 +81,7 @@ class RectangleEntity extends Entity {
     }
 
     
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
     }
 }

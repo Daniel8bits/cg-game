@@ -2,13 +2,14 @@ import Hitbox from "@razor/physics/hitboxes/HitBox";
 import Renderer from "@razor/renderer/Renderer";
 import MapEntity from "./MapEntity";
 import ResourceManager from "@razor/core/ResourceManager";
-import { Matrix4, Vector3 } from "@math.gl/core";
-import Sound from "../Sound";
+import { Vector3 } from "@math.gl/core";
 import DialogEntity from "./gui/common/DialogEntity";
 import Player from "./player/Player";
 import Camera from "@razor/core/Camera";
 import Transform from "@razor/math/Transform";
 import GameController from "./gui/hud/GameController_old";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 
 export enum HallDoorState {
   OPENED = 0,
@@ -45,7 +46,7 @@ class HallDoorEntity extends MapEntity {
     this._giveAmmunition = false;
   }
 
-  public update(time: number, delta: number): void {
+  public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
 
 

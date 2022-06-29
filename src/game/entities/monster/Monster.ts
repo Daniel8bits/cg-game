@@ -8,6 +8,8 @@ import PathNode from "../../pathfinding/PathNode";
 import { IEntityWithLight } from "../IEntityWithLight";
 import Lamp from "../Lamp";
 import Player from "../player/Player";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 
 
 
@@ -43,7 +45,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
     this._hitPlayer = false;
   }
 
-  public update(time: number, delta: number): void {
+  public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
     if(Player.getInstance().getStop()) return;
 
     if(!this._triggered && this._shouldTrigger()) {

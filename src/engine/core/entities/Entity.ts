@@ -3,7 +3,7 @@ import Renderer from "../../renderer/Renderer";
 import Transform from "../../math/Transform"
 import Material from "../../appearance/material/Material";
 import Scene from "../scenes/Scene";
-import { Matrix4 } from "@math.gl/core";
+import Updater from "../updater/Updater";
 
 type Constructor<T> = { new (...args: any[]): T };
 
@@ -40,7 +40,12 @@ abstract class Entity {
 
     //public abstract start() : void;
 
-    public abstract update(time: number, delta: number): void;
+    public abstract update(
+        time: number, 
+        delta: number,
+        currentScene : Scene,
+        updater: Updater
+    ): void;
 
     public render(): void{
 

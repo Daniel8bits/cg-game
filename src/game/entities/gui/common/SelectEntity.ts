@@ -1,17 +1,10 @@
-import { Matrix4, Vector2, Vector3 } from "@math.gl/core";
-import VBO from "@razor/buffer/VBO";
+import { Vector3 } from "@math.gl/core";
 import InputManager, { Keys } from "@razor/core/InputManager";
 import Razor from "@razor/core/Razor";
 import ResourceManager from "@razor/core/ResourceManager";
 import Scene from "@razor/core/scenes/Scene";
-import GLUtils, { gl } from "@razor/gl/GLUtils";
-import Transform from "@razor/math/Transform";
-import Sound from "src/game/Sound";
-import Material from "../../../../engine/appearance/material/Material";
-import VAO from "../../../../engine/buffer/VAO";
-import Entity from "../../../../engine/core/entities/Entity";
+import Updater from "@razor/core/updater/Updater";
 import Renderer from "../../../../engine/renderer/Renderer";
-import Text from "../../../utils/Text";
 import GuiEntity from "./GuiEntity";
 import OptionEntity from "./OptionEntity";
 
@@ -21,9 +14,9 @@ class SelectEntity extends GuiEntity {
     private options : OptionEntity[] = [];
     private selected : number = 0;
     private change : boolean = false;
-    public constructor(name: string, renderer: Renderer,scene : Scene) {
+
+    public constructor(name: string, renderer: Renderer) {
         super(name, renderer);
-        this.setScene(scene);
     }
     
     
@@ -48,12 +41,12 @@ class SelectEntity extends GuiEntity {
     }
 
     
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
         const keyDown = InputManager.isKeyPressedDown(Keys.KEY_DOWN);
         const keyUp = InputManager.isKeyPressedDown(Keys.KEY_UP);
         if(keyDown || keyUp){
             if(this.change){
-                let next;
+                let next: number;
                 const prev = this.selected;
                 if(keyUp){
                     next = prev - 1;

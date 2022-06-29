@@ -1,6 +1,7 @@
 import { Matrix4, Vector2, Vector3 } from "@math.gl/core";
 import VBO from "@razor/buffer/VBO";
 import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Material from "../../../../engine/appearance/material/Material";
 import VAO from "../../../../engine/buffer/VAO";
@@ -37,8 +38,6 @@ class OptionEntity extends GuiEntity {
         this.text = this.addText(this.getName()+"_option_text");
         this.text.getTransform().setTranslation(new Vector3(-15,-15,-1))
         this.text.getTransform().setScale(new Vector3(2,2,2))
-        ///this.rect.getTransform().parent = this;
-        //this.text.getTransform().parent = this;
     }
 
     public selected(visible : boolean){
@@ -63,7 +62,7 @@ class OptionEntity extends GuiEntity {
     }
 
     
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
     }
 }

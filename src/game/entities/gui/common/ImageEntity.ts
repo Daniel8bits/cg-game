@@ -1,14 +1,11 @@
-import { Matrix4 } from "@math.gl/core";
 import DefaultMaterial from "@razor/appearance/material/DefaultMaterial";
 import VBO from "@razor/buffer/VBO";
 import ResourceManager from "@razor/core/ResourceManager";
-import GLUtils, { gl } from "@razor/gl/GLUtils";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import TextureLoader from "@razor/loader/TextureLoader";
-import Material from "../../../../engine/appearance/material/Material";
 import VAO from "../../../../engine/buffer/VAO";
-import Entity from "../../../../engine/core/entities/Entity";
 import Renderer from "../../../../engine/renderer/Renderer";
-import Text from "../../../utils/Text";
 import GuiEntity from "./GuiEntity";
 
 class ImageEntity extends GuiEntity {
@@ -63,7 +60,7 @@ class ImageEntity extends GuiEntity {
 
     }
 
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
     }
 }

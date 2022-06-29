@@ -1,10 +1,9 @@
 import InputManager, { Keys } from "@razor/core/InputManager";
 import ResourceManager from "@razor/core/ResourceManager";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import Hitbox from "@razor/physics/hitboxes/HitBox";
 import Renderer from "../../engine/renderer/Renderer";
-import DoorPanelMaterial from "../materials/DoorPanelMaterial";
-import Sound from "../Sound";
-import DialogEntity from "./gui/common/DialogEntity";
 import HallDoorEntity, { HallDoorState } from "./HallDoorEntity";
 import MapEntity from "./MapEntity";
 import Player from "./player/Player";
@@ -34,7 +33,7 @@ class DoorPanelEntity extends MapEntity {
     this._locked = true
   }
   
-  public update(time: number, delta: number): void {
+  public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
     const position = this.getTransform().getTranslation()
     const playerPosition = this._player.getTransform().getTranslation()

@@ -1,13 +1,17 @@
 import SceneManager from './scenes/SceneManager'
 import RenderStrategy from '../renderer/RenderStrategy'
 import Scene from './scenes/Scene';
+import Updater from './updater/Updater';
 
 abstract class GameCore {
 
+    private _updater: Updater
     private _sceneManager: SceneManager;
     
     protected constructor() {
         this._sceneManager = new SceneManager();
+        this._updater = new Updater()
+        this._updater.add(this._sceneManager)
     }
 
     public abstract start(): void;
@@ -17,7 +21,7 @@ abstract class GameCore {
     }
 
     public update(time: number, delta: number): void {
-        this._sceneManager.update(time, delta);
+        this._updater.update(time, delta);
     }
 
     public render(): void {
@@ -32,6 +36,10 @@ abstract class GameCore {
 
     public getSceneManager(): SceneManager {
         return this._sceneManager;
+    }
+
+    public getUpdater(): Updater {
+        return this._updater;
     }
 
 }

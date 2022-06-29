@@ -2,6 +2,8 @@ import { Matrix4, Vector3 } from "@math.gl/core";
 import VBO from "@razor/buffer/VBO";
 import Razor from "@razor/core/Razor";
 import ResourceManager from "@razor/core/ResourceManager";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import GLUtils, { gl } from "@razor/gl/GLUtils";
 import Material from "../../../../engine/appearance/material/Material";
 import VAO from "../../../../engine/buffer/VAO";
@@ -92,7 +94,7 @@ class TextEntity extends Entity {
         this.getTransform().setTranslation(new Vector3(left, top, relative.z).negate())
     }
 
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
     }
 }

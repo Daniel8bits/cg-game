@@ -1,3 +1,5 @@
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import Material from "../../engine/appearance/material/Material";
 import VAO from "../../engine/buffer/VAO";
 import Entity from "../../engine/core/entities/Entity";
@@ -12,7 +14,7 @@ class SimpleEntity extends Entity {
         super(name, vao, material, renderer);
         this._lampList = []
     }
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
         /*
 
         this.getTransform().getRotation().y += 15 * delta

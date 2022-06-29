@@ -1,4 +1,6 @@
 import StaticEntity from '@razor/core/entities/StaticEntity';
+import Scene from '@razor/core/scenes/Scene';
+import Updater from '@razor/core/updater/Updater';
 import Hitbox from '@razor/physics/hitboxes/HitBox';
 import Material from "../../engine/appearance/material/Material";
 import VAO from "../../engine/buffer/VAO";
@@ -22,7 +24,7 @@ class MapEntity extends StaticEntity implements IEntityWithLight {
         this._lampList = []
     }
 
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
         
     }
 

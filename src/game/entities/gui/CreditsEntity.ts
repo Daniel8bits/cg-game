@@ -9,6 +9,8 @@ import Texture from '@razor/appearance/Texture';
 import DefaultMaterial from "@razor/appearance/material/DefaultMaterial";
 import Razor from "@razor/core/Razor";
 import FileUtils from "@razor/utils/FileUtils";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 
 class CreditsEntity extends Entity {
 
@@ -38,7 +40,7 @@ class CreditsEntity extends Entity {
         
     }
 
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
     }
 
     private _loadCredits(): void {

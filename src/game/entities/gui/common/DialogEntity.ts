@@ -3,6 +3,8 @@ import DefaultMaterial from "@razor/appearance/material/DefaultMaterial";
 import VBO from "@razor/buffer/VBO";
 import Razor from "@razor/core/Razor";
 import ResourceManager from "@razor/core/ResourceManager";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import GLUtils, { gl } from "@razor/gl/GLUtils";
 import TextureLoader from "@razor/loader/TextureLoader";
 import Material from "../../../../engine/appearance/material/Material";
@@ -127,7 +129,7 @@ class DialogEntity extends GuiEntity {
         }, 1 / wordPerSeconds * 1000);
     }
 
-    public update(time: number, delta: number): void {
+    public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
     }
 }
