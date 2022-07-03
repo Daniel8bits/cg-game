@@ -24,17 +24,31 @@ interface DialogPosition {
     horizontal: 'left' | 'center' | 'right' | LengthMetric
 }
 
+export enum DialogEntityStates {
+    DONE,
+    ANIMATING
+}
+
 class DialogEntity extends GuiEntity {
 
-    private _text: TextEntity;
+    private _textEntity: TextEntity;
     private _rectangle: RectangleEntity;
     private paddingTop = 5;
     private paddingLeft = 5;
     private static _dialogs: Map<string, DialogEntity> = new Map;
 
+    private _text: string
+    private _textPosition: DialogPosition
+    private _state: DialogEntityStates
+    private _animationTime: number
+    private _animationCounter: number
+    private _animationWordCounter: number
+    private _animationCallback: (dialog: DialogEntity) => void
+
     public constructor(name: string, renderer: Renderer) {
         super(name, renderer);
         DialogEntity._dialogs.set(name, this);
+        this._resetAnimation()
     }
 
     public static getDialog(name: string) {
@@ -45,10 +59,10 @@ class DialogEntity extends GuiEntity {
         this._rectangle = this.addRectangle(this.getName() + "_rectangle_left");
         this._rectangle.color = color;
         this._rectangle.getTransform().parent = this.getTransform();
-        this._text = this.addText(this.getName() + "_text_rectangle_left");
-        this._text.setText("")
-        this._text.getTransform().setTranslation(new Vector3(this.paddingLeft, this.paddingTop, 1).negate())
-        this._text.getTransform().setScale(new Vector3(2, 2, 2))
+        this._textEntity = this.addText(this.getName() + "_text_rectangle_left");
+        this._textEntity.setText("")
+        this._textEntity.getTransform().setTranslation(new Vector3(this.paddingLeft, this.paddingTop, 1).negate())
+        this._textEntity.getTransform().setScale(new Vector3(2, 2, 2))
     }
 
     public setImage(image: Entity) {
@@ -59,12 +73,22 @@ class DialogEntity extends GuiEntity {
     }
 
     public remove(){
-        this._text.setText("");
+        this._textEntity.setText("");
         this._rectangle.setSize(0,0);
+        this._resetAnimation()
+    }
+
+    private _resetAnimation(): void {
+        this._state = DialogEntityStates.DONE
+        this._text = ""
+        this._animationTime = 0
+        this._animationCounter = 0
+        this._animationWordCounter = 0
+        this._animationCallback = null
     }
 
     public updateText(name: string, position: DialogPosition) {
-        this._text.setText(name);
+        this._textEntity.setText(name);
         const length = name.toLowerCase().replace(/ /g, '').replace(/[^\w-]+/g, '').length;
         /* Tamanho */
         const diff = Math.abs(name.length - length) - 2;
@@ -117,19 +141,33 @@ class DialogEntity extends GuiEntity {
 
     }
 
-    public animateText(name: string, wordPerSeconds = 1, position: DialogPosition, callback?: Function) {
-        let i = 1;
-        const length = name.length;
-        const intervalText = setInterval(() => {
-            if (i == length) {
-                if(callback) callback.apply(this);
-                clearInterval(intervalText)
-            }
-            this.updateText(name.slice(0, i++), position);
-        }, 1 / wordPerSeconds * 1000);
+    public animateText(name: string, wordPerSeconds = 1, position: DialogPosition, callback?: (dialog: DialogEntity) => void) {
+        this._text = name
+        this._animationTime = 1 / wordPerSeconds
+        this._textPosition = position
+        this._animationCallback = callback
+        this._state = DialogEntityStates.ANIMATING
     }
 
     public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
+
+        if(this._state === DialogEntityStates.ANIMATING) {
+
+            if(this._animationCounter >= this._animationTime) {
+                if (this._animationWordCounter >= this._text.length) {
+                    if(this._animationCallback) {
+                        this._animationCallback(this);
+                    }
+                    this._state = DialogEntityStates.DONE
+                }
+                this._animationWordCounter += Math.floor(this._animationCounter / this._animationTime)
+                this.updateText(this._text.slice(0, this._animationWordCounter), this._textPosition);
+                this._animationCounter -= this._animationTime;
+            }
+
+            this._animationCounter += delta
+
+        }
 
     }
 }

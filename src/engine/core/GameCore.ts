@@ -16,10 +16,6 @@ abstract class GameCore {
 
     public abstract start(): void;
 
-    public changeScene(scene : Scene) : void{
-
-    }
-
     public update(time: number, delta: number): void {
         this._updater.update(time, delta);
     }
@@ -30,7 +26,6 @@ abstract class GameCore {
 
     public setScene(scene : string | Scene) : SceneManager{
         const sceneManager = this._sceneManager.setActive(scene);
-        this.changeScene(sceneManager.getActive());
         return sceneManager;
     }
 

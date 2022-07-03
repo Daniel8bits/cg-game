@@ -19,7 +19,7 @@ class CreditsMenu extends Scene {
 
   private init(renderer: GuiRenderer): void {
     this.add(new CreditsEntity(renderer))
-    const select = new SelectEntity("select", renderer, this);
+    const select = new SelectEntity("select", renderer);
     this.add(select)
     select.addOption("voltar").setExecute(() => {
         GameTest.getInstance().setScene(MainMenu.MAIN_MENU)

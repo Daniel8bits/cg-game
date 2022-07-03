@@ -2,6 +2,7 @@ import Physics from "@razor/physics/Physics";
 import DynamicEntity from "../entities/DynamicEntity";
 import Entity from "../entities/Entity";
 import SolidEntity from "../entities/SolidEntity";
+import Updater from "../updater/Updater";
 import Scene from "./Scene";
 
 export interface PhysicsSceneProperties {
@@ -52,10 +53,10 @@ class PhysicsScene extends Scene {
     return this
   }
 
-  public update(time: number, delta: number) {
+  public update(time: number, delta: number, updater: Updater) {
     
     this.forEachVisible((entity) => {
-      entity.update(time, delta);
+      entity.update(time, delta, this, updater);
       if(entity instanceof DynamicEntity) {
         this._physics.applyPhysics(entity, this._properties, delta)
       }

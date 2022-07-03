@@ -44,6 +44,10 @@ class DisplayEntity extends GuiEntity {
     public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
 
     }
+
+    public exists(): boolean {
+        return !!this._text
+    }
 }
 
 export default DisplayEntity

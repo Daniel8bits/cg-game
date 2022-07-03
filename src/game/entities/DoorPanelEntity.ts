@@ -4,6 +4,7 @@ import Scene from "@razor/core/scenes/Scene";
 import Updater from "@razor/core/updater/Updater";
 import Hitbox from "@razor/physics/hitboxes/HitBox";
 import Renderer from "../../engine/renderer/Renderer";
+import DialogEntity from "./gui/common/DialogEntity";
 import HallDoorEntity, { HallDoorState } from "./HallDoorEntity";
 import MapEntity from "./MapEntity";
 import Player from "./player/Player";
@@ -14,6 +15,7 @@ class DoorPanelEntity extends MapEntity {
   private _player: Player
 
   private _locked: boolean
+  private _messageOnScreen: DialogEntity
 
   public constructor(
       name: string, 
@@ -31,6 +33,7 @@ class DoorPanelEntity extends MapEntity {
     this._hallDoor = null
     this._player = null
     this._locked = true
+    this._messageOnScreen = null
   }
   
   public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
@@ -38,19 +41,46 @@ class DoorPanelEntity extends MapEntity {
     const position = this.getTransform().getTranslation()
     const playerPosition = this._player.getTransform().getTranslation()
       
-    if(position.distanceTo(playerPosition) < 5 && InputManager.isKeyPressed(Keys.KEY_F)) {
-      this._hallDoor.interact()
+    if(position.distanceTo(playerPosition) < 5) {
 
-      if(this._hallDoor.getState() === HallDoorState.CLOSING) {
-        this.setLocked(true);
-      } else if(this._hallDoor.getState() === HallDoorState.OPENING) {
-        this.setLocked(false);
+      this._showMessage()
+
+      if( InputManager.isKeyPressed(Keys.KEY_F)) {
+        this._hallDoor.interact()
+  
+        if(!this._locked && this._hallDoor.getState() === HallDoorState.CLOSING) {
+          this.setLocked(true);
+          if(this._messageOnScreen) {
+            this._messageOnScreen.remove()
+            this._messageOnScreen = null
+          }
+        } else if(this._locked && this._hallDoor.getState() === HallDoorState.OPENING) {
+          this.setLocked(false);
+          if(this._messageOnScreen) {
+            this._messageOnScreen.remove()
+            this._messageOnScreen = null
+          }
+        }
       }
+
+    } else if (this._messageOnScreen) {
+      this._messageOnScreen.remove()
+      this._messageOnScreen = null
     }
 
   }
 
-
+  private _showMessage() {
+    if(!this._messageOnScreen) {
+      if(this._hallDoor.getState() === HallDoorState.CLOSED) {
+        this._messageOnScreen = DialogEntity.getDialog("display")
+        this._messageOnScreen.animateText("press f to open the door", 30, { vertical: '10%', horizontal: 'center' });
+      } else if(this._hallDoor.getState() === HallDoorState.OPENED) {
+        this._messageOnScreen = DialogEntity.getDialog("display")
+        this._messageOnScreen.animateText("press f to close the door", 30, { vertical: '10%', horizontal: 'center' });
+      }
+    }
+  }
 
   public setHallDoor(hallDoor: HallDoorEntity): void {
     this._hallDoor = hallDoor

@@ -16,6 +16,9 @@ import MonsterRenderer from "../renderers/MonsterRenderer";
 import PathFinding from "../pathfinding/PathFinding";
 import FrameRenderer from "../renderers/FrameRenderer";
 import DialogEntity from "../entities/gui/common/DialogEntity";
+import Updater from "@razor/core/updater/Updater";
+import HUD from "../entities/gui/hud/HUD";
+import GuiRenderer from "../renderers/GuiRenderer";
 
 class MainScene extends PhysicsScene {
 
@@ -27,6 +30,7 @@ class MainScene extends PhysicsScene {
   private _pathFinding: PathFinding
   private _lampSortingTimer: number
   private _pathFindingCalculationTimer: number
+  private _hud: HUD
 
   private _frameBuffer: FrameRenderer[] = [];
   public constructor(camera: Camera) {
@@ -41,7 +45,10 @@ class MainScene extends PhysicsScene {
     this._pathFindingCalculationTimer = 5
   }
 
-  public init() {
+  public init(updater: Updater) {
+
+    this._hud = new HUD(this)
+    updater.add(this._hud)
 
     this._frameBuffer.push(new FrameRenderer(this._camera,'albedo', 1));
     this._frameBuffer.push(new FrameRenderer(this._camera,'mascara', 0.25));
@@ -99,15 +106,17 @@ class MainScene extends PhysicsScene {
     this._pathFinding.loadNodes()
 
     this.onChange(() => {
-      DialogEntity.Find("display").animateText("chegue ate o elevador", 50, { vertical: '10%', horizontal: 'center' }, function () {
-        setTimeout(() => this.remove(), 5000);
+      this._camera.getTransform().setTranslation(new Vector3(51.1, 0, -88))
+      this._camera.getTransform().setRotation( new Orientation(0, -32));
+      DialogEntity.Find("display").animateText("chegue ate o elevador", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
+        setTimeout(() => dialog.remove(), 5000);
       });
     })
 
   }
 
-  public update(time: number, delta: number) {
-    super.update(time, delta);
+  public update(time: number, delta: number, updater: Updater) {
+    super.update(time, delta, updater);
 
     if(this._lampSortingTimer > 3) {
       this._player.setLampList(this._entityFactory.get5ClosestLamps(this._player, this._lamps))

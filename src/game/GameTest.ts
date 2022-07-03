@@ -27,6 +27,7 @@ import LoadingScene from "./scenes/LoadingScene";
 import MainScene from "./scenes/MainScene";
 import CreditsMenu from "./scenes/menu/CreditsMenu";
 import MainMenu from "./scenes/menu/MainMenu";
+import EndScene from "./scenes/EndScene";
 
 class GameTest extends GameCore {
 
@@ -369,7 +370,7 @@ class GameTest extends GameCore {
         const guiRenderer = this._guiRenderer = new GuiRenderer(this._camera);
         scene1.getRenderStrategy().add(guiRenderer)
 
-        scene1.init()
+        scene1.init(this.getUpdater())
 
         //scene1.getProperties().gravity = 0
 
@@ -380,28 +381,7 @@ class GameTest extends GameCore {
             scene1.get('gun') as Gun
         )
         monsterRenderer.setPlayer(scene1.get('player') as Player)
-
-        const guiAmmunition = new DisplayEntity('guiAmmunition', guiRenderer);
-        const bottom = -Razor.CANVAS.height + 100;
-        this.getSceneManager().getActive().add(guiAmmunition);
-        guiAmmunition.getTransform().setTranslation(new Vector3(0, bottom, 0));
-        GameController.setDisplay("ammunition", guiAmmunition, new Vector3(0.2, 0.9, 0.9));
-        //guiAmmunition.setText("123", new Vector3(0.2, 0.9, 0.9));
-        // https://www.pngwing.com/pt/free-png-stupy/download
-        guiAmmunition.setImage(new ImageEntity("ammunition", "/resources/images/ammunition.png", guiRenderer));
-
-        const guiLife = new DisplayEntity('guiLife', guiRenderer);
-        this.getSceneManager().getActive().add(guiLife);
-        guiLife.getTransform().setTranslation(new Vector3(0, bottom - 50, 0));
-        GameController.setDisplay("life", guiLife, new Vector3(1, 0.2, 0.2));
-        //guiLife.setText("123", new Vector3(1, 0.2, 0.2));
-        //https://www.onlinewebfonts.com/icon/146242
-        guiLife.setImage(new ImageEntity("life", "/resources/images/life.png", guiRenderer));
-
-        const dialog = new DialogEntity("display", guiRenderer);
-        this.getSceneManager().getActive().add(dialog);
-        dialog.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
-        dialog.init();
+        
         /*
         dialog.animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
             setTimeout(() => this.remove(), 5000);
@@ -423,106 +403,24 @@ class GameTest extends GameCore {
 
         /* Credits Scene */
         this.getSceneManager().add(new CreditsMenu(guiRenderer));
-        // const sceneScredits = new Scene('credits');
-        // sceneScredits.getRenderStrategy().add(guiRenderer)
-        // this.getSceneManager().add(sceneScredits, true)
-
         
         /* GameOver Scene */
         this.getSceneManager().add(new GameOverScene(guiRenderer));
-       
 
         /* Loading Scene */
         this.getSceneManager().add(new LoadingScene(guiRenderer));
-        //const sceneLoading = new Scene('loading');
-        
 
         /* End Scene */
-        const sceneEnd = new Scene('end');
-        sceneEnd.getRenderStrategy().add(guiRenderer)
-        this.getSceneManager().add(sceneEnd, true);
-        const endDisplay = new DialogEntity("endDisplay", guiRenderer);
-        this.getSceneManager().getActive().add(endDisplay);
-        endDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
-        //endDisplay.init();
+        this.getSceneManager().add(new EndScene(guiRenderer), true);
 
         /* Menu Scene */
         this.getSceneManager().add(new MainMenu(guiRenderer));
-        
-        /*
-        const credits =     new RectangleEntity("credits_rect", ResourceManager.getVAO("rectangle"), ResourceManager.getMaterial("rectangle"), guiRenderer)
-        credits.updatePosition({horizontal:"center",vertical:"center"});
-        */
 
 
         this.setScene(MainMenu.MAIN_MENU);
-        /*
-        const attachemnts = this._frameBuffer.map((item) => item.attachemnt)
-        GLUtils.drawBuffer(attachemnts);
-        const pathFinding = new PathFinding()
         
-        pathFinding.loadNodes()
-        const destiny = pathFinding.getNodes().get('node_21')
-        pathFinding.find(pathFinding.getNodes().get('node_0'), destiny)
-
-        let current = destiny
-        do {
-            console.log('n: ', current.getName());
-            current = current.getPath()
-        } while(current)
-        
-*/
         const playerEntity = Player.Find("player");
         playerEntity.setEndPoint(DoorPanelEntity.Find("elevator_1").getTransform())
-    }
-
-    public changeScene(scene: Scene): void {
-        const gameTest = this;
-        switch (scene.getName()) {
-            /*
-            case "main":
-                DialogEntity.Find("display").animateText("chegue ate o elevador", 50, { vertical: '10%', horizontal: 'center' }, function () {
-                    setTimeout(() => this.remove(), 5000);
-                });
-                break;
-            case "loading":
-                ResourceManager.getSound("elevator").play(false)
-                DialogEntity.Find("loadingDisplay").animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
-                    setTimeout(() => {
-                        this.remove()
-                        gameTest.setScene("main");
-                    }, 5000);
-                });
-                break;
-            */
-            case "end":
-                this._camera.getTransform().setTranslation(new Vector3(51.1, 0, -88))
-                this._camera.getTransform().setRotation( new Orientation(0, -32));
-                ResourceManager.forEachSound(sound => sound.pause())
-                ResourceManager.getSound("elevator").play(false)
-                const endDisplay = DialogEntity.Find("endDisplay");
-                endDisplay.init();
-                endDisplay.animateText("voce chegou no fim", 50, { vertical: '10%', horizontal: 'center' }, function () {
-                    setTimeout(() => {
-                        this.remove()
-                        window.location.reload()
-                    }, 5000);
-                });
-                break;
-            /*
-            case "gameover":
-                ResourceManager.forEachSound(sound => sound.pause())
-                const gameoverDisplay = DialogEntity.Find("gameoverDisplay");
-                gameoverDisplay.init();
-                gameoverDisplay.animateText("game over", 50, { vertical: '10%', horizontal: 'center' }, function () {
-                    setTimeout(() => {
-                        this.remove()
-                        window.location.reload()
-                    }, 5000);
-                });
-                break;
-            */
-        }
     }
 
     public update(time: number, delta: number) {

@@ -24,11 +24,11 @@ class LoadingScene extends Scene {
 
     this.onChange(() => {
       ResourceManager.getSound("elevator").play(false)
-      DialogEntity.Find("loadingDisplay").animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
-          setTimeout(() => {
-              this.remove()
-              GameTest.getInstance().setScene("main");
-          }, 5000);
+      DialogEntity.Find("loadingDisplay").animateText("bem vindo ao inferno", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
+        setTimeout(() => {
+          dialog.remove()
+          GameTest.getInstance().setScene("main");
+        }, 5000);
       });
     })
 

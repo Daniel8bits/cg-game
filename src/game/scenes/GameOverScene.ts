@@ -24,10 +24,10 @@ class GameOverScene extends Scene {
       ResourceManager.forEachSound(sound => sound.pause())
       const gameoverDisplay = DialogEntity.Find("gameoverDisplay");
       gameoverDisplay.init();
-      gameoverDisplay.animateText("game over", 50, { vertical: '10%', horizontal: 'center' }, function () {
+      gameoverDisplay.animateText("game over", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
           setTimeout(() => {
-              this.remove()
-              window.location.reload()
+            dialog.remove()
+            window.location.reload()
           }, 5000);
       });
     })

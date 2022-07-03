@@ -10,6 +10,7 @@ import Lamp from "../Lamp";
 import Player from "../player/Player";
 import Scene from "@razor/core/scenes/Scene";
 import Updater from "@razor/core/updater/Updater";
+import HUD from "../gui/hud/HUD";
 
 
 
@@ -60,7 +61,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
       const value = this.getTransform().getTranslation().distanceTo(Player.getInstance().getTransform().getTranslation());
       if(value < 5 && !this._hitPlayer){
         this._hitPlayer = true;
-        GameController.update("life",-1);
+        (updater.get(HUD.NAME) as  HUD).decrementLife()
         ResourceManager.getSound("damage").play(false, true)
         setTimeout(() => this._hitPlayer = false,1000);
       }

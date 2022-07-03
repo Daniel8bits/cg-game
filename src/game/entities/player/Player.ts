@@ -11,7 +11,9 @@ import Transform from '@razor/math/Transform';
 import Hitbox from '@razor/physics/hitboxes/HitBox';
 import GameController from 'src/game/entities/gui/hud/GameController_old';
 import GameTest from 'src/game/GameTest';
+import EndScene from 'src/game/scenes/EndScene';
 import Renderer from "../../../engine/renderer/Renderer";
+import HUD from '../gui/hud/HUD';
 import { IEntityWithLight } from '../IEntityWithLight';
 import Lamp from '../Lamp';
 import Gun, { GunState } from './Gun';
@@ -60,13 +62,13 @@ class Player extends DynamicEntity implements IEntityWithLight {
     Player._instance = this;
   }
 
-  public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
+  public update(time: number, delta: number, currentScene: Scene, updater: Updater): void {
     if (this._stop) return;
     this._updateCameraPosition()
 
-    this._move(delta, currentScene)
+    this._move(delta, currentScene, updater)
     if(this._end.getTranslation().distanceTo(this.getTransform().getTranslation()) < 10){
-      GameTest.getInstance().setScene("end");
+      GameTest.getInstance().setScene(EndScene.END_SCENE);
     }
 
   }
@@ -75,7 +77,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
     this._end = transform;
   }
 
-  private _move(delta: number, currentScene : Scene): void {
+  private _move(delta: number, currentScene: Scene, updater: Updater): void {
 
     this.getForce().x = 0
     this.getForce().y = 0
@@ -118,13 +120,15 @@ class Player extends DynamicEntity implements IEntityWithLight {
 
 
     if (InputManager.isKeyPressed(Keys.KEY_E) && this._gun.getState() === GunState.CHARGED) { // RIGHT
-      if (GameController.isAmmunition()) {
-        GameController.update("ammunition", -1);
+      const hud = (updater.get("hud") as HUD)
+      if (hud.getAmmo() > 0) {
+        //GameController.update("ammunition", -1);
+        hud.decrementAmmo()
         setTimeout(() => ResourceManager.getSound("gun").play(false, true), 100);
         const position = this.getTransform().getTranslation()
         const ray = new Vector3(0, 0, 20).transform(
           this.getTransform().toInversePositionMatrix()
-        )
+        );
         this._gun.shoot(
           new Vector2(
             position.x,
