@@ -3,21 +3,19 @@ import {Vector3, Pose, Euler, Matrix4} from "@math.gl/core"
 import { toRadians } from "./math";
 import Scene from "@razor/core/scenes/Scene";
 import Entity from "@razor/core/entities/Entity";
+import TransformStruct from "./TransformStruct";
 
 class Transform {
 
     private _entity : Entity;
-    private _translation: Vector3;
-    private _rotation: Orientation;
-    private _scale: Vector3;
+    private _globalTransform: TransformStruct
+    private _localTransform: TransformStruct
     private _children : Scene;
     private _parent : Transform;
 
     public constructor(translation?: Vector3, rotation?: Orientation, scale?: Vector3) {
-        this._translation = translation ?? new Vector3()
-        this._rotation = rotation ?? new Orientation()
-        this._scale = scale ?? new Vector3(1, 1, 1)
-        
+        this._globalTransform = new TransformStruct(translation, rotation, scale)
+        this._localTransform = new TransformStruct()
     }
     
     public setEntity(entity : Entity){
@@ -40,64 +38,64 @@ class Transform {
     
     public getTranslation() : Vector3 {
         return new Vector3(
-            this._translation.x, 
-            this._translation.y, 
-            this._translation.z
+            this._globalTransform.translation.x, 
+            this._globalTransform.translation.y, 
+            this._globalTransform.translation.z
         )
     }
 
     public setTranslation(translation: Vector3) {
-        this._translation.x = translation.x
-        this._translation.y = translation.y
-        this._translation.z = translation.z
+        this._globalTransform.translation.x = translation.x
+        this._globalTransform.translation.y = translation.y
+        this._globalTransform.translation.z = translation.z
     }
 
     public setX(x: number) {
-        this._translation.x = x
+        this._globalTransform.translation.x = x
     }
     public setY(y: number) {
-        this._translation.y = y
+        this._globalTransform.translation.y = y
     }
     public setZ(z: number) {
-        this._translation.z = z
+        this._globalTransform.translation.z = z
     }
     public getX(): number {
-        return this._translation.x
+        return this._globalTransform.translation.x
     }
     public getY(): number {
-        return this._translation.y
+        return this._globalTransform.translation.y
     }
     public getZ(): number {
-        return this._translation.z
+        return this._globalTransform.translation.z
     }
 
     public getRotation() : Orientation {
-        return new Orientation(this._rotation.pitch, this._rotation.yaw, this._rotation.roll)
+        return new Orientation(this._globalTransform.rotation.pitch, this._globalTransform.rotation.yaw, this._globalTransform.rotation.roll)
     }
 
     public setRotation(rotation: Orientation) {
-        this._fixRotation(rotation.pitch, (v) => {this._rotation.pitch = v})
-        this._fixRotation(rotation.yaw, (v) => {this._rotation.yaw = v})
-        this._fixRotation(rotation.roll, (v) => {this._rotation.roll = v})
+        this._fixRotation(rotation.pitch, (v) => {this._globalTransform.rotation.pitch = v})
+        this._fixRotation(rotation.yaw, (v) => {this._globalTransform.rotation.yaw = v})
+        this._fixRotation(rotation.roll, (v) => {this._globalTransform.rotation.roll = v})
     }
 
     public setPitch(pitch: number) {
-        this._fixRotation(pitch, (v) => {this._rotation.pitch = v})
+        this._fixRotation(pitch, (v) => {this._globalTransform.rotation.pitch = v})
     }
     public setYaw(yaw: number) {
-        this._fixRotation(yaw, (v) => {this._rotation.yaw = v})
+        this._fixRotation(yaw, (v) => {this._globalTransform.rotation.yaw = v})
     }
     public setRoll(roll: number) {
-        this._fixRotation(roll, (v) => {this._rotation.roll = v})
+        this._fixRotation(roll, (v) => {this._globalTransform.rotation.roll = v})
     }
     public getPitch(): number {
-        return this._rotation.pitch
+        return this._globalTransform.rotation.pitch
     }
     public getYaw(): number {
-        return this._rotation.yaw
+        return this._globalTransform.rotation.yaw
     }
     public getRoll(): number {
-        return this._rotation.roll
+        return this._globalTransform.rotation.roll
     }
 
     private _fixRotation(v: number, set: (v: number) => void): void {
@@ -113,65 +111,29 @@ class Transform {
     }
 
     public getScale() : Vector3 {
-        return new Vector3(this._scale.x, this._scale.y, this._scale.z)
+        return new Vector3(this._globalTransform.scale.x, this._globalTransform.scale.y, this._globalTransform.scale.z)
     }
 
     public setScale(scale: Vector3) {
-        this._scale = scale
+        this._globalTransform.scale = scale
     }
 
-    public toMatrix() : Matrix4 {
-
-        const translation = new Matrix4().translate(this._translation.clone().negate());
-
-        //const rotation = new Matrix4().fromQuaternion(this._rotation);
-        //const rotation = this._rotation.getRotationMatrix();
-        
-
-        const rotationX = new Matrix4().rotateX(toRadians(this._rotation.pitch))
-        const rotationY = new Matrix4().rotateY(toRadians(this._rotation.yaw))
-        const rotationZ = new Matrix4().rotateZ(toRadians(this._rotation.roll))
-
-        const rotation = rotationX.multiplyRight(rotationY.multiplyRight(rotationZ))
-
-        const scale = new Matrix4().scale(this._scale);
-
-        return translation.multiplyRight(rotation.multiplyRight(scale))
-        //return scale.multiplyRight(this._pose.getTransformationMatrix())
+    public toMatrix(): Matrix4 {
+        return this._globalTransform.toMatrix().multiplyRight(
+            this._localTransform.toMatrix()
+        )
     }
 
-    public toMatrixIgnoringZ() : Matrix4 {
-
-        const translation = new Matrix4().translate(new Vector3(
-            this._translation.x,
-            this._translation.y,
-            0
-        ).negate());
-
-        const rotationX = new Matrix4().rotateX(toRadians(this._rotation.pitch))
-        const rotationY = new Matrix4().rotateY(toRadians(this._rotation.yaw))
-        const rotationZ = new Matrix4().rotateZ(toRadians(this._rotation.roll))
-
-        const rotation = rotationX.multiplyRight(rotationY.multiplyRight(rotationZ))
-
-        const scale = new Matrix4().scale(this._scale);
-
-        return translation.multiplyRight(rotation.multiplyRight(scale))
+    public toMatrixIgnoringZ(): Matrix4 {
+        return this._globalTransform.toMatrixIgnoringZ().multiplyRight(
+            this._localTransform.toMatrixIgnoringZ()
+        )
     }
 
     public toInversePositionMatrix() : Matrix4 {
-
-        const translation = new Matrix4().translate(this._translation.clone());
-
-        const rotationX = new Matrix4().rotateX(toRadians(this._rotation.pitch))
-        const rotationY = new Matrix4().rotateY(toRadians(this._rotation.yaw))
-        const rotationZ = new Matrix4().rotateZ(toRadians(this._rotation.roll))
-
-        const rotation = rotationX.multiplyRight(rotationY.multiplyRight(rotationZ))
-
-        const scale = new Matrix4().scale(this._scale);
-
-        return translation.multiplyRight(rotation.multiplyRight(scale))
+        return this._globalTransform.toInversePositionMatrix().multiplyRight(
+            this._localTransform.toInversePositionMatrix()
+        )
     }
 
     public worldMatrix() : Matrix4{
@@ -207,11 +169,16 @@ class Transform {
     }
     
     public worldTranslation(): Vector3 {
-        let worldTranslation = this._translation.clone()
+        let worldTranslation = this._globalTransform.translation.clone().add(
+                this._localTransform.translation)
         if(this._parent){
             worldTranslation = this._parent.worldTranslation().add(worldTranslation);
         }
         return worldTranslation;
+    }
+
+    public getLocalTransform(): TransformStruct {
+        return this._localTransform
     }
 
 }

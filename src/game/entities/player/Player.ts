@@ -19,9 +19,13 @@ import Gun, { GunState } from './Gun';
 
 class Player extends DynamicEntity implements IEntityWithLight {
 
+  private readonly WALKING_DISTANCE: number = 300
+  private readonly WALKING_HEIGHT: number = 8
+
   private _camera: Camera;
   private _sensitivity: number
   private _impulse: number
+  private _walking: number
 
   private _handTransform: Transform
   private _gun: Gun
@@ -48,7 +52,8 @@ class Player extends DynamicEntity implements IEntityWithLight {
     );
     this._camera = camera;
     this._sensitivity = 7.5
-    this._impulse = 100
+    this._impulse = 75
+    this._walking = 0
     this._handTransform = new Transform(
       new Vector3(-0.8, 1, 1.5),
       new Orientation(0, 180, 20),
@@ -65,6 +70,7 @@ class Player extends DynamicEntity implements IEntityWithLight {
     if (this._stop) return;
     this._updateCameraPosition()
 
+    this._walkingMovement(delta)
     this._move(delta, currentScene, updater)
 
     if(this._end.getTranslation().distanceTo(this.getTransform().getTranslation()) < 10){
@@ -162,16 +168,41 @@ class Player extends DynamicEntity implements IEntityWithLight {
 
     if (Razor.IS_MOUSE_INSIDE) {
       const dx = InputManager.getMouseDX()
-      const dy = InputManager.getMouseDY()
 
       const rotation = this.getTransform().getRotation()
       this.getTransform().setYaw(rotation.yaw + dx * this._sensitivity * delta)
     }
 
+  }
 
+  private _walkingMovement(delta: number): void {
+    if (!this.getForce().exactEquals([0, 0, 0])) {
+      this._walking += delta * this.WALKING_DISTANCE
+      if(this._walking >= 180) {
+        this._walking -= 180
+      }
+      this.getTransform().getLocalTransform()
+        .translation.y = -Math.abs(Math.sin(toRadians(this._walking))) / this.WALKING_HEIGHT
+    } else if (this._walking > 0 && this._walking <= 90) {
+      this._walking -= delta * this.WALKING_DISTANCE
+      if(this._walking < 0) {
+        this._walking = 0
+      }
+      this.getTransform().getLocalTransform()
+        .translation.y = -Math.abs(toRadians(this._walking)) / this.WALKING_HEIGHT
+    } else if (this._walking > 90 && this._walking < 180) {
+      this._walking += delta * this.WALKING_DISTANCE
+      if(this._walking >= 180) {
+        this._walking = 0
+      }
+      this.getTransform().getLocalTransform()
+        .translation.y = -Math.abs(Math.sin(toRadians(this._walking))) / this.WALKING_HEIGHT
+    }
   }
 
   private _updateCameraPosition(): void {
+    const localTransform = this._camera.getTransform().getLocalTransform()
+    localTransform.translation.y = this.getTransform().getLocalTransform().translation.y
     this._camera.getTransform().setTranslation(
       this.getTransform().getTranslation()
     )
