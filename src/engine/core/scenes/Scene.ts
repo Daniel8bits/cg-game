@@ -34,8 +34,8 @@ class Scene implements IUpdatable {
         })
     }
 
-    public render(): void {
-        this._renderStrategy.render(this);
+    public render(delta: number): void {
+        this._renderStrategy.render(delta, this);
     }
 
     /**

@@ -14,13 +14,17 @@ import Gun from "../entities/player/Gun";
 import Monster from "../entities/monster/Monster";
 import MonsterRenderer from "../renderers/MonsterRenderer";
 import PathFinding from "../pathfinding/PathFinding";
-import FrameRenderer from "../renderers/FrameRenderer";
+import BloomRenderer from "../renderers/BloomRenderer";
 import DialogEntity from "../entities/gui/common/DialogEntity";
 import Updater from "@razor/core/updater/Updater";
 import HUD from "../entities/gui/hud/HUD";
 import GuiRenderer from "../renderers/GuiRenderer";
+import FadingRenderer from "../renderers/FadingRenderer";
+import GameTest from "../GameTest";
 
 class MainScene extends PhysicsScene {
+
+  public static readonly NAME: string = "main"
 
   private _camera: Camera
   private _entityFactory: EntityFactory
@@ -31,10 +35,12 @@ class MainScene extends PhysicsScene {
   private _lampSortingTimer: number
   private _pathFindingCalculationTimer: number
   private _hud: HUD
+  
+  private _frameBuffer: BloomRenderer[] = [];
+  private _fading: FadingRenderer
 
-  private _frameBuffer: FrameRenderer[] = [];
-  public constructor(camera: Camera) {
-    super('main')
+  public constructor(camera: Camera, fadingRenderer: FadingRenderer) {
+    super(MainScene.NAME)
     this._camera = camera
     this._entityFactory = new EntityFactory(this, this.getRenderStrategy())
     this._player = null
@@ -43,6 +49,7 @@ class MainScene extends PhysicsScene {
     this._pathFinding = null
     this._lampSortingTimer = 3
     this._pathFindingCalculationTimer = 5
+    this._fading = fadingRenderer
   }
 
   public init(updater: Updater) {
@@ -50,8 +57,8 @@ class MainScene extends PhysicsScene {
     this._hud = new HUD(this)
     updater.add(this._hud)
 
-    this._frameBuffer.push(new FrameRenderer(this._camera,'albedo', 1));
-    this._frameBuffer.push(new FrameRenderer(this._camera,'mascara', 0.25));
+    this._frameBuffer.push(new BloomRenderer(this._camera,'albedo', 1));
+    this._frameBuffer.push(new BloomRenderer(this._camera,'mascara', 0.25));
 
     this._player = new Player(
       'player', 
@@ -106,6 +113,7 @@ class MainScene extends PhysicsScene {
     this._pathFinding.loadNodes()
 
     this.onChange(() => {
+      this._fading.fadeIn()
       this._camera.getTransform().setTranslation(new Vector3(51.1, 0, -88))
       this._camera.getTransform().setRotation( new Orientation(0, -32));
       DialogEntity.Find("display").animateText("chegue ate o elevador", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
@@ -113,6 +121,13 @@ class MainScene extends PhysicsScene {
       });
     })
 
+  }
+
+  public gameOver(scene: string): void {
+    this._fading.fadeOut()
+    setTimeout(() => {
+      GameTest.getInstance().setScene(scene)
+    }, 1000);
   }
 
   public update(time: number, delta: number, updater: Updater) {
@@ -145,19 +160,21 @@ class MainScene extends PhysicsScene {
 
   }
 
-  public render(): void {
+  public render(delta: number): void {
     this._frameBuffer[0].bind();
-    super.render();
+    super.render(delta);
     this._frameBuffer[0].unbind();
-    this._frameBuffer[0].render();
+    this._frameBuffer[0].prepare();
     
-    //this._frameBuffer[1].getFramebuffer().setResolution(0.25);
     this._frameBuffer[1].bind();
-    super.render();
+    super.render(delta);
     this._frameBuffer[1].unbind();
-    //this._frameBuffer[1].getFramebuffer().setResolution(1);
-    this._frameBuffer[1].render();
-//    super.render()
+    this._frameBuffer[1].renderBloom(delta);
+
+    this._fading.getFrameBuffer().bind()
+    this._frameBuffer[1].render(delta);
+    this._fading.getFrameBuffer().unbind()
+    this._fading.render(delta)
   }
 
 }

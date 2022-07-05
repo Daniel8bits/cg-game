@@ -1,11 +1,10 @@
 import { Vector3 } from "@math.gl/core";
 import Razor from "@razor/core/Razor";
-import Scene from "@razor/core/scenes/Scene";
 import IUpdatable from "@razor/core/updater/IUpdatable";
 import Updater from "@razor/core/updater/Updater";
-import GameTest from "src/game/GameTest";
 import GuiRenderer from "src/game/renderers/GuiRenderer";
 import GameOverScene from "src/game/scenes/GameOverScene";
+import MainScene from "src/game/scenes/MainScene";
 import DialogEntity from "../common/DialogEntity";
 import ImageEntity from "../common/ImageEntity";
 import DisplayEntity from "../DisplayEntity";
@@ -14,7 +13,7 @@ class HUD implements IUpdatable {
 
   public static readonly NAME = "hud"
 
-  private _scene: Scene
+  private _scene: MainScene
 
   // hud objects
   private _life: DisplayEntity
@@ -24,7 +23,7 @@ class HUD implements IUpdatable {
   private _lifeValue: number
   private _ammoValue: number
 
-  public constructor(scene: Scene) {
+  public constructor(scene: MainScene) {
     this._scene = scene
     this._init(scene.getRenderStrategy().get("guirenderer") as GuiRenderer)
   }
@@ -55,7 +54,8 @@ class HUD implements IUpdatable {
 
   public update(time: number, delta: number, updater: Updater): void {
     if(this._lifeValue === 0){
-      GameTest.getInstance().setScene(GameOverScene.GAMEOVER_SCENE);
+      //GameTest.getInstance().setScene(GameOverScene.GAMEOVER_SCENE);
+      this._scene.gameOver(GameOverScene.GAMEOVER_SCENE)
     }
   }
 

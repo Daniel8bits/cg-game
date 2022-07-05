@@ -24,7 +24,7 @@ class GameLoop {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
         InputManager.update()
         this._gameCore.update(time, delta);
-        this._gameCore.render();
+        this._gameCore.render(delta);
         //this._frameBuffer.render();
         requestAnimationFrame(this.loop);
     }

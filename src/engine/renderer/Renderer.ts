@@ -41,7 +41,7 @@ abstract class Renderer {
         )
     }
 
-    public abstract render(): void;
+    public abstract render(delta: number): void;
 
     public getName(): string { 
         return this._name

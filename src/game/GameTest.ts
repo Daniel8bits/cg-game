@@ -18,7 +18,6 @@ import DisplayEntity from "./entities/gui/DisplayEntity";
 import Player from "./entities/player/Player";
 import MonsterRenderer from "./renderers/MonsterRenderer";
 
-import GameController from "./entities/gui/hud/GameController_old";
 import Gun from "./entities/player/Gun";
 import DoorPanelMaterial from "./materials/DoorPanelMaterial";
 import PlayerRenderer from "./renderers/PlayerRenderer";
@@ -28,11 +27,11 @@ import MainScene from "./scenes/MainScene";
 import CreditsMenu from "./scenes/menu/CreditsMenu";
 import MainMenu from "./scenes/menu/MainMenu";
 import EndScene from "./scenes/EndScene";
+import FadingRenderer from "./renderers/FadingRenderer";
 
 class GameTest extends GameCore {
 
     private _camera: CanvasCamera
-    private _gameController: GameController;
     private static instance: GameTest;
     private _guiRenderer: GuiRenderer;
     public constructor() {
@@ -147,6 +146,13 @@ class GameTest extends GameCore {
             name: 'effect',
             vertexShaderPathname: '/resources/shader/effect/vert.glsl',
             fragmentShaderPathname: '/resources/shader/effect/frag.glsl'
+        }])
+
+        /* Shader do Fading */
+        ResourceManager.loadShader([{
+            name: 'fading',
+            vertexShaderPathname: '/resources/shader/fading/vert.glsl',
+            fragmentShaderPathname: '/resources/shader/fading/frag.glsl'
         }])
 
         ResourceManager.loadTextures([
@@ -359,7 +365,9 @@ class GameTest extends GameCore {
                 vao.create();
             })
 
-        const scene1 = new MainScene(this._camera)
+        const fadingRenderer = new FadingRenderer(this._camera);
+
+        const scene1 = new MainScene(this._camera, fadingRenderer)
 
         const mapRenderer = new MapRenderer(this._camera);
         scene1.getRenderStrategy().add(mapRenderer)
@@ -402,19 +410,19 @@ class GameTest extends GameCore {
                 */
 
         /* Credits Scene */
-        this.getSceneManager().add(new CreditsMenu(guiRenderer));
+        this.getSceneManager().add(new CreditsMenu(guiRenderer, fadingRenderer));
         
         /* GameOver Scene */
-        this.getSceneManager().add(new GameOverScene(guiRenderer));
+        this.getSceneManager().add(new GameOverScene(guiRenderer, fadingRenderer));
 
         /* Loading Scene */
-        this.getSceneManager().add(new LoadingScene(guiRenderer));
+        this.getSceneManager().add(new LoadingScene(guiRenderer, fadingRenderer));
 
         /* End Scene */
-        this.getSceneManager().add(new EndScene(guiRenderer), true);
+        this.getSceneManager().add(new EndScene(guiRenderer, fadingRenderer), true);
 
         /* Menu Scene */
-        this.getSceneManager().add(new MainMenu(guiRenderer));
+        this.getSceneManager().add(new MainMenu(guiRenderer, fadingRenderer));
 
 
         this.setScene(MainMenu.MAIN_MENU);
@@ -442,8 +450,8 @@ class GameTest extends GameCore {
         `;*/
     }
 
-    public render() {
-        super.render();
+    public render(delta: number) {
+        super.render(delta);
     }
 
 }

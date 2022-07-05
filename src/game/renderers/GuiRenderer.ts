@@ -9,7 +9,7 @@ import { toRadians } from "@razor/math/math";
 import Lamp from "../entities/Lamp";
 import Razor from "@razor/core/Razor";
 import ImageEntity from "../entities/gui/common/ImageEntity";
-import FrameRenderer from "./FrameRenderer";
+import BloomRenderer from "./BloomRenderer";
 
 class GuiRenderer extends Renderer {
 
@@ -30,10 +30,40 @@ class GuiRenderer extends Renderer {
     public render() {
         gl.disable(gl.CULL_FACE)
         //gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+/*
+        const rectangleMaterial = ResourceManager.getMaterial("rectangle")
+        const textMaterial = ResourceManager.getMaterial("text")
+
+        this.getEntitiesByMaterial(rectangleMaterial)
+            .concat(this.getEntitiesByMaterial(textMaterial))
+            .sort((entityA, entityB) => entityA.getTransform().getZ() - entityB.getTransform().getZ())
+            .forEach(entity => {
+                entity.getMaterial().bind()
+                const shader = entity.getMaterial().getShader();
+                shader.setFloat('u_onlyLights',FrameRenderer.mode == "mascara" ? 1 : 0);
+                shader.setMatrix4x4('u_projection', this._projection);
+
+                if('color' in entity){
+                    //@ts-ignore
+                    let color = entity.color;
+                    //@ts-ignore
+                    color = new Vector4(color.x,color.y,color.z,'alpha' in entity ? entity.alpha : 0.1);
+                    shader.setVector4('u_color',color);
+                }
+
+                shader.setMatrix4x4('u_transform', entity.getTransform().worldMatrixIgnoringZ());
+                entity.render();
+                entity.getVAO().bind()
+                GLUtils.draw(entity.getVAO().getLength())
+                entity.getVAO().unbind();
+                entity.getMaterial().unbind()
+            })
+*/
+
         ResourceManager.forEachMaterial((material) => {
             material.bind()
             const shader = material.getShader();
-            shader.setFloat('u_onlyLights',FrameRenderer.mode == "mascara" ? 1 : 0);
+            shader.setFloat('u_onlyLights',BloomRenderer.mode == "mascara" ? 1 : 0);
             shader.setMatrix4x4('u_projection', this._projection);
             this.getEntitiesByMaterial(material).forEach((entity: Entity, index: number) => {
                 if('color' in entity){

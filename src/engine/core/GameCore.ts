@@ -20,8 +20,8 @@ abstract class GameCore {
         this._updater.update(time, delta);
     }
 
-    public render(): void {
-        this._sceneManager.render();
+    public render(delta: number): void {
+        this._sceneManager.render(delta);
     }
 
     public setScene(scene : string | Scene) : SceneManager{

@@ -9,9 +9,8 @@ import Updater from '@razor/core/updater/Updater';
 import Orientation from '@razor/math/Orientation';
 import Transform from '@razor/math/Transform';
 import Hitbox from '@razor/physics/hitboxes/HitBox';
-import GameController from 'src/game/entities/gui/hud/GameController_old';
-import GameTest from 'src/game/GameTest';
 import EndScene from 'src/game/scenes/EndScene';
+import MainScene from 'src/game/scenes/MainScene';
 import Renderer from "../../../engine/renderer/Renderer";
 import HUD from '../gui/hud/HUD';
 import { IEntityWithLight } from '../IEntityWithLight';
@@ -67,8 +66,10 @@ class Player extends DynamicEntity implements IEntityWithLight {
     this._updateCameraPosition()
 
     this._move(delta, currentScene, updater)
+
     if(this._end.getTranslation().distanceTo(this.getTransform().getTranslation()) < 10){
-      GameTest.getInstance().setScene(EndScene.END_SCENE);
+      //GameTest.getInstance().setScene(EndScene.END_SCENE);
+      (currentScene as MainScene).gameOver(EndScene.END_SCENE)
     }
 
   }

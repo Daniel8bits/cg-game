@@ -18,8 +18,8 @@ class SceneManager implements IUpdatable {
         this._active = null;
     }
 
-    public render(): void {
-        this._active.render()
+    public render(delta: number): void {
+        this._active.render(delta)
     }
 
     public update(time: number, delta: number, updater: Updater): void {

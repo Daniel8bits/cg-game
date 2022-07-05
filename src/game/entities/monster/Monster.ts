@@ -1,16 +1,15 @@
-import { toRadians, Vector2, Vector3 } from "@math.gl/core";
+import { Vector2, Vector3 } from "@math.gl/core";
 import DynamicEntity from "@razor/core/entities/DynamicEntity";
 import ResourceManager from "@razor/core/ResourceManager";
+import Scene from "@razor/core/scenes/Scene";
+import Updater from "@razor/core/updater/Updater";
 import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import Renderer from "@razor/renderer/Renderer";
-import GameController from "../gui/hud/GameController_old";
 import PathNode from "../../pathfinding/PathNode";
+import HUD from "../gui/hud/HUD";
 import { IEntityWithLight } from "../IEntityWithLight";
 import Lamp from "../Lamp";
 import Player from "../player/Player";
-import Scene from "@razor/core/scenes/Scene";
-import Updater from "@razor/core/updater/Updater";
-import HUD from "../gui/hud/HUD";
 
 
 
@@ -81,8 +80,6 @@ class Monster extends DynamicEntity implements IEntityWithLight {
     )
     if(distance < 2) {
       this._pathIndex++
-      console.log(this._path[this._pathIndex]);
-      
     }
   }
 
