@@ -1,26 +1,26 @@
-import PhysicsScene from "@razor/core/scenes/PhysicsScene";
-import RenderStrategy from "@razor/renderer/RenderStrategy";
-import EntityFactory from "../entities/EntityFactory";
-import DoorPanelEntity from "../entities/DoorPanelEntity";
-import HallDoorEntity from "../entities/HallDoorEntity";
-import Player from "../entities/player/Player";
-import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import { Vector3 } from "@math.gl/core";
-import Orientation from "@razor/math/Orientation";
 import Camera from "@razor/core/Camera";
-import Lamp from "../entities/Lamp";
 import Entity from "@razor/core/entities/Entity";
-import Gun from "../entities/player/Gun";
+import ResourceManager from "@razor/core/ResourceManager";
+import PhysicsScene from "@razor/core/scenes/PhysicsScene";
+import Updater from "@razor/core/updater/Updater";
+import Orientation from "@razor/math/Orientation";
+import Transform from "@razor/math/Transform";
+import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
+import DoorPanelEntity from "../entities/DoorPanelEntity";
+import EntityFactory from "../entities/EntityFactory";
+import DialogEntity from "../entities/gui/common/DialogEntity";
+import HUD from "../entities/gui/hud/HUD";
+import HallDoorEntity from "../entities/HallDoorEntity";
+import Lamp from "../entities/Lamp";
 import Monster from "../entities/monster/Monster";
-import MonsterRenderer from "../renderers/MonsterRenderer";
+import Gun from "../entities/player/Gun";
+import Player from "../entities/player/Player";
+import GameTest from "../GameTest";
 import PathFinding from "../pathfinding/PathFinding";
 import BloomRenderer from "../renderers/BloomRenderer";
-import DialogEntity from "../entities/gui/common/DialogEntity";
-import Updater from "@razor/core/updater/Updater";
-import HUD from "../entities/gui/hud/HUD";
-import GuiRenderer from "../renderers/GuiRenderer";
 import FadingRenderer from "../renderers/FadingRenderer";
-import GameTest from "../GameTest";
+import EndScene from "./EndScene";
 
 class MainScene extends PhysicsScene {
 
@@ -35,6 +35,7 @@ class MainScene extends PhysicsScene {
   private _lampSortingTimer: number
   private _pathFindingCalculationTimer: number
   private _hud: HUD
+  private _gameOver: boolean
   
   private _frameBuffer: BloomRenderer[] = [];
   private _fading: FadingRenderer
@@ -50,6 +51,7 @@ class MainScene extends PhysicsScene {
     this._lampSortingTimer = 3
     this._pathFindingCalculationTimer = 5
     this._fading = fadingRenderer
+    this._gameOver = false
   }
 
   public init(updater: Updater) {
@@ -109,7 +111,6 @@ class MainScene extends PhysicsScene {
     })
 
     this._pathFinding = new PathFinding(this, this._player)
-        
     this._pathFinding.loadNodes()
 
     this.onChange(() => {
@@ -121,19 +122,37 @@ class MainScene extends PhysicsScene {
       });
     })
 
+    ResourceManager.getSound('monster-damage').setListener(this._player.getTransform())
+    ResourceManager.getSound('monster-death').setListener(this._player.getTransform())
+    ResourceManager.getSound('monster-attack').setListener(this._player.getTransform())
+
+    const whispersSound = ResourceManager.getSound('whispers')
+    whispersSound.setOrigin(this.getEndPoint())
+    whispersSound.setListener(this._player.getTransform())
+    whispersSound.play(true)
+
   }
 
   public gameOver(scene: string): void {
+    if(this._gameOver) return;
     this._fading.fadeOut()
+    this._gameOver = true
     setTimeout(() => {
+      ResourceManager.getSound('whispers').pause()
       GameTest.getInstance().setScene(scene)
     }, 1000);
+  }
+
+  public calculatePathFinding(monster: Monster): void {
+    this._pathFinding.connectNearestNodesToPlayer()
+    const path = this._pathFinding.find(monster);
+    monster.setPath(path)
   }
 
   public update(time: number, delta: number, updater: Updater) {
     super.update(time, delta, updater);
 
-    if(this._lampSortingTimer > 3) {
+    if(this._lampSortingTimer >= 3) {
       this._player.setLampList(this._entityFactory.get5ClosestLamps(this._player, this._lamps))
       this._gun.setLampList(this._entityFactory.get5ClosestLamps(this._gun, this._lamps, this._gun.getTransform().worldTranslation()))
       this.filterVisible(entity => entity instanceof Monster && 
@@ -142,21 +161,24 @@ class MainScene extends PhysicsScene {
         (monster as Monster)
           .setLampList(this._entityFactory.get5ClosestLamps(monster, this._lamps))
       })
-      this._lampSortingTimer = 0
+      this._lampSortingTimer -= 3
+    } else {
+      this._lampSortingTimer += delta
     }
-    this._lampSortingTimer += delta
 
-    if(this._pathFindingCalculationTimer > 5) {
+    if(this._pathFindingCalculationTimer >= 5) {
       this.filterVisible(entity => entity instanceof Monster && 
         (entity as Monster).isTriggered())
-      .forEach(monster => {
-          this._pathFinding.connectNearestNodesToPlayer()
-          const path = this._pathFinding.find(monster as Monster);
-          (monster as Monster).setPath(path)
-        })
-      this._pathFindingCalculationTimer = 0
+      .forEach(this.calculatePathFinding.bind(this))
+      this._pathFindingCalculationTimer -= 5
+    } else {
+      this._pathFindingCalculationTimer += delta
     }
-    this._pathFindingCalculationTimer += delta
+
+
+    if(this.getEndPoint().getTranslation().distanceTo(this._player.getTransform().getTranslation()) < 10){
+      this.gameOver(EndScene.END_SCENE)
+    }
 
   }
 
@@ -175,6 +197,14 @@ class MainScene extends PhysicsScene {
     this._frameBuffer[1].render(delta);
     this._fading.getFrameBuffer().unbind()
     this._fading.render(delta)
+  }
+
+  public getEndPoint(): Transform {
+    return this.get("elevator_1").getTransform()
+  }
+
+  public isGameOver(): boolean {
+    return this._gameOver
   }
 
 }

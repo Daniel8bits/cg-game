@@ -23,19 +23,20 @@ class GameOverScene extends Scene {
     const gameoverDisplay = new DialogEntity("gameoverDisplay", renderer);
     this.add(gameoverDisplay);
     gameoverDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
+    gameoverDisplay.init();
 
     this.onChange(() => {
+      this._fading.fadeIn()
       ResourceManager.forEachSound(sound => sound.pause())
-      const gameoverDisplay = DialogEntity.Find("gameoverDisplay");
-      gameoverDisplay.init();
+      ResourceManager.getSound('death-track').play(true)
       gameoverDisplay.animateText("game over", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
         setTimeout(() => {
           this._fading.fadeOut()
-        }, 4000);
+        }, 29000);
         setTimeout(() => {
           dialog.remove()
           window.location.reload()
-        }, 5000);
+        }, 30000);
       });
     })
 

@@ -53,8 +53,7 @@ class HUD implements IUpdatable {
   }
 
   public update(time: number, delta: number, updater: Updater): void {
-    if(this._lifeValue === 0){
-      //GameTest.getInstance().setScene(GameOverScene.GAMEOVER_SCENE);
+    if(this._lifeValue === 0 && !this._scene.isGameOver()){
       this._scene.gameOver(GameOverScene.GAMEOVER_SCENE)
     }
   }

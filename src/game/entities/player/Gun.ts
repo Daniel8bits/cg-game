@@ -9,6 +9,7 @@ import Orientation from "@razor/math/Orientation";
 import Transform from "@razor/math/Transform";
 import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import Renderer from "@razor/renderer/Renderer";
+import HUD from "../gui/hud/HUD";
 import { IEntityWithLight } from "../IEntityWithLight";
 import Lamp from "../Lamp";
 import Monster from "../monster/Monster";
@@ -85,7 +86,17 @@ class Gun extends Entity implements IEntityWithLight {
     
   }
 
-  public shoot(playerPosition: Vector2, rayCasting: Vector2, currentScene: Scene) {
+  public shoot(playerPosition: Vector2, rayCasting: Vector2, currentScene: Scene, updater: Updater) {
+
+    const hud = (updater.get("hud") as HUD)
+
+    if(hud.getAmmo() === 0) {
+      ResourceManager.getSound("empty_gun").play()
+      return;
+    }
+
+    hud.decrementAmmo()
+    setTimeout(() => ResourceManager.getSound("gun").play(false, true), 100);
 
     this._state = GunState.RECHARGING
 

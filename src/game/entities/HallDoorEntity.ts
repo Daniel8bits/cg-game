@@ -113,7 +113,7 @@ class HallDoorEntity extends MapEntity {
       DialogEntity.getDialog("display").animateText("door was opened", 30, { vertical: '10%', horizontal: 'center' }, (dialog) => {
         setTimeout(() => { 
           dialog.remove()
-          this._takeAmmo(updater)
+          this._giveAmmo(updater)
         }, 1000);
       });
       ResourceManager.getSound("door").play()
@@ -124,11 +124,11 @@ class HallDoorEntity extends MapEntity {
     }
   }
 
-  private _takeAmmo(updater: Updater): void {
+  private _giveAmmo(updater: Updater): void {
     if(!this._giveAmmunition) {
       this._giveAmmunition = true;
       const hud = updater.get(HUD.NAME) as HUD
-      hud.setAmmo(hud.getAmmo() + 50)
+      hud.setAmmo(hud.getAmmo() + 20)
       DialogEntity.getDialog("display").animateText("ammo collected", 30, { vertical: '10%', horizontal: 'center' }, (dialog) => {
         setTimeout(() => dialog.remove(), 500);
       });

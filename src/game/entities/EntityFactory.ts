@@ -165,7 +165,7 @@ class EntityFactory {
           new Vector3(1, 0, 0)
         )
       case 'hall-door':
-        let transform;
+        let transform: Transform;
         if(options?.camera){
           transform = new Transform(options.camera.translation,new Orientation(options.camera.rotation.x,options.camera.rotation.y,options.camera.rotation.z))
         }

@@ -92,6 +92,27 @@ class GameTest extends GameCore {
                 name: "damage",
                 pathname: "/resources/sound/damage.wav"
             },
+
+            {
+                name: "death-track",
+                pathname: "/resources/sound/death-track.wav"
+            },
+            {
+                name: "monster-attack",
+                pathname: "/resources/sound/monster-attack.mp3"
+            },
+            {
+                name: "monster-death",
+                pathname: "/resources/sound/monster-death.mp3"
+            },
+            {
+                name: "monster-damage",
+                pathname: "/resources/sound/monster-damage.wav"
+            },
+            {
+                name: "whispers",
+                pathname: "/resources/sound/whispers.mp3"
+            },
         ])
 
         this._camera = new CanvasCamera('main', new Vector3(51.1, 0, -88), new Orientation(0, -32));
@@ -389,25 +410,6 @@ class GameTest extends GameCore {
             scene1.get('gun') as Gun
         )
         monsterRenderer.setPlayer(scene1.get('player') as Player)
-        
-        /*
-        dialog.animateText("bem vindo ao inferno", 50, { vertical: '10%', horizontal: 'center' }, function () {
-            setTimeout(() => this.remove(), 5000);
-        });*/
-        //elevator
-        /*
-                        const pauseContainer = new GuiEntity("pause_container",guiRenderer);
-                        pauseContainer.getTransform().setTranslation(new Vector3(0,0,-1));
-                        this.getSceneManager().getActive().add(pauseContainer);
-                        const rectanglePause = pauseContainer.addRectangle("pause_rectangle");
-                        rectanglePause.setAlpha(1);
-                        rectanglePause.getTransform().setScale(new Vector3(Razor.CANVAS.width,Razor.CANVAS.height,1));
-                        rectanglePause.color = new Vector3(0.1,0.1,0.1);
-                        const textPause = pauseContainer.addText("pause_text");
-                        textPause.setText("Pause");
-                        textPause.updatePosition({horizontal:"left",vertical:"top"})
-                        textPause.getTransform().setTranslation(new Vector3(0,0,-1));
-                */
 
         /* Credits Scene */
         this.getSceneManager().add(new CreditsMenu(guiRenderer, fadingRenderer));
@@ -426,9 +428,10 @@ class GameTest extends GameCore {
 
 
         this.setScene(MainMenu.MAIN_MENU);
+
+        //ResourceManager.getSound('death-track').pause()
+        //ResourceManager.getSound('death-track').play(true)
         
-        const playerEntity = Player.Find("player");
-        playerEntity.setEndPoint(DoorPanelEntity.Find("elevator_1").getTransform())
     }
 
     public update(time: number, delta: number) {

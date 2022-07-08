@@ -5,6 +5,7 @@ import Scene from "@razor/core/scenes/Scene";
 import Updater from "@razor/core/updater/Updater";
 import CircleHitbox from "@razor/physics/hitboxes/CircleHitbox";
 import Renderer from "@razor/renderer/Renderer";
+import MainScene from "src/game/scenes/MainScene";
 import PathNode from "../../pathfinding/PathNode";
 import HUD from "../gui/hud/HUD";
 import { IEntityWithLight } from "../IEntityWithLight";
@@ -26,6 +27,7 @@ class Monster extends DynamicEntity implements IEntityWithLight {
   private _player: Player
 
   private _hitPlayer : boolean;
+
   public constructor(name: string, renderer: Renderer, player: Player) {
     super(
       name,
@@ -49,23 +51,28 @@ class Monster extends DynamicEntity implements IEntityWithLight {
     if(Player.getInstance().getStop()) return;
 
     if(!this._triggered && this._shouldTrigger()) {
-
+      
       this._triggered = true
-      this.getHitbox().disableCollision(false)
+      this.getHitbox().disableCollision(false);
+      (currentScene as MainScene).calculatePathFinding(this)
 
     } else if (this._path.length > 0 && this._triggered) {
 
       this._updatePathIndex(this._path[this._pathIndex])
       this._move(this._path[this._pathIndex], delta)
-      const value = this.getTransform().getTranslation().distanceTo(Player.getInstance().getTransform().getTranslation());
-      if(value < 5 && !this._hitPlayer){
+
+      const distanceToPlayer = this.getTransform().getTranslation().distanceTo(Player.getInstance().getTransform().getTranslation());
+      if(distanceToPlayer < 5 && !this._hitPlayer){
         this._hitPlayer = true;
-        (updater.get(HUD.NAME) as  HUD).decrementLife()
-        ResourceManager.getSound("damage").play(false, true)
-        setTimeout(() => this._hitPlayer = false,1000);
+        const monsterAttackSound = ResourceManager.getSound("monster-attack")
+        monsterAttackSound.setOrigin(this.getTransform())
+        monsterAttackSound.play(false, true);
+        setTimeout(() => Player.getInstance().takeDamage(updater), 200)
+        setTimeout(() => this._hitPlayer = false, 1000);
       }
       
     }
+
   }
 
   private _updatePathIndex(node: PathNode): void{
@@ -106,6 +113,15 @@ class Monster extends DynamicEntity implements IEntityWithLight {
 
   public takeDamage(): boolean {
     this._health--
+    setTimeout(() => {
+      let soundName = 'monster-damage'
+      if(this._health === 0) {
+        soundName = 'monster-death';
+      }
+      const sound = ResourceManager.getSound(soundName)
+      sound.setOrigin(this.getTransform())
+      sound.play(false, true)
+    }, 200)
     return this._health === 0
   }
 

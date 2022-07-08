@@ -33,8 +33,6 @@ class Player extends DynamicEntity implements IEntityWithLight {
   private _lampList: Lamp[]
   private static _instance: Player;
   private _stop: boolean;
-  private _end: Transform;
-
 
   public constructor(
     name: string,
@@ -73,15 +71,6 @@ class Player extends DynamicEntity implements IEntityWithLight {
     this._walkingMovement(delta)
     this._move(delta, currentScene, updater)
 
-    if(this._end.getTranslation().distanceTo(this.getTransform().getTranslation()) < 10){
-      //GameTest.getInstance().setScene(EndScene.END_SCENE);
-      (currentScene as MainScene).gameOver(EndScene.END_SCENE)
-    }
-
-  }
-
-  public setEndPoint(transform : Transform){
-    this._end = transform;
   }
 
   private _move(delta: number, currentScene: Scene, updater: Updater): void {
@@ -127,29 +116,24 @@ class Player extends DynamicEntity implements IEntityWithLight {
 
 
     if (InputManager.isKeyPressed(Keys.KEY_E) && this._gun.getState() === GunState.CHARGED) { // RIGHT
-      const hud = (updater.get("hud") as HUD)
-      if (hud.getAmmo() > 0) {
-        //GameController.update("ammunition", -1);
-        hud.decrementAmmo()
-        setTimeout(() => ResourceManager.getSound("gun").play(false, true), 100);
-        const position = this.getTransform().getTranslation()
-        const ray = new Vector3(0, 0, 20).transform(
-          this.getTransform().toInversePositionMatrix()
-        );
-        this._gun.shoot(
-          new Vector2(
-            position.x,
-            position.z
-          ),
-          new Vector2(
-            ray.x,
-            ray.z
-          ),
-          currentScene
-        )
-      } else {
-        ResourceManager.getSound("empty_gun").play()
-      }
+      
+      const position = this.getTransform().getTranslation()
+      const ray = new Vector3(0, 0, 20).transform(
+        this.getTransform().toInversePositionMatrix()
+      );
+      this._gun.shoot(
+        new Vector2(
+          position.x,
+          position.z
+        ),
+        new Vector2(
+          ray.x,
+          ray.z
+        ),
+        currentScene,
+        updater
+      )
+
     }
 
     if (InputManager.isKeyPressed(Keys.KEY_LEFT)) { // RIGHT
@@ -209,6 +193,11 @@ class Player extends DynamicEntity implements IEntityWithLight {
     this._camera.getTransform().setRotation(
       this.getTransform().getRotation()
     )
+  }
+
+  public takeDamage(updater: Updater): void {
+    (updater.get(HUD.NAME) as  HUD).decrementLife(5)
+    ResourceManager.getSound("damage").play(false, true)
   }
 
   public setLampList(lampList: Lamp[]): void {
