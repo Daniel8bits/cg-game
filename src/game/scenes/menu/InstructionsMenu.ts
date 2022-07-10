@@ -1,36 +1,42 @@
+import { Vector3 } from "@math.gl/core";
 import Razor from "@razor/core/Razor";
 import Scene from "@razor/core/scenes/Scene";
-import CreditsEntity from "src/game/entities/gui/CreditsEntity";
+import DialogEntity from "src/game/entities/gui/common/DialogEntity";
 import SelectEntity from "src/game/entities/gui/common/SelectEntity";
+import InstructionsEntity from "src/game/entities/gui/InstructionsEntity";
 import GameTest from "src/game/GameTest";
+import FadingRenderer from "src/game/renderers/FadingRenderer";
 import GuiRenderer from "src/game/renderers/GuiRenderer";
 import MainMenu from "./MainMenu";
-import FadingRenderer from "src/game/renderers/FadingRenderer";
 
 
-class CreditsMenu extends Scene {
+class InstructionsMenu extends Scene {
 
-  static readonly CREDITS_MENU: string = "credits-menu"
+  static readonly NAME: string = "instructions-menu"
 
   private _fading: FadingRenderer
 
   public constructor(renderer: GuiRenderer, fadingRenderer: FadingRenderer) {
-    super(CreditsMenu.CREDITS_MENU)
+    super(InstructionsMenu.NAME)
     this.getRenderStrategy().add(renderer)
     this._fading = fadingRenderer
     this.init(renderer)
   }
 
   private init(renderer: GuiRenderer): void {
-    const credits = new CreditsEntity(renderer)
-    this.add(credits)
+
+    const instructionsDisplay = new DialogEntity("instructionsDisplay", renderer);
+    this.add(instructionsDisplay);
+    instructionsDisplay.getTransform().setTranslation(new Vector3(100, 100, -1).negate())
+    instructionsDisplay.init();
+
+    this.add(new InstructionsEntity(renderer))
+
     const select = new SelectEntity("select", renderer);
     this.add(select)
-    select.addOption("voltar").setExecute(() => {
+    select.addOption("back").setExecute(() => {
       this._fading.fadeOut()
       setTimeout(() => {
-        credits.resetHeight()
-        credits.setRunning(false)
         GameTest.getInstance().setScene(MainMenu.MAIN_MENU)
       }, 1000)
     })
@@ -38,8 +44,7 @@ class CreditsMenu extends Scene {
 
     this.onChange(() => {
       this._fading.fadeIn()
-      credits.resetHeight()
-      credits.setRunning(true)
+      DialogEntity.Find("instructionsDisplay").animateText("instructions", 20, { vertical: '10%', horizontal: 'center' });
     })
   }
 
@@ -52,4 +57,4 @@ class CreditsMenu extends Scene {
 
 }
 
-export default CreditsMenu
+export default InstructionsMenu

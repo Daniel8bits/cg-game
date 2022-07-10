@@ -28,6 +28,7 @@ import CreditsMenu from "./scenes/menu/CreditsMenu";
 import MainMenu from "./scenes/menu/MainMenu";
 import EndScene from "./scenes/EndScene";
 import FadingRenderer from "./renderers/FadingRenderer";
+import InstructionsMenu from "./scenes/menu/InstructionsMenu";
 
 class GameTest extends GameCore {
 
@@ -223,7 +224,11 @@ class GameTest extends GameCore {
             },
             {
                 name: 'text',
-                pathname: '/resources/objects/8x8-font.png'
+                pathname: '/resources/images/8x8-font.png'
+            },
+            {
+                name: 'instructions',
+                pathname: '/resources/images/instructions.png'
             }
         ])
         //const textTexture = ResourceManager.getTexture("text");
@@ -282,7 +287,12 @@ class GameTest extends GameCore {
                 'text',
                 ResourceManager.getShader('text'),
                 ResourceManager.getTexture('text'),
-            )
+            ),
+            new DefaultMaterial(
+                'instructions',
+                ResourceManager.getShader('text'),
+                ResourceManager.getTexture('instructions'),
+            ),
 
         ])
             .forEachMaterial((material) => {
@@ -421,7 +431,10 @@ class GameTest extends GameCore {
         this.getSceneManager().add(new LoadingScene(guiRenderer, fadingRenderer));
 
         /* End Scene */
-        this.getSceneManager().add(new EndScene(guiRenderer, fadingRenderer), true);
+        this.getSceneManager().add(new EndScene(guiRenderer, fadingRenderer));
+
+        /* Instructions Scene */
+        this.getSceneManager().add(new InstructionsMenu(guiRenderer, fadingRenderer));
 
         /* Menu Scene */
         this.getSceneManager().add(new MainMenu(guiRenderer, fadingRenderer));

@@ -20,9 +20,14 @@ class CreditsEntity extends Entity {
     private color : Vector3 = new Vector3(0,0,0);
     public alpha : number = 1;
 
+    private _height: number
+    private _running: boolean
+
 
     public constructor(renderer: Renderer) {
         super(CreditsEntity.CREDITS_ENTITY, null,null, renderer);
+        this._running = false
+        this.resetHeight()
         
         this._loadCredits()
 
@@ -34,19 +39,24 @@ class CreditsEntity extends Entity {
         ))
         ResourceManager.addMaterials([this.getMaterial()]);
         this.getMaterial().create();
-        const aspect = Razor.CANVAS.height/Razor.CANVAS.width;
-        this.getTransform().setTranslation(new Vector3(800,400,1).negate())
-        this.getTransform().setScale(new Vector3(800,800 * aspect,1));
-        
+        this.getTransform().setTranslation(new Vector3(-Razor.CANVAS.width/2 - 32, this._height, -1))
+        this.getTransform().setScale(new Vector3(Razor.CANVAS.width/2, (Razor.CANVAS.height*3)/2, 1))
     }
 
     public update(time: number, delta: number, currentScene : Scene, updater: Updater): void {
+        if(this._running) {
+            this._height += delta*20
+            this.getTransform().setY(this._height)
+            if(this._height >= Razor.CANVAS.height) {
+                this.resetHeight()   
+            }
+        }
     }
 
     private _loadCredits(): void {
         const canvas = document.createElement("canvas");
-        canvas.width = Razor.CANVAS.width;//Razor.CANVAS.width;
-        canvas.height = Razor.CANVAS.height;//Razor.CANVAS.height;
+        canvas.width = Razor.CANVAS.width;
+        canvas.height = Razor.CANVAS.height*3;
         const ctx = canvas.getContext("2d");
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         ctx.font = '20px serif';
@@ -56,10 +66,10 @@ class CreditsEntity extends Entity {
             (file) => {
                 const splitText = file.split("\n");
                 for(let i=0;i<splitText.length;i++){
-                    ctx.fillText(splitText[i], 0,50 + 20 * i);
+                    ctx.fillText(splitText[i], 0, 50 + 20 * i);
                 }
                 const data = new Uint8Array(ctx.getImageData(0, 0, ctx.canvas.width, ctx.canvas.height).data)
-                this._texture = new Texture(ctx.canvas.width,ctx.canvas.height)
+                this._texture = new Texture(ctx.canvas.width, ctx.canvas.height)
                 this._texture.create();
                 this._texture.setData(data);
             },
@@ -68,6 +78,14 @@ class CreditsEntity extends Entity {
             }
         )
         
+    }
+
+    public resetHeight(): void {
+        this._height = -Razor.CANVAS.height*2.5
+    }
+
+    public setRunning(running: boolean): void {
+        this._running = running
     }
 }
 

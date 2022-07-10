@@ -10,6 +10,7 @@ import RectangleEntity from "src/game/entities/gui/common/RectangleEntity";
 import Razor from "@razor/core/Razor";
 import { Vector3 } from "@math.gl/core";
 import FadingRenderer from "src/game/renderers/FadingRenderer";
+import InstructionsMenu from "./InstructionsMenu";
 
 class MainMenu extends Scene {
 
@@ -35,13 +36,17 @@ class MainMenu extends Scene {
         ResourceManager.getSound("music").play(true);
       }, 1000)
     })
-    select1.addOption("opcao 2")
+    select1.addOption("instructions").setExecute(() => {
+      this._fading.fadeOut()
+      setTimeout(() => {
+        GameTest.getInstance().setScene(InstructionsMenu.NAME);
+      }, 1000)
+    })
     select1.addOption("credits").setExecute(() => {
       this._fading.fadeOut()
       setTimeout(() => {
         GameTest.getInstance().setScene(CreditsMenu.CREDITS_MENU);
       }, 1000)
-      
     })
 
     this.onChange(() => {

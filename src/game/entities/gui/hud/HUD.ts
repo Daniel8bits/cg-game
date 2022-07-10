@@ -89,7 +89,7 @@ class HUD implements IUpdatable {
     }
     this._ammo.updateText(ammo)
   }
-
+  
   public getAmmo(): number {
     return this._ammoValue
   }
