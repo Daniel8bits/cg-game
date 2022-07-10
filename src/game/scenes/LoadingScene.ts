@@ -30,15 +30,22 @@ class LoadingScene extends Scene {
     this.onChange(() => {
       this._fading.fadeIn()
       ResourceManager.getSound("elevator").play(false)
-      DialogEntity.Find("loadingDisplay").animateText("bem vindo ao inferno", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
-        setTimeout(() => {
-          this._fading.fadeOut()
-        }, 4000);
+      DialogEntity.Find("loadingDisplay").animateText("underground factory", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
         setTimeout(() => {
           dialog.remove()
-          GameTest.getInstance().setScene(MainScene.NAME);
-        }, 5000);
+        }, 2000);
       });
+      setTimeout(() => {
+        DialogEntity.Find("loadingDisplay").animateText("find the other elevator to escape", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
+          setTimeout(() => {
+            this._fading.fadeOut()
+          }, 4000);
+          setTimeout(() => {
+            dialog.remove()
+            GameTest.getInstance().setScene(MainScene.NAME);
+          }, 5000);
+        })
+      }, 4000);
     })
 
   }

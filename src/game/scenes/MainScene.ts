@@ -117,7 +117,7 @@ class MainScene extends PhysicsScene {
       this._fading.fadeIn()
       this._camera.getTransform().setTranslation(new Vector3(51.1, 0, -88))
       this._camera.getTransform().setRotation( new Orientation(0, -32));
-      DialogEntity.Find("display").animateText("chegue ate o elevador", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
+      DialogEntity.Find("display").animateText("try not to die", 20, { vertical: '10%', horizontal: 'center' }, (dialog) => {
         setTimeout(() => dialog.remove(), 5000);
       });
     })
