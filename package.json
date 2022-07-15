@@ -72,6 +72,7 @@
   },
   "dependencies": {
     "@math.gl/core": "^3.5.7",
+    "firebase": "^9.9.0",
     "html-webpack-plugin": "^5.5.0",
     "math.gl": "^2.3.1",
     "obj-file-parser": "^0.5.3"

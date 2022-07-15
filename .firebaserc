@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "portfolio-ea60d"
+  },
+  "targets": {
+    "portfolio-ea60d": {
+      "hosting": {
+        "horror-game": [
+          "horror-game-77e22"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
