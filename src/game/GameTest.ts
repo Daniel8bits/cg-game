@@ -29,6 +29,7 @@ import MainMenu from "./scenes/menu/MainMenu";
 import EndScene from "./scenes/EndScene";
 import FadingRenderer from "./renderers/FadingRenderer";
 import InstructionsMenu from "./scenes/menu/InstructionsMenu";
+import Event from "src/event";
 
 class GameTest extends GameCore {
 
@@ -50,12 +51,12 @@ class GameTest extends GameCore {
             //https://freesound.org/people/michorvath/sounds/427598/
             {
                 name: "gun",
-                pathname: "/resources/sound/gun.wav"
+                pathname: "/resources/sound/gun.mp3"
             },
             //https://freesound.org/people/KlawyKogut/sounds/154934/#
             {
                 name: "empty_gun",
-                pathname: "/resources/sound/empty_gun.wav"
+                pathname: "/resources/sound/empty_gun.mp3"
             },
             //https://freesound.org/people/thencamenow/sounds/31236/
             {
@@ -65,7 +66,7 @@ class GameTest extends GameCore {
             //https://freesound.org/people/julius_galla/sounds/193692/
             {
                 name: "music",
-                pathname: "/resources/sound/music.wav",
+                pathname: "/resources/sound/music.mp3",
                 options: {
                     volume: 50
                 }
@@ -73,12 +74,12 @@ class GameTest extends GameCore {
             //https://freesound.org/people/dkiller2204/sounds/366111/
             {
                 name: "step",
-                pathname: "/resources/sound/footstep.wav"
+                pathname: "/resources/sound/footstep.mp3"
             },
             //https://freesound.org/people/victorium183/sounds/476816/
             {
                 name: "menu",
-                pathname: "/resources/sound/menu.wav",
+                pathname: "/resources/sound/menu.mp3",
                 options: {
                     volume: 20
                 }
@@ -86,17 +87,17 @@ class GameTest extends GameCore {
             //https://freesound.org/people/joedeshon/sounds/368738/
             {
                 name: "elevator",
-                pathname: "/resources/sound/elevator.wav"
+                pathname: "/resources/sound/elevator.mp3"
             },
             //https://freesound.org/people/Deathscyp/sounds/404109/
             {
                 name: "damage",
-                pathname: "/resources/sound/damage.wav"
+                pathname: "/resources/sound/damage.mp3"
             },
 
             {
                 name: "death-track",
-                pathname: "/resources/sound/death-track.wav"
+                pathname: "/resources/sound/death-track.mp3"
             },
             {
                 name: "monster-attack",
@@ -108,7 +109,7 @@ class GameTest extends GameCore {
             },
             {
                 name: "monster-damage",
-                pathname: "/resources/sound/monster-damage.wav"
+                pathname: "/resources/sound/monster-damage.mp3"
             },
             {
                 name: "whispers",
@@ -437,33 +438,24 @@ class GameTest extends GameCore {
         this.getSceneManager().add(new InstructionsMenu(guiRenderer, fadingRenderer));
 
         /* Menu Scene */
-        this.getSceneManager().add(new MainMenu(guiRenderer, fadingRenderer));
+        this.getSceneManager().add(new MainMenu(guiRenderer, fadingRenderer), true);
 
-
-        this.setScene(MainMenu.MAIN_MENU);
-
-        //ResourceManager.getSound('death-track').pause()
-        //ResourceManager.getSound('death-track').play(true)
+        const loading = setInterval(() => {
+            if(
+                ResourceManager.anyTexture(texture => !texture.isCreated()) ||
+                ResourceManager.anySound(sound => !sound.isLoaded())
+            ) {
+                return;
+            }
+            Event.trigger("loadScene", this.getSceneManager().getActive());
+            clearInterval(loading)
+        }, 500);
         
     }
 
     public update(time: number, delta: number) {
         super.update(time, delta);
         this._camera.update(delta)
-        /*
-        const translation = this._camera.getTransform().getTranslation();
-        const rotation = this._camera.getTransform().getRotation();
-        document.querySelector("#log").innerHTML = `
-            <p><b>Translation</b></p>
-            <p><b>x</b> ${translation.x}</p>
-            <p><b>y</b> ${translation.y}</p>
-            <p><b>z</b> ${translation.z}</p>
-            <hr>
-            <p><b>Rotation</b></p>
-            <p><b>x</b> ${rotation.x}</p>
-            <p><b>y</b> ${rotation.y}</p>
-            <p><b>z</b> ${rotation.z}</p>
-        `;*/
     }
 
     public render(delta: number) {

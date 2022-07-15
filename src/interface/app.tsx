@@ -1,5 +1,8 @@
+import Razor from '@razor/core/Razor';
+import Scene from '@razor/core/scenes/Scene';
 import React, { useEffect, useState } from 'react'
 import Event from 'src/event'
+import GameTest from 'src/game/GameTest';
 import Modal from './modal';
 import Properties from './properties';
 
@@ -7,14 +10,22 @@ import styles from './style.css';
 const App = () => {
 
     const [open,setOpen] = useState<Boolean>(false);
-    const [scene,setScene] = useState<any>(null);
+    const [scene,setScene] = useState<Scene>(null);
     const [current,setCurrent] = useState(null);
 
     useEffect(() => {
+
         Event.on('loadScene', function (scene) {
             setCurrent(null);
             setScene(scene);
         })
+
+        const engine = new Razor(new GameTest());
+        engine.start();
+        window.onresize = () => {
+            engine.resize();
+        }
+
     }, []);
 
     const changeEntity = (e) => {
@@ -22,7 +33,7 @@ const App = () => {
         if(value == "-1") setCurrent(null);
         else setCurrent(value);
     }
-    if(!scene) return <>Loading</>;
+    if(!scene) return <div className={styles.loading}>LOADING. . .</div>;
     return (
         <div>
             <a className={styles.openModal} onClick={() => setOpen(!open)}>Abrir Interface</a>

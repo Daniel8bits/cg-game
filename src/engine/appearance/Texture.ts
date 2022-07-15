@@ -123,6 +123,10 @@ class Texture implements IResource{
     return this._program
   }
 
+  public isCreated(): boolean {
+    return this._created
+  }
+
   
 }
 

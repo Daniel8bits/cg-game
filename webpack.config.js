@@ -8,10 +8,6 @@ module.exports = function build(env, arg) {
       event: ['./src/event.ts'],
       index: {
         dependOn: 'event',
-        import: './src/main.ts'
-      },
-      interface: {
-        dependOn: 'event',
         import: './src/interface/index.tsx'
       }
     },

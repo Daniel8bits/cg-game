@@ -155,6 +155,19 @@ class ResourceManager {
         return this
     }
 
+    public static anyTexture(predicate: (texture: Texture) => boolean): boolean {
+        return ResourceManager.getInstance().anyTexture(predicate);
+    }
+
+    public anyTexture(predicate: (texture: Texture) => boolean): boolean {
+        for(let textureKey of this._textures.keys()) {
+            if(predicate(this._textures.get(textureKey))) {
+                return true;
+            }
+        }
+        return false
+    }
+
     /* =====================
             MATERIALS
     ======================*/
@@ -223,6 +236,19 @@ class ResourceManager {
     public forEachSound(callback: (sound: Sound) => void): ResourceManager {
         this._sounds.forEach(callback);
         return this
+    }
+
+    public static anySound(predicate: (sound: Sound) => boolean): boolean {
+        return ResourceManager.getInstance().anySound(predicate);
+    }
+
+    public anySound(predicate: (sound: Sound) => boolean): boolean {
+        for(let soundKey of this._sounds.keys()) {
+            if(predicate(this._sounds.get(soundKey))) {
+                return true;
+            }
+        }
+        return false
     }
 
 

@@ -19,10 +19,13 @@ class Sound {
   private _audio: HTMLAudioElement;
   private _origin?: Transform;
   private _listener: Transform;
+  private _loaded: boolean
 
   constructor(name: string, pathname: string, options?: SoundOptions) {
     this.name = name;
+    this._loaded = false
     this._audio = new Audio(pathname);
+    this._audio.onload = () => {this._loaded = true}
     this._audio.loop = options?.loop ?? false;
     this._audio.autoplay = options?.autoplay ?? false;
     this._audio.volume = (options?.volume ?? 100)/100;
@@ -70,6 +73,10 @@ class Sound {
   public pause(): void {
     this._audio.pause();
     this._audio.currentTime = 0;
+  }
+
+  public isLoaded(): boolean {
+    return this._loaded
   }
 
   public getName(): string {
