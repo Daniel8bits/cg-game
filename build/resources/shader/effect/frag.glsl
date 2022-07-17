@@ -1,3 +1,5 @@
+#extension GL_EXT_gpu_shader5 : disable 
+#extension GL_ARB_gpu_shader5 : disable
 precision mediump float;
 
 varying vec2 v_uvCoord;

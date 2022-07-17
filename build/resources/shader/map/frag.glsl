@@ -1,10 +1,11 @@
+#extension GL_EXT_gpu_shader5 : disable 
+#extension GL_ARB_gpu_shader5 : disable
 precision mediump float;
 
 varying vec2 v_uvCoord;
-//varying vec4 v_color;
 
 uniform sampler2D u_texture;
-uniform vec3 u_camera_position;
+uniform vec3 u_camera_position_FRAG;
 
 
 varying vec3 v_normal;
@@ -90,7 +91,7 @@ void main() {
   vec3 texturevec3 = vec3(texture2D(u_texture, v_uvCoord));
 
   vec3 norm = normalize(v_normal);
-  vec3 viewDir = normalize(u_camera_position - v_FragPos);
+  vec3 viewDir = normalize(u_camera_position_FRAG - v_FragPos);
   vec3 result = vec3(0.0);
   vec4 fragment = vec4(0.0);
   //if(applyLight == 1) result = CalcPointLight(lightCamera,norm,viewDir,texturevec3);// Luz da Camera

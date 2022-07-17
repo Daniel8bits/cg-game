@@ -236,13 +236,13 @@ class GameTest extends GameCore {
 
         ResourceManager.addMaterials([
             new DefaultMaterial(
-                'empty',
-                ResourceManager.getShader('gui')
-            ),
-            new DefaultMaterial(
                 'level',
                 ResourceManager.getShader('map'),
                 ResourceManager.getTexture('level'),
+                ),
+            new DefaultMaterial(
+                'empty',
+                ResourceManager.getShader('gui')
             ),
             new DefaultMaterial(
                 'elevator',

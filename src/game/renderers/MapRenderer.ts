@@ -50,6 +50,7 @@ class MapRenderer extends Renderer {
             shader.setMatrix4x4('u_view', this.getCamera().getView());
             const cameraPosition = this.getCamera().getTransform().getTranslation();
             shader.setVector3('u_camera_position',cameraPosition.negate())
+            shader.setVector3('u_camera_position_FRAG',cameraPosition.negate())
             //shader.setVector3('u_color',new Vector3(1,0.2,0.3));
             shader.setVector3("lightCamera.color.ambient", new Vector3(1,1,1));
             shader.setVector3("lightCamera.color.diffuse", new Vector3(0.5,0.5,0.5))
