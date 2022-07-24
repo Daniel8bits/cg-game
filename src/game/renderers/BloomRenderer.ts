@@ -139,7 +139,7 @@ class BloomRenderer extends Renderer {
         for (let i = 0; i < amount; i++) {
             //
             this._buffers[Number(horizontal)].bind();
-            this._shader.setInt("horizontal", Number(horizontal));
+            this._shader.setFloat("u_horizontal", Number(horizontal));
             if (!first_iteration) {
                 this._buffers[Number(!horizontal)].getTexture().bind();
             }
@@ -150,16 +150,6 @@ class BloomRenderer extends Renderer {
         }
 
         BloomRenderer._bloom = this._buffers[Number(!horizontal)].getTexture();
-        /*
-        this._shader.setInt("mode",2);
-        gl.activeTexture(gl.TEXTURE0);
-        BloomRenderer._texture.bind();
-        this._shader.setInt('u_texture', 0)
-        gl.activeTexture(gl.TEXTURE1);
-        this._buffers[Number(!horizontal)].getTexture().bind();
-        this._shader.setInt('u_mascara', 1)
-        this.draw();
-        */
 
         this._vao.unbind();
         this._frameBuffer.getTexture().unbind();

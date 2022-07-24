@@ -6,7 +6,7 @@ varying vec2 v_uvCoord;
 
 uniform sampler2D u_texture;
 uniform sampler2D u_mascara;
-uniform bool horizontal;
+uniform float u_horizontal;
 uniform float weight[5];
 uniform float sizeTexture[2];
 uniform int mode;
@@ -25,23 +25,20 @@ void main()
     if(mode == 1){
         vec2 tex_offset = 1.0 / vec2(sizeTexture[0],sizeTexture[1]);
         result *= weight[0]; 
-        if(horizontal)
-        {
-            for(int i = 1; i < 5; ++i)
-            {
-                result += texture2D(u_texture, v_uvCoord + vec2(tex_offset.x * float(i), 0.0)).rgb * weight[i];
-                result += texture2D(u_texture, v_uvCoord - vec2(tex_offset.x * float(i), 0.0)).rgb * weight[i];
-            }
-        }
-        else
-        {
-            for(int i = 1; i < 5; ++i)
-            {
-                result += texture2D(u_texture, v_uvCoord + vec2(0.0, tex_offset.y * float(i))).rgb * weight[i];
-                result += texture2D(u_texture, v_uvCoord - vec2(0.0, tex_offset.y * float(i))).rgb * weight[i];
-            }
-        }
-        //gl_FragColor = vec4(vec3(1.0 - texture2D(screenTexture, v_uvCoord)), 1.0);
+
+        float factor = mix(tex_offset.y, tex_offset.x, u_horizontal);
+
+        result += texture2D(u_texture, v_uvCoord + mix(vec2(0.0, factor * 1.0), vec2(factor * 1.0, 0.0), u_horizontal)).rgb * weight[1];
+        result += texture2D(u_texture, v_uvCoord - mix(vec2(0.0, factor * 1.0), vec2(factor * 1.0, 0.0), u_horizontal)).rgb * weight[1];
+
+        result += texture2D(u_texture, v_uvCoord + mix(vec2(0.0, factor * 2.0), vec2(factor * 2.0, 0.0), u_horizontal)).rgb * weight[2];
+        result += texture2D(u_texture, v_uvCoord - mix(vec2(0.0, factor * 2.0), vec2(factor * 2.0, 0.0), u_horizontal)).rgb * weight[2];
+
+        result += texture2D(u_texture, v_uvCoord + mix(vec2(0.0, factor * 3.0), vec2(factor * 3.0, 0.0), u_horizontal)).rgb * weight[3];
+        result += texture2D(u_texture, v_uvCoord - mix(vec2(0.0, factor * 3.0), vec2(factor * 3.0, 0.0), u_horizontal)).rgb * weight[3];
+
+        result += texture2D(u_texture, v_uvCoord + mix(vec2(0.0, factor * 4.0), vec2(factor * 4.0, 0.0), u_horizontal)).rgb * weight[4];
+        result += texture2D(u_texture, v_uvCoord - mix(vec2(0.0, factor * 4.0), vec2(factor * 4.0, 0.0), u_horizontal)).rgb * weight[4];
     }
     gl_FragColor = vec4(result,1.0);
 }
