@@ -41,7 +41,7 @@ class Shader implements IResource{
             gl.linkProgram(this._program);
             
             const error : string = gl.getProgramInfoLog(this._program).trim();
-            if(error !== '') {
+            if(error && error !== '') {
                 throw new Error(`Error trying to link shader: ${this._name}.\n ${error}`);
             }
             this._created = true
@@ -63,7 +63,7 @@ class Shader implements IResource{
 
         gl.compileShader(shader);
         const error : string = gl.getShaderInfoLog(shader).trim();
-        if( error !== '') {
+        if(error && error !== '') {
             throw new Error(`Error trying to compile shader: ${pathname}.\n ${error}`);
         }
 
